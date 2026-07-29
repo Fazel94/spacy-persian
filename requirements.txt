@@ -1,0 +1,8 @@
+# Build environment for fa_core_news_sm. Python 3.12.
+spacy>=3.8,<3.9
+# Persian rule-lemmatizer tables (fa_lemma_exc/index/rules). Not used by the trained
+# pipeline (we train an edit-tree lemmatizer) but required if you want to compare against
+# the rule-based lemmatizer, and pulled in by `spacy init config` validation paths.
+spacy-lookups-data>=1.0.5
+# Publishing to the HF Hub (docs/CONTRIBUTING-GUIDE.md §2). Optional.
+# spacy-huggingface-hub>=0.0.10

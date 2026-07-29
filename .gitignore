@@ -1,0 +1,10 @@
+# Downloaded corpora — reproduce with `spacy project assets` (checksums in project.yml)
+assets/
+# Generated artifacts
+corpus/
+training/
+metrics/
+packages/
+.venv/
+__pycache__/
+*.pyc
