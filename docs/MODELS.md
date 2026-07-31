@@ -22,19 +22,31 @@ parsing** (identical to two decimals) and ~1–2 F on NER. The transformer buys 
 
 Sources: <https://spacy.io/models/en>.
 
-## 2. Target: the four Persian pipelines
+## 2. Target: the Persian pipelines
 
-Naming follows `[lang]_[type]_[genre]_[size]` (<https://spacy.io/models#conventions>).
-`core` = tagger + parser + lemmatizer + NER. Genre is `news`, after the dominant genre of
-UD_Persian-PerDT (its README lists "news fiction nonfiction academic web blog", and spaCy
-labels comparable treebank-trained pipelines such as `de_core_news_sm` as `news`).
+Naming follows `[lang]_[type]_[genre]_[size]` (<https://spacy.io/models#conventions>), and the
+`type` slot is load-bearing: `dep` = tagger + parser + lemmatizer, `ent` = NER only,
+`core` = both. Genre is `news`, after the dominant genre of UD_Persian-PerDT (its README lists
+"news fiction nonfiction academic web blog", and spaCy labels comparable treebank-trained
+pipelines such as `de_core_news_sm` as `news`).
 
-| Pipeline | Components | Embeddings | Trainable on this hardware? |
+| Pipeline | Components | Embeddings | Status |
 | --- | --- | --- | --- |
-| **`fa_core_news_sm`** | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser, ner | hash embeddings | **yes — this is what we train now** |
-| `fa_core_news_md` | same | floret vectors, 50k rows | yes, but vectors must be trained first (CPU-days on fa Wikipedia + OSCAR) |
-| `fa_core_news_lg` | same | floret vectors, 200k rows | same as md, bigger table |
-| `fa_core_news_trf` | transformer, tagger, morphologizer, trainable_lemmatizer, parser, ner | `HooshvareLab/roberta-fa-zwnj-base` (Apache-2.0) | **no** — 2 GB VRAM (GTX 940MX) cannot fine-tune a 125M-param encoder; needs rented GPU |
+| **`fa_dep_news_sm`** | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser | hash embeddings | **built — the shipping artifact** |
+| `fa_ent_news_sm` | ner (own internal tok2vec) | hash embeddings | **built — optional, separate package** |
+| `fa_core_news_sm` | the two above, merged | hash embeddings | **reserved.** Blocked on prose-genre NER data from `../ner_dataset` |
+| `fa_core_news_md` | + static vectors | floret, 50k rows | vectors must be trained first (CPU-days on fa Wikipedia + OSCAR) |
+| `fa_core_news_lg` | same | floret, 200k rows | same as md, bigger table |
+| `fa_core_news_trf` | transformer instead of tok2vec | `HooshvareLab/roberta-fa-zwnj-base` (Apache-2.0) | **not on this hardware** — 2 GB VRAM cannot fine-tune a 125M-param encoder |
+
+**Why `dep` + `ent` rather than a single `core`.** `core` is a promise that the NER is part of
+the same pipeline, built to the same standard, versioned together. Ours is not: the UD
+components score 85–98 on edited prose, while the NER scores 67.22 F and is trained on tweets
+because the good Persian NER corpora are research-use-only. One package name and one version
+number would paper over a gap of that size. Shipping two packages makes the user opt into the
+weak component knowingly, and costs nothing technically — `fa_ent_news_sm` embeds its own
+tok2vec, so `nlp.add_pipe("ner", source=...)` reassembles a `core`-equivalent pipeline at
+runtime (verified). `fa_core_news_sm` gets published when the NER earns the name.
 
 One deviation from the English design, deliberate: Persian gets a **`morphologizer`**
 (UPOS + morphological features) and a **`trainable_lemmatizer`** instead of English's
@@ -163,7 +175,7 @@ So what hazm genuinely contributes to this project is **one validated design dec
 (PerDT is the corpus) and **the stop-word list already vendored into `spacy/lang/fa`**.
 Everything else is built with spaCy-native tooling.
 
-## 5. Decision: train `fa_core_news_sm` first
+## 5. Decision: train the `sm` tier first
 
 Not md/lg: those need floret vectors trained from scratch on Wikipedia+OSCAR (CPU-days) and
 buy ~0.00 tag/dep accuracy in the English reference numbers.
@@ -194,7 +206,9 @@ lemmas that come out as two words.
 The better long-term fix is Persian clitic-splitting suffix rules in `spacy/lang/fa`, which
 would be an upstream PR, not a model change. Recorded in `docs/CONTRIBUTING-GUIDE.md` §5.
 
-### Final composition of `fa_core_news_sm`
+### Final composition
+
+**`fa_dep_news_sm`** — CC BY-SA 4.0, 7.5 MB wheel:
 
 | Component | Trained on | Metric | Test score |
 | --- | --- | --- | --- |
@@ -203,17 +217,30 @@ would be an upstream PR, not a model change. Recorded in `docs/CONTRIBUTING-GUID
 | `morphologizer` (UPOS + FEATS) | PerDT, 298 labels | `pos_acc` / `morph_acc` | 96.24 / 96.29 |
 | `trainable_lemmatizer` | PerDT, 1,908 edit trees | `lemma_acc` | 97.91 |
 | `parser` | PerDT, 34 deprels | `dep_uas` / `dep_las` | 89.69 / 85.15 |
-| `ner` (own internal tok2vec) | ParsTwiNER, 6 labels | `ents_p/r/f` | 74.77 / 61.06 / 67.22 |
+
+**`fa_ent_news_sm`** — MIT, 5.6 MB wheel, separate package:
+
+| Component | Trained on | Metric | Test score |
+| --- | --- | --- | --- |
+| `ner` (own internal tok2vec) | ParsTwiNER, 6 labels | `ents_p/r/f` | 74.77 / 61.06 / **67.22** |
+
+ParsTwiNER's label counts explain that last row better than any prose can:
+`PER` 6258, `LOC` 5478, `ORG` 2694, `NAT` 939, **`EVE` 482, `POG` 399** over 232,917 tokens
+(16,250 entities, 7.0% density). The two starved labels are exactly the two that score worst
+(`EVE` 30.0, `POG` 41.2). So the corpus is not small — it is skewed and out of genre, which
+are two different problems: the head labels need in-genre data, the tail labels need more data
+of any kind.
 
 Training cost on the target hardware (4-core i5-7200U, no GPU): **1h27m** for the UD
 components (early-stopped at step 10,800; best checkpoint step 9,200) and ~25 min for NER
 (best at step 4,000). Both runs are single-threaded, so they were run concurrently.
-Inference: ~9,250 words/s. Wheel: 13 MB.
+Inference: ~9,250 words/s.
 
 The `--merge-subtokens` artefacts predicted above are visible in the shipped model exactly as
 expected — `کتاب‌هایش` ("his/her books") comes out as one token tagged `N_IANM_PR_JOPER` with
 lemma `کتاب او`. Worth knowing before you consume `token.lemma_` downstream.
 
-Sources recorded in `meta.json`, both with their licenses, per
-<https://spacy.io/api/data-formats#meta>. CC BY-SA 4.0 on PerDT means the packaged pipeline
-must carry attribution and share-alike notice — handled in `scripts/assemble_core.py`.
+Sources recorded in each `meta.json` with their licences, per
+<https://spacy.io/api/data-formats#meta>. CC BY-SA 4.0 on PerDT means `fa_dep_news_sm` must
+carry attribution and share-alike notice — handled in `scripts/finalize_pipeline.py`, which
+also refuses to publish a `dep` pipeline that contains an `ner` component.

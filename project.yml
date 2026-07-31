@@ -1,19 +1,27 @@
-title: "fa_core_news_sm"
+title: "fa_dep_news_sm"
 description: >
-  A CPU-sized Persian (fa) core pipeline for spaCy 3.8: tagger (XPOS), morphologizer
-  (UPOS + FEATS), trainable lemmatizer, dependency parser and NER.
+  A CPU-sized Persian (fa) dependency pipeline for spaCy 3.8: tagger (XPOS),
+  morphologizer (UPOS + FEATS), trainable lemmatizer and dependency parser. Trained on
+  UD_Persian-PerDT (PerUDT v1.0, CC BY-SA 4.0).
 
-  UD components are trained on UD_Persian-PerDT (PerUDT v1.0, CC BY-SA 4.0). The NER
-  component is trained separately on ParsTwiNER (MIT) and merged in, because no
-  redistributably-licensed Persian NER corpus shares a genre with the treebank. See
-  docs/MODELS.md for the full source/licence analysis and docs/CONTRIBUTING-GUIDE.md
-  for how this gets published.
+  This repo deliberately ships `dep`, not `core`. In spaCy's naming scheme `core` means
+  "tagger + parser + lemmatizer + NER" in one package, and the only redistributably-licensed
+  Persian NER corpus (ParsTwiNER, MIT) is a Twitter corpus — it scores 67.22 F against
+  85-98 for the UD components, and folding it into a single `core` artifact would hide that
+  behind one package name. So NER ships separately and optionally as `fa_ent_news_sm`
+  (workflow: `ner`), and `fa_core_news_sm` is reserved for when ../ner_dataset delivers
+  prose-genre NER data that beats ParsTwiNER on a human-annotated test set.
 
-  Run everything with: `spacy project run all`
+  See docs/MODELS.md for the source/licence analysis and docs/CONTRIBUTING-GUIDE.md for
+  how this gets published.
+
+  Run the shipping pipeline with: `spacy project run all`
+  Optionally build the standalone NER with: `spacy project run ner`
 
 vars:
   lang: "fa"
-  package_name: "core_news_sm"
+  package_name: "dep_news_sm"
+  ner_package_name: "ent_news_sm"
   package_version: "3.8.0"
   treebank: "fa_perdt"
   # -1 = CPU. A GTX 940MX (2 GB) is not worth the transfer overhead for an sm pipeline.
@@ -48,18 +56,25 @@ assets:
     description: "ParsTwiNER Persian Twitter NER corpus, IOB2 (MIT)"
 
 workflows:
+  # The shipping artifact: fa_dep_news_sm.
   all:
     - inspect
     - convert-ud
-    - convert-ner
     - debug-data
     - train-core
-    - train-ner
-    - assemble
+    - finalize
     - evaluate
     - finalize-meta
     - package
     - smoke
+  # Optional, separate artifact: fa_ent_news_sm. Not part of `all` — see the note above.
+  ner:
+    - convert-ner
+    - debug-data-ner
+    - train-ner
+    - finalize-ner
+    - evaluate-ner
+    - package-ner
 
 commands:
   - name: "inspect"
@@ -107,24 +122,29 @@ commands:
       - "corpus/ner/test.spacy"
 
   - name: "debug-data"
-    help: "Validate both corpora against their configs before burning CPU on training"
+    help: "Validate the treebank against the config before burning CPU on training"
     script:
-      - "python -m spacy debug data configs/fa_core_news_sm.cfg --paths.train corpus/merged/${vars.treebank}-ud-train.spacy --paths.dev corpus/merged/${vars.treebank}-ud-dev.spacy"
-      - "python -m spacy debug data configs/fa_ner_sm.cfg --paths.train corpus/ner/train.spacy --paths.dev corpus/ner/dev.spacy"
+      - "python -m spacy debug data configs/fa_dep_news_sm.cfg --paths.train corpus/merged/${vars.treebank}-ud-train.spacy --paths.dev corpus/merged/${vars.treebank}-ud-dev.spacy"
     deps:
       - "corpus/merged/${vars.treebank}-ud-train.spacy"
+      - "configs/fa_dep_news_sm.cfg"
+
+  - name: "debug-data-ner"
+    help: "Validate the ParsTwiNER corpus against the NER config"
+    script:
+      - "python -m spacy debug data configs/fa_ner_sm.cfg --paths.train corpus/ner/train.spacy --paths.dev corpus/ner/dev.spacy"
+    deps:
       - "corpus/ner/train.spacy"
-      - "configs/fa_core_news_sm.cfg"
       - "configs/fa_ner_sm.cfg"
 
   - name: "train-core"
     help: "Train tok2vec + tagger + morphologizer + trainable_lemmatizer + parser on PerDT"
     script:
-      - "python -m spacy train configs/fa_core_news_sm.cfg --output training/core --paths.train corpus/merged/${vars.treebank}-ud-train.spacy --paths.dev corpus/merged/${vars.treebank}-ud-dev.spacy --gpu-id ${vars.gpu}"
+      - "python -m spacy train configs/fa_dep_news_sm.cfg --output training/core --paths.train corpus/merged/${vars.treebank}-ud-train.spacy --paths.dev corpus/merged/${vars.treebank}-ud-dev.spacy --gpu-id ${vars.gpu}"
     deps:
       - "corpus/merged/${vars.treebank}-ud-train.spacy"
       - "corpus/merged/${vars.treebank}-ud-dev.spacy"
-      - "configs/fa_core_news_sm.cfg"
+      - "configs/fa_dep_news_sm.cfg"
     outputs:
       - "training/core/model-best"
 
@@ -139,57 +159,82 @@ commands:
     outputs:
       - "training/ner/model-best"
 
-  - name: "assemble"
-    help: "Source the trained ner into the core pipeline and write full meta.json"
+  - name: "finalize"
+    help: "Write fa_dep_news_sm metadata (sources, licence, notes) onto the trained model"
     script:
-      - "python scripts/assemble_core.py training/core/model-best training/ner/model-best training/fa_core_news_sm --version ${vars.package_version}"
+      - "python scripts/finalize_pipeline.py training/core/model-best training/fa_dep_news_sm --variant dep --version ${vars.package_version}"
     deps:
       - "training/core/model-best"
-      - "training/ner/model-best"
-      - "scripts/assemble_core.py"
+      - "scripts/finalize_pipeline.py"
     outputs:
-      - "training/fa_core_news_sm"
+      - "training/fa_dep_news_sm"
 
   - name: "evaluate"
-    help: "Score the assembled pipeline on both held-out test sets"
+    help: "Score fa_dep_news_sm on the held-out UD test split"
     script:
-      - "python -m spacy benchmark accuracy training/fa_core_news_sm corpus/merged/${vars.treebank}-ud-test.spacy --output metrics/ud-test.json --gpu-id ${vars.gpu}"
-      - "python -m spacy benchmark accuracy training/fa_core_news_sm corpus/ner/test.spacy --output metrics/ner-test.json --gpu-id ${vars.gpu}"
+      - "python -m spacy benchmark accuracy training/fa_dep_news_sm corpus/merged/${vars.treebank}-ud-test.spacy --output metrics/ud-test.json --gpu-id ${vars.gpu}"
     deps:
-      - "training/fa_core_news_sm"
+      - "training/fa_dep_news_sm"
       - "corpus/merged/${vars.treebank}-ud-test.spacy"
-      - "corpus/ner/test.spacy"
     outputs:
       - "metrics/ud-test.json"
-      - "metrics/ner-test.json"
 
   - name: "finalize-meta"
     help: >
-      Re-assemble, this time folding the test scores into meta.json["performance"].
-      Separate from `assemble` because the scores can only exist after `evaluate`, and
-      `evaluate` needs an assembled pipeline to score. Cheap: it only copies models.
+      Re-run finalize, this time folding the test scores into meta.json["performance"].
+      Separate from `finalize` because the scores can only exist after `evaluate`, and
+      `evaluate` needs a finalized pipeline to score. Cheap: it only copies models.
     script:
-      - "python scripts/assemble_core.py training/core/model-best training/ner/model-best training/fa_core_news_sm --version ${vars.package_version} --ud-metrics metrics/ud-test.json --ner-metrics metrics/ner-test.json"
+      - "python scripts/finalize_pipeline.py training/core/model-best training/fa_dep_news_sm --variant dep --version ${vars.package_version} --metrics metrics/ud-test.json"
     deps:
       - "metrics/ud-test.json"
-      - "metrics/ner-test.json"
-      - "scripts/assemble_core.py"
+      - "scripts/finalize_pipeline.py"
 
   - name: "package"
-    help: "Build the installable wheel + sdist"
+    help: "Build the installable fa_dep_news_sm wheel + sdist"
     script:
-      - "python -m spacy package training/fa_core_news_sm packages --name ${vars.package_name} --version ${vars.package_version} --build sdist,wheel --force"
+      - "python -m spacy package training/fa_dep_news_sm packages --name ${vars.package_name} --version ${vars.package_version} --build sdist,wheel --force"
     deps:
-      - "training/fa_core_news_sm"
+      - "training/fa_dep_news_sm"
     outputs:
       - "packages/${vars.lang}_${vars.package_name}-${vars.package_version}"
 
   - name: "smoke"
-    help: "Load the packaged pipeline and run it over real Persian text"
+    help: "Load the pipeline and run it over real Persian text"
     script:
-      - "python scripts/smoke_test.py training/fa_core_news_sm"
+      - "python scripts/smoke_test.py training/fa_dep_news_sm"
     deps:
-      - "training/fa_core_news_sm"
+      - "training/fa_dep_news_sm"
+
+  - name: "finalize-ner"
+    help: "Write fa_ent_news_sm metadata onto the trained NER model"
+    script:
+      - "python scripts/finalize_pipeline.py training/ner/model-best training/fa_ent_news_sm --variant ent --version ${vars.package_version} --metrics metrics/ner-test.json"
+    deps:
+      - "training/ner/model-best"
+      - "scripts/finalize_pipeline.py"
+    outputs:
+      - "training/fa_ent_news_sm"
+
+  - name: "evaluate-ner"
+    help: "Score fa_ent_news_sm on the held-out ParsTwiNER test split"
+    script:
+      - "python -m spacy benchmark accuracy training/fa_ent_news_sm corpus/ner/test.spacy --output metrics/ner-test.json --gpu-id ${vars.gpu}"
+      - "python scripts/finalize_pipeline.py training/ner/model-best training/fa_ent_news_sm --variant ent --version ${vars.package_version} --metrics metrics/ner-test.json"
+    deps:
+      - "training/fa_ent_news_sm"
+      - "corpus/ner/test.spacy"
+    outputs:
+      - "metrics/ner-test.json"
+
+  - name: "package-ner"
+    help: "Build the installable fa_ent_news_sm wheel + sdist"
+    script:
+      - "python -m spacy package training/fa_ent_news_sm packages --name ${vars.ner_package_name} --version ${vars.package_version} --build sdist,wheel --force"
+    deps:
+      - "training/fa_ent_news_sm"
+    outputs:
+      - "packages/${vars.lang}_${vars.ner_package_name}-${vars.package_version}"
 
   - name: "clean"
     help: "Drop corpora, training runs and metrics (keeps downloaded assets)"

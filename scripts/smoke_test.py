@@ -1,9 +1,10 @@
-"""Run the assembled pipeline over real Persian text and print every annotation layer.
+"""Run a trained pipeline over real Persian text and print every annotation layer.
 
 This is the end-to-end check that the artifact actually works: tokenizer -> tagger ->
-morphologizer -> lemmatizer -> parser -> ner -> noun_chunks.
+morphologizer -> lemmatizer -> parser -> noun_chunks, plus ner when the pipeline has one.
+Works on fa_dep_news_sm, fa_ent_news_sm, or the two combined.
 
-Usage: .venv/bin/python scripts/smoke_test.py training/fa_core_news_sm
+Usage: .venv/bin/python scripts/smoke_test.py training/fa_dep_news_sm
 """
 
 import sys
@@ -20,7 +21,7 @@ EXTRA = [
 
 
 def main():
-    path = sys.argv[1] if len(sys.argv) > 1 else "training/fa_core_news_sm"
+    path = sys.argv[1] if len(sys.argv) > 1 else "training/fa_dep_news_sm"
     nlp = spacy.load(path)
     print(f"loaded {nlp.meta['lang']}_{nlp.meta['name']} {nlp.meta['version']}")
     print(f"pipeline: {nlp.pipe_names}")
@@ -35,10 +36,13 @@ def main():
                 f"{t.text:<16}{t.lemma_:<16}{t.pos_:<7}{t.tag_:<14}"
                 f"{t.dep_:<14}{t.head.text}"
             )
-        print(f"morph[0]: {doc[0].morph}")
-        print(f"sents: {[s.text for s in doc.sents]}")
-        print(f"ents: {[(e.text, e.label_) for e in doc.ents]}")
-        print(f"noun_chunks: {[c.text for c in doc.noun_chunks]}")
+        if doc.has_annotation("MORPH"):
+            print(f"morph[0]: {doc[0].morph}")
+        if doc.has_annotation("DEP"):
+            print(f"sents: {[s.text for s in doc.sents]}")
+            print(f"noun_chunks: {[c.text for c in doc.noun_chunks]}")
+        if "ner" in nlp.pipe_names:
+            print(f"ents: {[(e.text, e.label_) for e in doc.ents]}")
 
 
 if __name__ == "__main__":

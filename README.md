@@ -1,4 +1,4 @@
-# fa_core_news_sm — a Persian pipeline for spaCy
+# fa_dep_news_sm — a Persian pipeline for spaCy
 
 There is no trained Persian pipeline for spaCy. `spacy.load("fa_core_news_sm")` has never
 worked; `spacy.blank("fa")` gives you a tokenizer and stop words and nothing else. This
@@ -11,16 +11,36 @@ the result can actually be redistributed.
   already has:** [`docs/CONTRIBUTING-GUIDE.md`](docs/CONTRIBUTING-GUIDE.md)
 - **The build itself:** [`project.yml`](project.yml)
 
-## The short version
+## Two packages, not one
 
-| | |
-| --- | --- |
-| Pipeline | `fa_core_news_sm` — tok2vec, tagger, morphologizer, trainable_lemmatizer, parser, ner |
-| Syntax/morphology data | [UD_Persian-PerDT](https://github.com/UniversalDependencies/UD_Persian-PerDT) (PerUDT v1.0) — 29,107 sentences, **CC BY-SA 4.0** |
-| NER data | [ParsTwiNER](https://github.com/overfit-ir/parstwiner) — 7,667 tweets, **MIT** |
-| Language data | `spacy/lang/fa` upstream (its stop word list comes from hazm) |
-| Licence of the result | CC BY-SA 4.0 (inherited from the treebank) |
-| Hardware | 4-core CPU. No GPU needed. |
+spaCy's naming scheme encodes what a pipeline contains: `dep` = tagger + parser + lemmatizer,
+`ent` = NER only, `core` = both. This project ships the first two separately and deliberately
+does **not** ship a `core`:
+
+| Package | Components | Trained on | Licence | Headline |
+| --- | --- | --- | --- | --- |
+| **`fa_dep_news_sm`** | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser | [UD_Persian-PerDT](https://github.com/UniversalDependencies/UD_Persian-PerDT), 29,107 sentences of edited prose | CC BY-SA 4.0 | **LAS 85.15**, LEMMA 97.91 |
+| `fa_ent_news_sm` (optional) | ner | [ParsTwiNER](https://github.com/overfit-ir/parstwiner), 7,667 **tweets**, 16,250 entities | MIT | **ENTS_F 67.22** |
+
+Those two headline numbers are the whole argument. The UD components score 85–98 on edited
+prose; the NER manages 67 F on a different genre entirely, because the good Persian NER
+corpora (ARMAN, PEYMA, NSURL) are research-use-only and cannot be redistributed. Folding both
+into one `fa_core_news_sm` would hide that gap behind a single package name and a single
+version number — users would reasonably assume the NER is held to the same standard as the
+parser. It is not.
+
+So NER ships as its own opt-in package, and **`fa_core_news_sm` is reserved** for when
+[`../ner_dataset`](../ner_dataset/PLAN.md) delivers prose-genre NER data that beats ParsTwiNER
+on a human-annotated test set. The `ner` component already embeds its own tok2vec rather than
+a `Tok2VecListener` precisely so that merge is a one-liner when the data arrives:
+
+```python
+dep = spacy.load("fa_dep_news_sm")
+dep.add_pipe("ner", source=spacy.load("fa_ent_news_sm"))   # verified working
+```
+
+Language data comes from `spacy/lang/fa` upstream (its stop word list originally from hazm).
+Everything trains on 4 CPU cores with no GPU.
 
 ### Results
 
@@ -28,7 +48,9 @@ Trained and evaluated on this laptop (4-core i5-7200U, CPU only, 1h27m for the U
 components, ~25 min for NER). Scores are on the **held-out test splits**, produced by
 `spacy benchmark accuracy` and stored in `metrics/`.
 
-| Metric | `fa_core_news_sm` | reference |
+**`fa_dep_news_sm`** (UD_Persian-PerDT test split):
+
+| Metric | Score | reference |
 | --- | --- | --- |
 | `TOKEN_ACC` / `TOKEN_F` | 99.96 / 99.11 | |
 | `TAG_ACC` (XPOS) | **95.96** | |
@@ -38,39 +60,47 @@ components, ~25 min for NER). Scores are on the **held-out test splits**, produc
 | `SENTS_F` | 99.25 | |
 | `DEP_UAS` | **89.69** | hazm+ParsBERT: 92.46 |
 | `DEP_LAS` | **85.15** | hazm+ParsBERT: 89.34 |
-| `ENTS_P` / `ENTS_R` / `ENTS_F` | 74.77 / 61.06 / **67.22** | |
 | Speed | ~9,250 words/s (CPU) | |
-| Wheel size | 13 MB | `en_core_web_sm`: 12 MB |
+| Wheel | 7.5 MB | `en_core_web_sm`: 12 MB |
 
-Per-entity F: `LOC` 73.9, `PER` 69.1, `NAT` 63.2, `ORG` 59.3, `POG` 41.2, `EVE` 30.0.
+**`fa_ent_news_sm`** (ParsTwiNER test split): `ENTS_P` 74.77 / `ENTS_R` 61.06 /
+**`ENTS_F` 67.22**, 5.6 MB wheel. Per label:
+`LOC` 73.9, `PER` 69.1, `NAT` 63.2, `ORG` 59.3, `POG` 41.2, `EVE` 30.0.
 
 Read these honestly:
 
-- **Parsing is 4.2 LAS behind hazm's parser**, which is the expected gap between a 13 MB
-  CPU model with hash embeddings and a fine-tuned ParsBERT. It is the same corpus and the
-  same spaCy parser architecture, so the comparison is fair, and it sets the target for the
-  future `trf` tier.
-- **NER is the weak component.** 67 F reflects three compounding handicaps: an `sm` model
-  with no static vectors, a 233k-token training corpus, and a genre mismatch (trained on
-  tweets, most users will run it on prose). `EVE` and `POG` are near-useless. This is the
-  price of using the only MIT-licensed Persian NER corpus that exists.
+- **Parsing is 4.2 LAS behind hazm's parser**, which is the expected gap between a 7.5 MB
+  CPU model with hash embeddings and a fine-tuned ParsBERT. Same corpus, same spaCy parser
+  architecture, so the comparison is fair — and it sets the target for a future `trf` tier.
+- **NER is the weak artifact, and the per-label numbers say why.** ParsTwiNER is not small
+  (232,917 tokens, 16,250 entities, 7.0% density — the same order as the restricted ARMAN and
+  PEYMA). But its label distribution is brutally skewed: `PER` 6258, `LOC` 5478, `ORG` 2694,
+  `NAT` 939, **`EVE` 482, `POG` 399**. The two starved labels are exactly the two that score
+  30.0 and 41.2. So the head labels suffer from genre mismatch and the tail labels from raw
+  data starvation — two different problems needing two different fixes.
 - **Everything else is competitive with the English `sm` pipeline** (`en_core_web_sm`:
   TAG 97, LAS 90, ENTS_F 84 — on a much larger and cleaner corpus).
 
-Reproduce: `.venv/bin/python -m spacy project run all`.
+Reproduce: `.venv/bin/python -m spacy project run all` (add `run ner` for the NER package).
 
-### Install the built pipeline
+### Install
 
 ```bash
-.venv/bin/python -m pip install packages/fa_core_news_sm-3.8.0/dist/fa_core_news_sm-3.8.0-py3-none-any.whl
+.venv/bin/python -m pip install packages/fa_dep_news_sm-3.8.0/dist/fa_dep_news_sm-3.8.0-py3-none-any.whl
+# optional, separate package:
+.venv/bin/python -m pip install packages/fa_ent_news_sm-3.8.0/dist/fa_ent_news_sm-3.8.0-py3-none-any.whl
 ```
 
 ```python
 import spacy
-nlp = spacy.load("fa_core_news_sm")
+nlp = spacy.load("fa_dep_news_sm")
 doc = nlp("دانشگاه تهران در سال ۱۳۱۳ تأسیس شد.")
 print([(t.text, t.pos_, t.lemma_, t.dep_) for t in doc])
-print(doc.ents)   # (دانشگاه تهران, ORG)
+# ('دانشگاه', 'PROPN', 'دانشگاه', 'nsubj') ('تهران', 'PROPN', 'تهران', 'flat:name') ...
+
+# Want entities too? Attach the NER package yourself, eyes open about its 67 F:
+nlp.add_pipe("ner", source=spacy.load("fa_ent_news_sm"))
+print(nlp(doc.text).ents)   # (دانشگاه تهران,)  -> ORG
 ```
 
 ### Why not hazm's own models
@@ -115,29 +145,35 @@ python -m venv .venv
 
 ## Build
 
-Everything is driven by [`project.yml`](project.yml):
+Everything is driven by [`project.yml`](project.yml), which has **two independent workflows**:
 
 ```bash
 .venv/bin/python -m spacy project assets      # download + checksum the corpora
-.venv/bin/python -m spacy project run all     # inspect -> convert -> train -> assemble -> evaluate -> package
+.venv/bin/python -m spacy project run all     # -> fa_dep_news_sm  (the shipping artifact)
+.venv/bin/python -m spacy project run ner     # -> fa_ent_news_sm  (optional)
 ```
 
-Individual steps:
-
-| Command | What it does |
-| --- | --- |
-| `inspect` | annotation coverage of the treebanks (`scripts/inspect_treebanks.py`) |
-| `convert-ud` | CoNLL-U → `DocBin` with `--merge-subtokens`, plus the tokenizer-agreement report |
-| `convert-ner` | unpack ParsTwiNER, IOB2 → `DocBin` |
-| `debug-data` | `spacy debug data` on both corpora before spending CPU |
-| `train-core` | tagger + morphologizer + trainable_lemmatizer + parser on PerDT |
-| `train-ner` | standalone `ner` with its own embedded tok2vec on ParsTwiNER |
-| `assemble` | source `ner` into the core pipeline, write full `meta.json` (`scripts/assemble_core.py`) |
-| `evaluate` | `spacy benchmark accuracy` on both held-out test sets |
-| `package` | build the wheel + sdist |
-| `smoke` | run the pipeline over real Persian text and print every annotation layer |
+| Workflow | Command | What it does |
+| --- | --- | --- |
+| `all` | `inspect` | annotation coverage of the treebanks (`scripts/inspect_treebanks.py`) |
+| | `convert-ud` | CoNLL-U → `DocBin` with `--merge-subtokens`, plus the tokenizer-agreement report |
+| | `debug-data` | `spacy debug data` before spending CPU |
+| | `train-core` | tagger + morphologizer + trainable_lemmatizer + parser on PerDT |
+| | `finalize` | write `fa_dep_news_sm` metadata: sources, licence, notes (`scripts/finalize_pipeline.py`) |
+| | `evaluate` | `spacy benchmark accuracy` on the held-out UD test split |
+| | `finalize-meta` | re-run `finalize`, folding test scores into `meta.json["performance"]` |
+| | `package` | build the wheel + sdist |
+| | `smoke` | run the pipeline over real Persian text and print every annotation layer |
+| `ner` | `convert-ner` | unpack ParsTwiNER, IOB2 → `DocBin` |
+| | `debug-data-ner`, `train-ner`, `finalize-ner`, `evaluate-ner`, `package-ner` | the same sequence for `fa_ent_news_sm` |
 
 The two training runs are independent and can run concurrently — each is single-threaded.
+
+`finalize` and `finalize-meta` are separate steps for an unavoidable ordering reason: test
+scores can only exist after `evaluate`, and `evaluate` needs a finalized pipeline to score.
+Re-running `finalize` afterwards is cheap (it only copies models).
+`scripts/finalize_pipeline.py` **refuses** to publish a `dep` pipeline containing an `ner`
+component, so the split cannot silently regress.
 
 ## Design decisions worth knowing before you touch anything
 
@@ -157,8 +193,17 @@ The two training runs are independent and can run concurrently — each is singl
 
 ## Roadmap
 
-`md`/`lg` need floret vectors trained on Persian Wikipedia + OSCAR (see
-`spacy-vectors-builder`); floret rather than classic fastText because Persian's ZWNJ usage is
-inconsistent and explodes the surface vocabulary. `trf` needs a rented GPU and should use
-`HooshvareLab/roberta-fa-zwnj-base` (Apache-2.0) rather than ParsBERT, whose model card
-carries no licence. `senter` is one extra training run away. Details in `docs/MODELS.md` §2.
+In value order, not difficulty order:
+
+1. **Prose-genre NER** → [`../ner_dataset`](../ner_dataset/PLAN.md). This is what unlocks a real
+   `fa_core_news_sm`. Note that PerDT's XPOS already encodes animacy on proper nouns
+   (`N_ANM` 6,752 vs `N_IANM` 12,682), which is a strong free prior for PER vs LOC/ORG.
+2. **`md`/`lg`** need floret vectors trained on Persian Wikipedia + OSCAR (see
+   `spacy-vectors-builder`); floret rather than classic fastText because Persian's ZWNJ usage
+   is inconsistent and explodes the surface vocabulary.
+3. **`trf`** needs a rented GPU and should use `HooshvareLab/roberta-fa-zwnj-base`
+   (Apache-2.0) rather than ParsBERT, whose model card carries no licence.
+4. **`senter`** is one extra training run away.
+5. **Upstream PRs** to `spacy/lang/fa` — see [`docs/upstream/fa-noun-chunks.md`](docs/upstream/fa-noun-chunks.md).
+
+Details in [`docs/MODELS.md`](docs/MODELS.md) §2.

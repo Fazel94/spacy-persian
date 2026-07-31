@@ -10,7 +10,7 @@ spaCy splits Persian support into two *completely different* contribution surfac
 | Surface | What it is | Where it lives | How you contribute |
 | --- | --- | --- | --- |
 | **Language data** (`fa`) | Hand-written rules: tokenizer exceptions, stop words, `LIKE_NUM`, punctuation, noun-chunk iterator | `spacy/lang/fa/*.py` inside the spaCy repo | Normal PR to `explosion/spaCy` |
-| **Trained pipeline** (`fa_core_news_sm`) | Statistical weights + `config.cfg` + `meta.json`, shipped as a pip wheel | `explosion/spacy-models` releases | **You cannot.** Publish it yourself (PyPI / HF Hub) and get it listed in spaCy Universe |
+| **Trained pipeline** (`fa_dep_news_sm`) | Statistical weights + `config.cfg` + `meta.json`, shipped as a pip wheel | `explosion/spacy-models` releases | **You cannot.** Publish it yourself (PyPI / HF Hub) and get it listed in spaCy Universe |
 
 `spacy/lang/fa` **already exists upstream**. What does not exist is any trained `fa` pipeline.
 So this project is a *publishing* project, not an upstream-PR project — with optional
@@ -57,10 +57,10 @@ From <https://github.com/explosion/spaCy/blob/master/CONTRIBUTING.md>:
    ```bash
    pip install spacy-huggingface-hub
    huggingface-cli login
-   python -m spacy package training/model-best packages --name core_news_sm --version 3.8.0 --build wheel
-   python -m spacy huggingface-hub push packages/fa_core_news_sm-3.8.0/dist/fa_core_news_sm-3.8.0-py3-none-any.whl --org <org>
+   python -m spacy package training/fa_dep_news_sm packages --name dep_news_sm --version 3.8.0 --build wheel
+   python -m spacy huggingface-hub push packages/fa_dep_news_sm-3.8.0/dist/fa_dep_news_sm-3.8.0-py3-none-any.whl --org <org>
    ```
-   Users then `pip install https://huggingface.co/<org>/fa_core_news_sm/resolve/main/fa_core_news_sm-any-py3-none-any.whl`.
+   Users then `pip install https://huggingface.co/<org>/fa_dep_news_sm/resolve/main/fa_dep_news_sm-any-py3-none-any.whl`.
 2. **PyPI / self-hosted wheel** — `spacy package … --build sdist,wheel` then `twine upload`,
    or attach the wheel to a GitHub Release. See <https://spacy.io/api/cli#package>.
 3. **spaCy Universe listing** — lists the package on spacy.io but hosts nothing. Per
@@ -77,7 +77,7 @@ From <https://github.com/explosion/spaCy/blob/master/CONTRIBUTING.md>:
 From <https://spacy.io/models#conventions> and the `spacy-models` README:
 
 ```
-[lang]_[type]_[genre]_[size]        e.g. fa_core_news_sm
+[lang]_[type]_[genre]_[size]        e.g. fa_dep_news_sm
 ```
 
 | Slot | Allowed values | Meaning |
@@ -139,7 +139,7 @@ python -m spacy benchmark accuracy training/model-best corpus/test.spacy --outpu
 #   ('spacy evaluate' is now just an alias for 'benchmark accuracy')
 
 # 7. package
-python -m spacy package training/model-best packages --name core_news_sm --version 3.8.0 --build sdist,wheel
+python -m spacy package training/fa_dep_news_sm packages --name dep_news_sm --version 3.8.0 --build sdist,wheel
 ```
 
 `spacy assemble` builds a pipeline from a config **without training** — useful for a
