@@ -6,5 +6,12 @@ training/
 metrics/
 packages/
 .venv/
+# Separate env for `spacy huggingface-hub push`: it caps typer<0.8, which breaks the
+# spaCy CLI in the training venv. See .omp/AGENTS.md.
+.venv-publish/
 __pycache__/
 *.pyc
+# Personal scratch list, not part of the project
+TODO.md
+# Agent/session notes, local only
+.omp/

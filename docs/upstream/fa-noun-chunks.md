@@ -9,20 +9,20 @@ labels = ["nsubj", "dobj", "nsubjpass", "pcomp", "pobj", "dative", "appos", "att
 ```
 
 `dobj`, `nsubjpass`, `pobj`, `dative` and `attr` are ClearNLP/English labels. They are not
-Universal Dependencies relations, and **every Persian treebank is UD** (`UD_Persian-PerDT`,
-`UD_Persian-Seraji`, `UD_Persian-PUD`, `UD_Persian-IPerUDT`). Any trained `fa` pipeline must
-therefore emit UD labels, so five of the nine labels are dead code and `doc.noun_chunks`
-silently returns bare head nouns.
+Universal Dependencies relations, and every Persian treebank is UD (`UD_Persian-PerDT`,
+`UD_Persian-Seraji`, `UD_Persian-PUD`, `UD_Persian-IPerUDT`). Any trained `fa` pipeline emits
+UD labels, so five of the nine labels are dead code and `doc.noun_chunks` returns bare head
+nouns.
 
-Compare `spacy/lang/fr/syntax_iterators.py` and `spacy/lang/es/syntax_iterators.py`, which
-use UD labels (`nsubj`, `nsubj:pass`, `obj`, `obl`, `nmod`, `appos`, `ROOT`) because their
-treebanks are UD too. `spacy/lang/de` legitimately uses TIGER labels (`sb`, `oa`, `nk`, …)
-because the German pipelines are trained on TIGER. Persian has no such excuse.
+`spacy/lang/fr/syntax_iterators.py` and `spacy/lang/es/syntax_iterators.py` use UD labels
+(`nsubj`, `nsubj:pass`, `obj`, `obl`, `nmod`, `appos`, `ROOT`) because their treebanks are UD.
+`spacy/lang/de` uses TIGER labels (`sb`, `oa`, `nk`, …) because the German pipelines are
+trained on TIGER. Persian has no equivalent reason.
 
-Second, smaller problem: the iterator yields `word.left_edge.i` → `word.i + 1`, i.e. it only
-ever expands **left**. Persian noun phrases expand **right** through ezafe:
-`رئیس انجمن جراحان قلب ایران` ("the head of the Iranian society of heart surgeons") is one NP
-whose head is the leftmost token. Left-only expansion truncates it to `رئیس`.
+A second, smaller problem: the iterator yields `word.left_edge.i` to `word.i + 1`, so it only
+expands left. Persian noun phrases expand right through ezafe. `رئیس انجمن جراحان قلب ایران`
+("the head of the Iranian society of heart surgeons") is one NP whose head is the leftmost
+token, and left-only expansion truncates it to `رئیس`.
 
 ## Evidence
 
@@ -48,9 +48,9 @@ deprels on NOUN/PROPN/PRON tokens in dev (top 15):
   nsubj:pass         38  -
 ```
 
-1.31 tokens per chunk is the tell: the shipped iterator is returning single head nouns.
-`nmod` (2894), `obl` (1401), `obl:arg` (1095) and `obj` (973) — the four most common
-noun-bearing relations after `nsubj` — are all unreachable.
+At 1.31 tokens per chunk the shipped iterator is returning single head nouns. The four most
+common noun-bearing relations after `nsubj`, namely `nmod` (2894), `obl` (1401), `obl:arg`
+(1095) and `obj` (973), are all unreachable.
 
 Live text:
 
@@ -66,8 +66,8 @@ Live text:
 
 ## Proposed patch
 
-Swap in UD labels, expand right through modifier chains, and drop a leading `ADP`/`CCONJ`
-exactly as `fr`/`es` already do:
+Swap in UD labels, expand right through modifier chains, and drop a leading `ADP` or `CCONJ`
+as `fr` and `es` already do:
 
 ```diff
 --- a/spacy/lang/fa/syntax_iterators.py
@@ -176,7 +176,7 @@ Add UD-label coverage:
 
 ```python
 def test_fa_noun_chunks_ezafe(fa_vocab):
-    # رئیس انجمن جراحان — "head of the surgeons' society"
+    # رئیس انجمن جراحان, "head of the surgeons' society"
     words = ["رئیس", "انجمن", "جراحان", "آمد"]
     heads = [3, 0, 1, 3]
     deps = ["nsubj", "nmod", "nmod", "ROOT"]
@@ -196,28 +196,28 @@ def test_fa_noun_chunks_drops_leading_adp(fa_vocab):
 
 ## Other `spacy/lang/fa` gaps found while building this pipeline
 
-Ordered by how much they cost a real Persian pipeline:
+Ordered by how much they cost a Persian pipeline.
 
-1. **Clitic splitting.** The `fa` tokenizer cannot split pronominal enclitics or the enclitic
-   copula (`پدرم` → `پدر` + `م`, `ساکتند` → `ساکت` + `ند`), which UD treebanks annotate as
-   multiword tokens. Measured on PerDT dev: gold-vs-tokenizer token F is 0.9823 when clitics
-   are kept split, and 1.49% of tokens are affected. Persian-specific `TOKENIZER_SUFFIXES`
-   entries for the enclitic set would remove the need for `--merge-subtokens` and eliminate
-   the composite XPOS tags it produces.
-2. **`punctuation.py` defines only `TOKENIZER_SUFFIXES`** — no `TOKENIZER_PREFIXES`, no
+1. Clitic splitting. The `fa` tokenizer cannot split pronominal enclitics or the enclitic
+   copula (`پدرم` = `پدر` + `م`, `ساکتند` = `ساکت` + `ند`), which UD treebanks annotate as
+   multiword tokens. Measured on PerDT dev, gold-against-tokenizer token F is 0.9823 when
+   clitics are kept split, affecting 1.49% of tokens. Persian-specific `TOKENIZER_SUFFIXES`
+   entries for the enclitic set would remove the need for `--merge-subtokens` and the
+   composite XPOS tags it produces.
+2. `punctuation.py` defines only `TOKENIZER_SUFFIXES`, with no `TOKENIZER_PREFIXES` and no
    `TOKENIZER_INFIXES`. ZWNJ (U+200C) is handled only implicitly through the 65 KB generated
-   verb-exception table. The missing infix rules bite on numerics: `spacy/lang/fa/examples.py`
+   verb-exception table. The missing infix rules break numerics: `spacy/lang/fa/examples.py`
    ships the sentence `دیروز علی به من ۲۰۰۰.۱﷼ پول نقد داد.`, and the trained pipeline splits
-   `۲۰۰۰.۱﷼` into `۲۰۰۰` + `.` + `۱﷼`, with the stray `.` promoted to a sentence boundary —
-   one input sentence comes out as three. `LIKE_NUM` in `lex_attrs.py` recognises Persian
-   digits, but no tokenizer rule keeps a Persian decimal or a currency sign attached.
-3. **No tokenizer tests at all** for `fa` — `spacy/tests/lang/fa/` contains only
-   `test_noun_chunks.py`, guarding none of the 65 KB exception table.
-4. **`spacy-lookups-data` has no `fa_license.txt`**, although `fa_source.txt` records that the
-   lemma tables were "extracted from Mojgan Seraji's Persian Universal Dependencies Corpus" —
-   which is CC BY-SA 4.0. Catalan ships a `ca_license.txt`; Persian should too.
-5. **No `fa_lemma_lookup.json`** — only rule-mode lemmatizer assets exist, so
-   `mode="lookup"` is unavailable for Persian.
+   `۲۰۰۰.۱﷼` into `۲۰۰۰` + `.` + `۱﷼`, promoting the stray `.` to a sentence boundary, so one
+   input sentence comes out as three. `LIKE_NUM` in `lex_attrs.py` recognises Persian digits,
+   but no tokenizer rule keeps a Persian decimal or a currency sign attached.
+3. No tokenizer tests for `fa`. `spacy/tests/lang/fa/` contains only `test_noun_chunks.py`,
+   which guards none of the 65 KB exception table.
+4. `spacy-lookups-data` has no `fa_license.txt`, although `fa_source.txt` records that the
+   lemma tables were "extracted from Mojgan Seraji's Persian Universal Dependencies Corpus",
+   which is CC BY-SA 4.0. Catalan ships a `ca_license.txt`.
+5. No `fa_lemma_lookup.json`. Only rule-mode lemmatizer assets exist, so `mode="lookup"` is
+   unavailable for Persian.
 
-Items 1–3 are self-contained code PRs. Item 4 is a licence-hygiene PR against
-`spacy-lookups-data` and matters for anyone redistributing a Persian pipeline.
+Items 1 to 3 are self-contained code PRs. Item 4 is a licence-hygiene PR against
+`spacy-lookups-data`, and affects anyone redistributing a Persian pipeline.

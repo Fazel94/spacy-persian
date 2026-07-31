@@ -1,0 +1,53 @@
+This repository contains two kinds of material under two different licences.
+
+1. SOURCE CODE (scripts/, configs/, project.yml, docs/) — MIT, below.
+
+2. TRAINED PIPELINES (fa_dep_news_sm, fa_core_news_sm, fa_ent_news_sm, and any
+   artifact under training/ or packages/) — Creative Commons Attribution-ShareAlike
+   4.0 International (CC BY-SA 4.0).
+
+   These are Adapted Material derived from UD_Persian-PerDT (PerUDT v1.0), which is
+   licensed CC BY-SA 4.0, so the ShareAlike condition requires the same licence.
+
+     Source:  https://github.com/UniversalDependencies/UD_Persian-PerDT
+     Licence: https://creativecommons.org/licenses/by-sa/4.0/
+     Authors: Mohammad Sadegh Rasooli, Pegah Safari, Amirsaeid Moloodi,
+              Alireza Nourian
+
+   The entity annotations additionally derive from that treebank's
+   not-to-release/Dadegan with NER tag/ layer, which its README states was produced
+   with the Beheshti-NER tagger (Taher, Hoseini, Shamsfard 2020) plus manual
+   corrections.
+
+   Modifications made to the licensed material: CoNLL-U converted to spaCy DocBin
+   with multiword tokens merged (`spacy convert --merge-subtokens`); entity spans
+   realigned onto that tokenization by difflib, with spans that could not be aligned
+   exactly dropped rather than guessed. See docs/MODELS.md.
+
+   The licensed material is provided as-is, without warranties of any kind, and the
+   licensor disclaims liability for damages arising from its use, to the extent
+   permitted by CC BY-SA 4.0 sections 5(a) and 5(b).
+
+-----------------------------------------------------------------------------------
+
+MIT License
+
+Copyright (c) 2026 Kiyarash Fazeli
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
