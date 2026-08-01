@@ -1,22 +1,34 @@
 # Persian (Farsi) pipelines for spaCy
 
-Trained spaCy pipelines for Persian, built from UD_Persian-PerDT and installable now. spaCy has
+Trained spaCy pipelines for Persianinstallable now. spaCy has
 never shipped one, and `spacy.blank("fa")` gives you a tokenizer and stop words.
-
+This pipeline  built from UD_Persian-PerDT.
 ```bash
 pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-any-py3-none-any.whl
 ```
 
+
+```python
+import spacy
+nlp = spacy.load("fa_core_news_sm")
+
+doc = nlp("محمدرضا شجریان در مشهد به دنیا آمد.")
+print([(t.text, t.pos_, t.lemma_, t.dep_) for t in doc][:3])
+# [('محمدرضا', 'PROPN', 'محمدرضا', 'nsubj'), ('شجریان', 'PROPN', 'شجریان', 'flat:name'), ...]
+print(doc.ents)   # (محمدرضا شجریان, مشهد)  -> PER, LOC
+
+doc = nlp("شرکت ایران خودرو تولید را ۲۰ درصد افزایش می‌دهد.")
+print([(e.text, e.label_) for e in doc.ents])   # ۲۰ درصد -> PCT
+```
+
+
 ## Results
 
-Held-out test splits, from `spacy benchmark accuracy`, stored in `metrics/`. Both packages share
-the same trained syntax components, so those scores are identical; they differ only in whether
-NER is included.
-
+From `spacy benchmark accuracy`, stored in `metrics/`.
 | Package | Components | Licence | Score | Wheel |
 | --- | --- | --- | --- | --- |
-| `fa_dep_news_sm` | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser | CC BY-SA 4.0 | LAS 85.15, LEMMA 97.91 | 7.5 MB |
-| `fa_core_news_sm` | the above plus ner | CC BY-SA 4.0 | LAS 85.15, ENTS_F 71.87 | 13 MB |
+| `fa_dep_news_sm` | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser | CC BY-SA 4.0 | LEMMA 97.91 | 7.5 MB |
+| `fa_core_news_sm` | the above plus ner | CC BY-SA 4.0 | ENTS_F 71.87 | 13 MB |
 
 | Metric | Score | Reference |
 | --- | --- | --- |
@@ -43,13 +55,6 @@ Entities, `fa_core_news_sm` only, on the PerDT NER test split: `ENTS_P` 77.67, `
 | `PER` | 65.29 | 4,847 |
 | `PCT` | 57.14 | 121 |
 
-Parsing is 4.2 LAS behind hazm's parser, which uses the same corpus and the same spaCy parser
-architecture with a fine-tuned ParsBERT instead of hash embeddings.
-
-`PER` scoring below `LOC` and `ORG` despite having 4,847 examples is the silver labels showing
-through: PerDT includes titles and honorifics inside `PER` spans inconsistently (6.24% of spans
-start with one, against 1.41% in the human-annotated ParsTwiNER), so the boundaries the model
-has to learn are less regular than the label count suggests.
 
 For comparison, `en_core_web_sm` scores TAG 97, LAS 90, ENTS_F 84 on a larger, cleaner corpus.
 Trained on a 4-core i5-7200U with no GPU: 1h27m for the syntax components, 17 min for NER.
@@ -61,21 +66,6 @@ pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_n
 # or, without NER:
 pip install https://huggingface.co/Phazel/fa_dep_news_sm/resolve/main/fa_dep_news_sm-any-py3-none-any.whl
 ```
-
-```python
-import spacy
-nlp = spacy.load("fa_core_news_sm")
-
-doc = nlp("محمدرضا شجریان در مشهد به دنیا آمد.")
-print([(t.text, t.pos_, t.lemma_, t.dep_) for t in doc][:3])
-# [('محمدرضا', 'PROPN', 'محمدرضا', 'nsubj'), ('شجریان', 'PROPN', 'شجریان', 'flat:name'), ...]
-print(doc.ents)   # (محمدرضا شجریان, مشهد)  -> PER, LOC
-
-doc = nlp("شرکت ایران خودرو تولید را ۲۰ درصد افزایش می‌دهد.")
-print([(e.text, e.label_) for e in doc.ents])   # ۲۰ درصد -> PCT
-```
-
-Entity labels: `PER`, `LOC`, `ORG`, `DAT`, `MON`, `TIM`, `PCT`.
 
 ## Caveats
 
