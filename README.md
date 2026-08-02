@@ -157,4 +157,5 @@ It did confirm the corpus choice. hazm's own spaCy parser was trained on
 - How spaCy models get published, and what upstream `fa` already has:
   [`docs/CONTRIBUTING-GUIDE.md`](docs/CONTRIBUTING-GUIDE.md)
 - The build: [`project.yml`](project.yml)
+- خلاصهٔ فارسی: [`README.fa.md`](README.fa.md)
 - Language data comes from `spacy/lang/fa` upstream, whose stop word list came from hazm.
