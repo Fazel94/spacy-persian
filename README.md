@@ -11,8 +11,8 @@ pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_n
 >>> nlp = spacy.load("fa_core_news_sm")
 
 >>> doc = nlp("محمدرضا شجریان در مشهد به دنیا آمد.")
->>> [(t.text, t.pos_, t.lemma_, t.dep_) for t in doc][:3]
-[('محمدرضا', 'PROPN', 'محمدرضا', 'nsubj'), ('شجریان', 'PROPN', 'شجریان', 'flat:name'), ...]
+>>> [(t.text, t.pos_, t.lemma_, t.dep_) for t in doc][:2]
+[('محمدرضا', 'PROPN', 'محمدرضا', 'nsubj'), ('شجریان', 'PROPN', 'شجریان', 'flat:name')]
 >>> doc.ents
 (محمدرضا شجریان, مشهد)
 
