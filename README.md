@@ -1,26 +1,25 @@
 # Persian (Farsi) pipelines for spaCy
 
-Trained spaCy pipelines for Persianinstallable now. spaCy has
-never shipped one, and `spacy.blank("fa")` gives you a tokenizer and stop words.
-This pipeline  built from UD_Persian-PerDT.
+Trained spaCy pipelines for Persian, installable now. spaCy has never shipped an official one, and `spacy.blank("fa")` only gives you a tokenizer and stop words. These pipelines are built from the UD_Persian-PerDT treebank. choose between `fa_core_news_sm` (full syntax + NER) or `fa_dep_news_sm` (syntax only).
+
 ```bash
 pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-any-py3-none-any.whl
 ```
 
-
 ```python
-import spacy
-nlp = spacy.load("fa_core_news_sm")
+>>> import spacy
+>>> nlp = spacy.load("fa_core_news_sm")
 
-doc = nlp("محمدرضا شجریان در مشهد به دنیا آمد.")
-print([(t.text, t.pos_, t.lemma_, t.dep_) for t in doc][:3])
-# [('محمدرضا', 'PROPN', 'محمدرضا', 'nsubj'), ('شجریان', 'PROPN', 'شجریان', 'flat:name'), ...]
-print(doc.ents)   # (محمدرضا شجریان, مشهد)  -> PER, LOC
+>>> doc = nlp("محمدرضا شجریان در مشهد به دنیا آمد.")
+>>> [(t.text, t.pos_, t.lemma_, t.dep_) for t in doc][:3]
+[('محمدرضا', 'PROPN', 'محمدرضا', 'nsubj'), ('شجریان', 'PROPN', 'شجریان', 'flat:name'), ...]
+>>> doc.ents
+(محمدرضا شجریان, مشهد)
 
-doc = nlp("شرکت ایران خودرو تولید را ۲۰ درصد افزایش می‌دهد.")
-print([(e.text, e.label_) for e in doc.ents])   # ۲۰ درصد -> PCT
+>>> doc = nlp("شرکت ایران خودرو تولید را ۲۰ درصد افزایش می‌دهد.")
+>>> [(e.text, e.label_) for e in doc.ents]
+[('۲۰ درصد', 'PCT')]
 ```
-
 
 ## Results
 
