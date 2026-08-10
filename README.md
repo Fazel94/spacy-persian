@@ -18,7 +18,7 @@ pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_n
 
 >>> doc = nlp("شرکت ایران خودرو تولید را ۲۰ درصد افزایش می‌دهد.")
 >>> [(e.text, e.label_) for e in doc.ents]
-[('۲۰ درصد', 'PCT')]
+[('ایران خودرو', 'ORG'), ('۲۰ درصد', 'PCT')]
 ```
 
 ## Results
