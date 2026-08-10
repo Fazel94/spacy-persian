@@ -1,6 +1,6 @@
 # Persian (Farsi) pipelines for spaCy
 
-Trained spaCy pipelines for Persian, installable now. spaCy has never shipped an official one, and `spacy.blank("fa")` only gives you a tokenizer and stop words. These pipelines are built from the UD_Persian-PerDT treebank. choose between `fa_core_news_sm` (full syntax + NER) or `fa_dep_news_sm` (syntax only).
+Trained spaCy pipelines for Persian, installable now. spaCy has never shipped an official one, and `spacy.blank("fa")` only gives you a tokenizer and stop words. choose between `fa_core_news_sm` (full syntax + NER) or `fa_dep_news_sm` (syntax only).
 
 ```bash
 pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-any-py3-none-any.whl
