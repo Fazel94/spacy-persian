@@ -23,15 +23,15 @@ pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_n
 
 ## Why spacy-persian?
 
-- **⚡ Performance** – **96.24%** POS · **97.91%** Lemma · **85.15%** LAS – competitive with English `en_core_web_sm` on syntax.
+- **⚡ Performance** – **96.24%** POS · **97.91%** Lemma · **85.15%** LAS competitive with English `en_core_web_sm` on syntax.
 - **🚀 Speed** – ~9,250 words/sec on a standard CPU. No GPU required.
 - **📦 Flexibility** – Choose `fa_core_news_sm` (13MB, syntax + NER) or `fa_dep_news_sm` (7.5MB, syntax-only).
-- **🔁 Reproducibility** – Checksummed, versioned builds from UD_Persian-PerDT – no black boxes.
+- **🔁 Reproducibility** – Checksummed, versioned builds from UD_Persian-PerDT, no black boxes.
 - **🔌 Native spaCy** – Drop-in replacement. `spacy.load()` works instantly with standard `Doc` objects.
 
 ## Results
 
-`spacy-persian` delivers production‑ready Persian NLP that stands alongside Hazm—the most popular Persian toolkit—while bringing the full power of the spaCy ecosystem.
+`spacy-persian` delivers production‑ready Persian NLP that stands alongside Hazm, the most popular Persian toolkit—while bringing the full speed and power of the spaCy ecosystem.
 
 | Metric | **`spacy-persian`**<br>`fa_core_news_sm` | **Hazm**<br>(Persian toolkit) | `en_core_web_sm`<br>(English reference) |
 |--------|:---:|:---:|:---:|
