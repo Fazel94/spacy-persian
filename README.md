@@ -29,13 +29,25 @@ pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_n
 - **🔁 Reproducibility** – Checksummed, versioned builds from UD_Persian-PerDT – no black boxes.
 - **🔌 Native spaCy** – Drop-in replacement. `spacy.load()` works instantly with standard `Doc` objects.
 - 
+
 ## Results
 
-From `spacy benchmark accuracy`, stored in `metrics/`.
-| Package | Components | Licence | Score | Wheel |
-| --- | --- | --- | --- | --- |
-| `fa_dep_news_sm` | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser | CC BY-SA 4.0 | LEMMA 97.91 | 7.5 MB |
-| `fa_core_news_sm` | the above plus ner | CC BY-SA 4.0 | ENTS_F 71.87 | 13 MB |
+`spacy-persian` delivers production‑ready Persian NLP that stands alongside Hazm—the most popular Persian toolkit—while bringing the full power of the spaCy ecosystem.
+
+| Metric | **`spacy-persian`**<br>`fa_core_news_sm` | **Hazm**<br>(Persian toolkit) | `en_core_web_sm`<br>(English reference) |
+|--------|:---:|:---:|:---:|
+| **POS Accuracy (UPOS)** | **96.24%** | ~95.69%¹ | 97.21%² |
+| **Lemma Accuracy** | **97.91%** | 89.9%¹ | — |
+| **Dependency LAS** | 85.15% | 85.6%¹ | 91.85%² |
+| **NER F-score** | 71.87% | — | 83.80%² |
+| **Package Size** | **13 MB** (syntax+NER)<br>**7.5 MB** (syntax-only) | ~7 MB | 12 MB |
+
+> **¹** Hazm scores from its official README 
+> **²** `en_core_web_sm` scores from spaCy's official model card
+
+> ⚠️ **Note on comparability:** These benchmarks come from *different evaluation sets, treebanks, and test splits*.
+
+
 
 | Metric | Score | Reference |
 | --- | --- | --- |
