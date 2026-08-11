@@ -28,7 +28,6 @@ pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_n
 - **📦 Flexibility** – Choose `fa_core_news_sm` (13MB, syntax + NER) or `fa_dep_news_sm` (7.5MB, syntax-only).
 - **🔁 Reproducibility** – Checksummed, versioned builds from UD_Persian-PerDT – no black boxes.
 - **🔌 Native spaCy** – Drop-in replacement. `spacy.load()` works instantly with standard `Doc` objects.
-- 
 
 ## Results
 
