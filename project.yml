@@ -34,10 +34,11 @@ vars:
   core_md_package_name: "core_news_md"
   floret_wheel: "fa_floret-0.1.0-py3-none-any-400k-documents.whl"
   vectors_dir: "assets/vectors/fa_floret_400k"
-  # lg tier. Same architecture as sm/md, but ner only (no dep/core trained yet), with a
-  # larger floret table: 200k rows x 300d, trained on the full Persian Wikipedia dump for
-  # 5 epochs (vs md's 50k rows / 400k documents).
+  # lg tier: same architecture as sm/md, larger floret table (200k rows x 300d, trained on
+  # the full Persian Wikipedia dump for 5 epochs, vs md's 50k rows / 400k documents).
   ent_lg_package_name: "ent_news_lg"
+  dep_lg_package_name: "dep_news_lg"
+  core_lg_package_name: "core_news_lg"
   floret_lg_wheel: "fa_floret-0.1.0-py3-none-any-full-wiki-200k-5epoch.whl"
   vectors_lg_dir: "assets/vectors/fa_floret_lg"
 
@@ -99,16 +100,19 @@ workflows:
     - finalize-ent
     - evaluate-ent
     - package-ent
-  # The lg tier: ner only, same corpus as sm/md, with a bigger floret table (200k rows,
-  # full Persian Wikipedia, 5 epochs) than md's (50k rows, 400k documents).
-  ent-lg:
+  # The lg tier: same corpus and architecture as sm/md, with a bigger floret table (200k
+  # rows, full Persian Wikipedia, 5 epochs) than md's (50k rows, 400k documents).
+  lg:
     - vectors-lg
+    - train-dep-lg
     - train-ner-lg
-    - finalize-ent-lg
-    - evaluate-ent-lg
+    - finalize-dep-lg
+    - assemble-core-lg
+    - evaluate-lg
+    - finalize-meta-lg
     - compare-lg
-    - package-ent-lg
-    - smoke-ent-lg
+    - package-lg
+    - smoke-lg
   # The md tier: same corpus and architecture, plus the fa_floret static vectors.
   md:
     - vectors-md
@@ -345,6 +349,18 @@ commands:
     outputs:
       - "${vars.vectors_lg_dir}"
 
+  - name: "train-dep-lg"
+    help: "Train the dep pipeline with the lg-tier static floret vectors"
+    script:
+      - "python -m spacy train configs/fa_dep_news_lg.cfg --output training/dep-lg --paths.train corpus/merged/${vars.treebank}-ud-train.spacy --paths.dev corpus/merged/${vars.treebank}-ud-dev.spacy --paths.vectors ${vars.vectors_lg_dir} --gpu-id ${vars.gpu}"
+    deps:
+      - "corpus/merged/${vars.treebank}-ud-train.spacy"
+      - "corpus/merged/${vars.treebank}-ud-dev.spacy"
+      - "configs/fa_dep_news_lg.cfg"
+      - "${vars.vectors_lg_dir}"
+    outputs:
+      - "training/dep-lg/model-best"
+
   - name: "train-ner-lg"
     help: "Train the NER component with the lg-tier static floret vectors"
     script:
@@ -367,6 +383,27 @@ commands:
     outputs:
       - "training/fa_ent_news_lg"
 
+  - name: "finalize-dep-lg"
+    help: "Write fa_dep_news_lg metadata onto the trained lg model"
+    script:
+      - "python scripts/finalize_pipeline.py training/dep-lg/model-best training/fa_dep_news_lg --variant dep --size lg --version ${vars.package_version}"
+    deps:
+      - "training/dep-lg/model-best"
+      - "scripts/finalize_pipeline.py"
+    outputs:
+      - "training/fa_dep_news_lg"
+
+  - name: "assemble-core-lg"
+    help: "Source the lg ner into the lg dep pipeline to produce fa_core_news_lg"
+    script:
+      - "python scripts/finalize_pipeline.py training/dep-lg/model-best training/fa_core_news_lg --variant core --size lg --version ${vars.package_version} --add-ner training/perdt-ner-lg/model-best"
+    deps:
+      - "training/dep-lg/model-best"
+      - "training/perdt-ner-lg/model-best"
+      - "scripts/finalize_pipeline.py"
+    outputs:
+      - "training/fa_core_news_lg"
+
   - name: "evaluate-ent-lg"
     help: "Score fa_ent_news_lg on the held-out PerDT NER test split"
     script:
@@ -378,11 +415,38 @@ commands:
     outputs:
       - "metrics/lg-perdt-ner-test.json"
 
+  - name: "evaluate-lg"
+    help: "Score both lg packages (dep, core) on the held-out test splits"
+    script:
+      - "python -m spacy benchmark accuracy training/fa_dep_news_lg corpus/merged/${vars.treebank}-ud-test.spacy --output metrics/lg-ud-test.json --gpu-id ${vars.gpu}"
+      - "python -m spacy benchmark accuracy training/fa_core_news_lg corpus/merged/${vars.treebank}-ud-test.spacy --output metrics/lg-core-ud-test.json --gpu-id ${vars.gpu}"
+      - "python -m spacy benchmark accuracy training/fa_core_news_lg corpus/perdt-ner/test.spacy --output metrics/lg-core-perdt-ner-test.json --gpu-id ${vars.gpu}"
+    deps:
+      - "training/fa_dep_news_lg"
+      - "training/fa_core_news_lg"
+    outputs:
+      - "metrics/lg-ud-test.json"
+      - "metrics/lg-core-ud-test.json"
+      - "metrics/lg-core-perdt-ner-test.json"
+
+  - name: "finalize-meta-lg"
+    help: "Fold the lg test scores into both lg meta.json files"
+    script:
+      - "python scripts/finalize_pipeline.py training/dep-lg/model-best training/fa_dep_news_lg --variant dep --size lg --version ${vars.package_version} --ud-metrics metrics/lg-ud-test.json"
+      - "python scripts/finalize_pipeline.py training/dep-lg/model-best training/fa_core_news_lg --variant core --size lg --version ${vars.package_version} --add-ner training/perdt-ner-lg/model-best --ud-metrics metrics/lg-core-ud-test.json --ner-metrics metrics/lg-core-perdt-ner-test.json"
+    deps:
+      - "metrics/lg-ud-test.json"
+      - "metrics/lg-core-perdt-ner-test.json"
+      - "scripts/finalize_pipeline.py"
+
   - name: "compare-lg"
-    help: "Table the sm vs md vs lg ent NER deltas from the metrics/ JSON reports"
+    help: "Table the sm vs md vs lg deltas from the metrics/ JSON reports"
     script:
       - "python scripts/compare_tiers.py"
     deps:
+      - "metrics/ud-test.json"
+      - "metrics/md-ud-test.json"
+      - "metrics/lg-ud-test.json"
       - "metrics/perdt-ner-test.json"
       - "metrics/md-perdt-ner-test.json"
       - "metrics/lg-perdt-ner-test.json"
@@ -397,12 +461,33 @@ commands:
     outputs:
       - "packages/${vars.lang}_${vars.ent_lg_package_name}-${vars.package_version}"
 
+  - name: "package-lg"
+    help: "Build installable wheels + sdists for both lg packages"
+    script:
+      - "python -m spacy package training/fa_dep_news_lg packages --name ${vars.dep_lg_package_name} --version ${vars.package_version} --build sdist,wheel --force"
+      - "python -m spacy package training/fa_core_news_lg packages --name ${vars.core_lg_package_name} --version ${vars.package_version} --build sdist,wheel --force"
+    deps:
+      - "training/fa_dep_news_lg"
+      - "training/fa_core_news_lg"
+    outputs:
+      - "packages/${vars.lang}_${vars.dep_lg_package_name}-${vars.package_version}"
+      - "packages/${vars.lang}_${vars.core_lg_package_name}-${vars.package_version}"
+
   - name: "smoke-ent-lg"
     help: "Load fa_ent_news_lg and run it over real Persian text"
     script:
       - "python scripts/smoke_test.py training/fa_ent_news_lg"
     deps:
       - "training/fa_ent_news_lg"
+
+  - name: "smoke-lg"
+    help: "Load both lg pipelines and run them over real Persian text"
+    script:
+      - "python scripts/smoke_test.py training/fa_dep_news_lg"
+      - "python scripts/smoke_test.py training/fa_core_news_lg"
+    deps:
+      - "training/fa_dep_news_lg"
+      - "training/fa_core_news_lg"
 
   # ---------------------------------------------------------------- md tier
 

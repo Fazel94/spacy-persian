@@ -44,8 +44,9 @@ pipelines such as `de_core_news_sm` as `news`.
 | `fa_core_web_sm` | same as core, mixed-genre training data | hash embeddings | not built; would add ParsTwiNER to cover social media |
 | `fa_dep_news_md` | same as `fa_dep_news_sm` | floret, 50k rows / 300d | built, shipping |
 | `fa_core_news_md` | same as `fa_core_news_sm` | floret, 50k rows / 300d | built, shipping |
+| `fa_dep_news_lg` | same as `fa_dep_news_sm` | floret, 200k rows / 300d, full-wiki 5 epochs | built, shipping |
+| `fa_core_news_lg` | same as `fa_core_news_sm` | floret, 200k rows / 300d, full-wiki 5 epochs | built, shipping |
 | `fa_ent_news_lg` | ner (own internal tok2vec) | floret, 200k rows / 300d, full-wiki 5 epochs | built, optional |
-| `fa_core_news_lg` | same | floret, 200k rows | not built; bigger table, same recipe as md |
 | `fa_core_news_trf` | transformer instead of tok2vec | `HooshvareLab/roberta-fa-zwnj-base` (Apache-2.0) | not on this hardware; 2 GB VRAM cannot fine-tune a 125M-param encoder |
 
 ### Why `core` is honest here
@@ -351,26 +352,43 @@ Whether that trade is worth it depends on deployment. For a 1.19 LAS and 2.85 NE
 9x larger download and 16% slower parse is a good deal on a server and a bad one in a browser
 or a Lambda cold start. Both tiers ship; pick per target.
 
-## 7. The `lg` tier: bigger floret table, `ent` only
+## 7. The `lg` tier: bigger floret table, full pipeline
 
 Built after `md`, from a new `fa_floret` table — 200,000 rows x 300d, floret mode,
 `minn=maxn=5`, `hash_count=2`, trained on the full Persian Wikipedia dump for 5 epochs (4x
-the rows of `md`'s 50k-row table trained on 400k documents). Unpacked the same way as `md`
-via `scripts/unpack_vectors.py`, into `assets/vectors/fa_floret_lg`.
+the rows of `md`'s 50k-row table trained on 400k documents). Raw `.floret`/`.vec` and the
+packaged spaCy wheel are at <https://huggingface.co/Phazel/fa-floret-wiki-vectors>. Unpacked
+the same way as `md` via `scripts/unpack_vectors.py`, into `assets/vectors/fa_floret_lg`.
 
-`configs/fa_ner_lg.cfg` is `fa_ner_md.cfg` unchanged except `--paths.vectors`. Only `ent` was
-trained at this tier (`fa_ent_news_lg`), not `dep`/`core`: the point of this run was to check
-whether a 4x larger table is worth it before spending the CPU time on `dep`/`core` too. Same
-seed, same corpus, same architecture as `sm`/`md`. Reproduce with `spacy project run ent-lg`,
-or the table alone with `python scripts/compare_tiers.py`.
+`configs/fa_ner_lg.cfg` and `configs/fa_dep_news_lg.cfg` are `fa_ner_md.cfg`/
+`fa_dep_news_md.cfg` unchanged except `--paths.vectors`. Same seed, same corpus, same
+architecture as `sm`/`md` throughout, so the deltas below are attributable to the vector
+table alone. Reproduce with `spacy project run lg`, or the tables alone with
+`python scripts/compare_tiers.py`.
 
-### PerDT NER test split, `fa_ent_news_lg`
+### UD test split, `fa_dep_news_lg` / `fa_core_news_lg`
 
-| Metric | `sm` | `md` | `lg` | Delta (lg vs sm) |
-| --- | --- | --- | --- | --- |
-| `ENTS_P` | 77.67 | 76.56 | 81.51 | +3.84 |
-| `ENTS_R` | 66.87 | 72.95 | 71.09 | +4.22 |
-| `ENTS_F` | 71.87 | 74.71 | 75.94 | +4.08 |
+| Metric | `sm` | `md` | `lg` | Delta (lg vs sm) | Delta (lg vs md) |
+| --- | --- | --- | --- | --- | --- |
+| `TAG_ACC` | 95.96 | 96.25 | 96.55 | +0.59 | +0.30 |
+| `POS_ACC` | 96.24 | 96.64 | 96.68 | +0.44 | +0.04 |
+| `MORPH_ACC` | 96.29 | 96.64 | 96.70 | +0.41 | +0.06 |
+| `LEMMA_ACC` | 97.91 | 97.96 | 98.08 | +0.17 | +0.12 |
+| `DEP_UAS` | 89.69 | 90.52 | 90.96 | +1.27 | +0.44 |
+| `DEP_LAS` | 85.15 | 86.34 | 86.60 | +1.45 | +0.26 |
+
+`lg` beats `md` on every UD metric, same monotonic pattern as `md` beating `sm` in §6 — a
+bigger, less collision-prone floret table keeps paying off, though the `md`-to-`lg` gains
+(4x the vector rows) are smaller than the `sm`-to-`md` gains (going from none to 50k rows):
+diminishing returns, as expected.
+
+### PerDT NER test split, `fa_ent_news_lg` (identical `ner` component embedded in `fa_core_news_lg`)
+
+| Metric | `sm` | `md` | `lg` | Delta (lg vs sm) | Delta (lg vs md) |
+| --- | --- | --- | --- | --- | --- |
+| `ENTS_P` | 77.67 | 76.56 | 81.51 | +3.84 | +4.95 |
+| `ENTS_R` | 66.87 | 72.95 | 71.09 | +4.22 | -1.86 |
+| `ENTS_F` | 71.87 | 74.71 | 75.94 | +4.08 | +1.23 |
 
 `lg` beats both `sm` and `md` on `ENTS_F`, and unlike `md`'s recall-only gain over `sm`, `lg`
 improves precision too (+3.84 over `sm`, whereas `md` cost -1.10). Consistent with a bigger,
@@ -393,16 +411,23 @@ one-or-two-entity noise, same caveat as §6.
 
 ### Cost
 
-The bigger table dominates the artifact even more than `md`'s did: `fa_ent_news_lg` is a
-217 MB wheel against 5.6 MB for `sm` and 58 MB for `md` — the 200k x 300d float32 vector
-table alone is ~240 MB uncompressed. Training cost was comparable to `sm`/`md` (early stop
-at step 7,200 of 20,000, best checkpoint at step 5,600). The `spacy benchmark accuracy`
-words/s figures swung in `lg`'s favor in this run (15,614 vs 8,500 `sm` / 7,149 `md`); given
-`lg`'s tok2vec architecture is identical to `md`'s and only the static-vector table lookup
-differs, treat that as single-run CPU contention noise on shared hardware, not a real
-architectural speedup, and re-benchmark before citing a number.
+The bigger table dominates the artifact even more than `md`'s did: the 200k x 300d float32
+vector table is ~240 MB uncompressed, so `fa_dep_news_lg` is a 219 MB wheel (vs 7.5 MB `sm`,
+60 MB `md`), `fa_core_news_lg` 225 MB (vs 13 MB `sm`, 66 MB `md`), and `fa_ent_news_lg` alone
+217 MB (vs 5.6 MB `sm`, 58 MB `md`). Training cost roughly doubled `md`'s: `dep_lg` ran to
+early stop at step 12,000 of 20,000 over ~2h08m CPU wall time (vs `dep_md`'s single-digit
+minutes territory implied by its architecture-identical config — `lg`'s extra time is
+entirely the larger embedding table's per-step cost, not more steps). `ner_lg` early-stopped
+at step 7,200, ~13 min, in line with `sm`/`md`.
 
-For a 4x download over `md` (and 39x over `sm`) buying +4.08 ENTS_F over `sm` (+1.23 over
-`md`), `lg` is a server/offline-batch pipeline, not something to ship to a browser or a
-cold-start function. `dep`/`core` at this tier are not yet built; the `ent`-only result above
-is the signal for whether that investment is worth making.
+`words/s` from `spacy benchmark accuracy` were noisier at this tier than `sm`-vs-`md`: dep/core
+throughput dropped as expected (9,387 / 6,655 words/s vs `sm`'s 12,505 / 8,834, `md`'s
+10,493 / 7,269 — the larger table costs real lookup time), but the standalone `ent_lg` run
+showed 15,614 words/s, higher than `sm`/`md`'s ent runs despite an identical `ner`
+architecture and the same larger table. Treat that one figure as single-run CPU contention
+noise on shared hardware, not a real speedup, and re-benchmark before citing it.
+
+For a 4x download over `md` (and up to 39x over `sm`) buying +1.45 DEP_LAS / +1.23 ENTS_F
+over `md` (+1.45 DEP_LAS / +4.08 ENTS_F over `sm`), `lg` is a server/offline-batch pipeline,
+not something to ship to a browser or a cold-start function. All three variants — `dep`,
+`ent`, `core` — are built and evaluated at this tier, same as `md`.

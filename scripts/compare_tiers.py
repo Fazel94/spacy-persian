@@ -18,8 +18,18 @@ from pathlib import Path
 
 # (label, {tier_label: report_filename})
 GROUPS = [
-    ("dep pipeline, UD test", {"sm": "ud-test.json", "md": "md-ud-test.json"}),
-    ("core pipeline, UD test", {"sm": "core-ud-test.json", "md": "md-core-ud-test.json"}),
+    (
+        "dep pipeline, UD test",
+        {"sm": "ud-test.json", "md": "md-ud-test.json", "lg": "lg-ud-test.json"},
+    ),
+    (
+        "core pipeline, UD test",
+        {
+            "sm": "core-ud-test.json",
+            "md": "md-core-ud-test.json",
+            "lg": "lg-core-ud-test.json",
+        },
+    ),
     (
         "ent NER test",
         {

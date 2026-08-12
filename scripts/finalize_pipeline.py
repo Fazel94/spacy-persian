@@ -69,7 +69,7 @@ FLORET = {
 FLORET_LG = {
     "name": "fa_floret static vectors (lg tier: 200k rows x 300d floret table trained on "
             "the full Persian Wikipedia dump, 5 epochs, via spacy-vectors-builder)",
-    "url": PROJECT_URL,
+    "url": "https://huggingface.co/Phazel/fa-floret-wiki-vectors",
     "author": "Kiyarash Fazeli",
     "license": "CC BY-SA 4.0",
 }
