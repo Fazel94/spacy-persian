@@ -36,7 +36,7 @@ Compared against Hazm (the most-used Persian toolkit) and `en_core_web_sm` (Engl
 > **¹** Hazm scores from its official README 
 > **²** `en_core_web_sm` scores from spaCy's official model card
 
-> ⚠️ **Note on comparability:** These benchmarks come from *different evaluation sets, treebanks, and test splits*.
+> **Note on comparability:** These benchmarks come from *different evaluation sets, treebanks, and test splits*.
 
 
 From `spacy benchmark accuracy`, stored in `metrics/`.
@@ -44,6 +44,7 @@ From `spacy benchmark accuracy`, stored in `metrics/`.
 | --- | --- | --- | --- | --- |
 | `fa_dep_news_sm` | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser | CC BY-SA 4.0 | LEMMA 97.91 | 7.5 MB |
 | `fa_core_news_sm` | the above plus ner | CC BY-SA 4.0 | ENTS_F 71.87 | 13 MB |
+| `fa_ent_news_sm` | `ner` alone (own embedded tok2vec) | CC BY-SA 4.0 | ENTS_F 71.87 | 5.6 MB |
 | `fa_dep_news_md` | same as `fa_dep_news_sm`, plus floret vectors | CC BY-SA 4.0 | LEMMA 97.96 | 62 MB |
 | `fa_core_news_md` | same as `fa_core_news_sm`, plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 68 MB |
 | `fa_ent_news_md` | `ner` alone (own embedded tok2vec), plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 58 MB |
@@ -67,9 +68,26 @@ isolate what the vectors buy. Full breakdown in `docs/MODELS.md` §6.
 | `ENTS_F` | 71.87 | 74.71 | |
 | Speed | ~9,250 words/s | ~7,700 words/s | |
 
-Entity scores are `fa_core_news_*` on the PerDT NER test split. The `md` gain is almost
-entirely recall (+6.08): static vectors give the model a lexical prior for rare proper nouns
-that hash embeddings never had.
+Entity scores are `fa_core_news_*` on the PerDT NER test split; per-label breakdown and
+caveats are in [Named entity recognition](#named-entity-recognition).
+
+
+For comparison, `en_core_web_sm` scores TAG 97, LAS 90, ENTS_F 84 on a larger, cleaner corpus.
+Trained on a 4-core i5-7200U with no GPU: `sm` 1h27m syntax + 17 min NER, `md` 1h54m syntax
++ 25 min NER (the two `md` runs overlapped, so wall clock overstates each).
+
+## Named entity recognition
+
+Seven labels: `LOC`, `PER`, `ORG`, `DAT`, `MON`, `TIM`, `PCT`. They come from PerDT's own
+`not-to-release/Dadegan with NER tag/` layer, transferred onto this pipeline's tokenization
+by difflib at a 99.86% alignment rate; spans that could not be aligned exactly were dropped
+rather than guessed (`scripts/transfer_perdt_ner.py`). That layer is silver: PerDT's README
+states it was produced by the BERT-based Beheshti-NER tagger with manual corrections for
+recall, so the `ENTS_F` numbers below partly reflect agreement with that tagger, not with
+human annotation.
+
+`ner` runs standalone with its own embedded tok2vec (`fa_ent_news_sm`, `fa_ent_news_md`), or
+bundled into `fa_core_news_sm`/`fa_core_news_md` alongside the syntax pipeline.
 
 | Label | Gold in test | `sm` F | `md` F | Train examples |
 | --- | --- | --- | --- | --- |
@@ -82,13 +100,11 @@ that hash embeddings never had.
 | `PCT` | 4 | 57.14 | 33.33 | 121 |
 
 `MON`, `TIM` and `PCT` have single-digit support in the test split, so their deltas are one
-or two entities changing hands, not signal. The three labels that carry the split (`PER`,
-`LOC`, `ORG`) all improve.
+or two entities changing hands, not signal. `PER`, `LOC` and `ORG` carry the split and all
+improve with floret vectors; the `md` gain over `sm` (`ENTS_F` 71.87 to 74.71) is almost
+entirely recall (+6.08), the lexical prior static vectors give rare proper nouns that hash
+embeddings never had.
 
-
-For comparison, `en_core_web_sm` scores TAG 97, LAS 90, ENTS_F 84 on a larger, cleaner corpus.
-Trained on a 4-core i5-7200U with no GPU: `sm` 1h27m syntax + 17 min NER, `md` 1h54m syntax
-+ 25 min NER (the two `md` runs overlapped, so wall clock overstates each).
 
 ## Install
 
@@ -100,12 +116,6 @@ pip install https://huggingface.co/Phazel/fa_dep_news_sm/resolve/main/fa_dep_new
 
 ## Caveats
 
-- **The entity labels are silver.** They come from the treebank's own
-  `not-to-release/Dadegan with NER tag/` layer, which its README states was produced by the
-  BERT-based Beheshti-NER tagger with manual corrections for recall. `ENTS_F 71.87` is measured
-  against a silver test split and partly reflects agreement with that tagger.
-- **Three entity labels are thin.** `MON` (205 training examples), `TIM` (135) and `PCT` (121)
-  rest on 4 to 11 test entities each. `PER`, `LOC`, `ORG` and `DAT` have 1,300 or more.
 - **Some lemmas contain a space.** Multiword tokens were merged, so `کتاب‌هایش` is one token
   tagged `N_IANM_PR_JOPER` with lemma `کتاب او`. This affects about 1.5% of tokens.
 - **`doc.noun_chunks` under-fires.** `spacy/lang/fa/syntax_iterators.py` upstream matches
@@ -159,10 +169,7 @@ The two training runs are single-threaded and independent, so they can run concu
    English pipelines derive UPOS from PTB tags by rule because OntoNotes has no UPOS. UD gives
    gold UPOS, FEATS and lemmas, which yields real `pos_acc`, `morph_acc` and `lemma_acc` numbers
    instead of unmeasurable rule coverage.
-4. PerDT, not Seraji: 3.7x more tokens, and Seraji has no `PROPN` tag. Entity spans were
-   transferred onto this pipeline's tokenization by difflib at a 99.86% rate, and spans that
-   could not be aligned exactly were dropped rather than guessed
-   (`scripts/transfer_perdt_ner.py`).
+4. PerDT, not Seraji: 3.7x more tokens, and Seraji has no `PROPN` tag.
 
 ## Why not hazm's own models
 
