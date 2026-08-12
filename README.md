@@ -1,9 +1,9 @@
 # Persian (Farsi) pipelines for spaCy
 
-Trained spaCy pipelines for Persian, installable now. spaCy has never shipped an official one, and `spacy.blank("fa")` only gives you a tokenizer and stop words. choose between `fa_core_news_sm` (full syntax + NER) or `fa_dep_news_sm` (syntax only).
+Trained spaCy pipelines for Persian, installable now. spaCy has never shipped an official one, and `spacy.blank("fa")` only gives you a tokenizer and stop words. Choose between `fa_core_news_sm` (full syntax + NER) or `fa_dep_news_sm` (syntax only).
 
 ```bash
-pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-any-py3-none-any.whl
+pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-3.8.0-py3-none-any.whl
 ```
 
 ```python
@@ -21,18 +21,9 @@ pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_n
 [('ایران خودرو', 'ORG'), ('۲۰ درصد', 'PCT')]
 ```
 
-## Why spacy-persian?
-
-- **⚡ Performance** – **96.24%** POS · **97.91%** Lemma · **85.15%** LAS – competitive with English `en_core_web_sm` on syntax.
-- **🚀 Speed** – ~9,250 words/sec on a standard CPU. No GPU required.
-- **📦 Flexibility** – Choose `fa_core_news_sm` (13MB, syntax + NER) or `fa_dep_news_sm` (7.5MB, syntax-only).
-- **🔁 Reproducibility** – Checksummed, versioned builds from UD_Persian-PerDT – no black boxes.
-- **🔌 Native spaCy** – Drop-in replacement. `spacy.load()` works instantly with standard `Doc` objects.
-- 
-
 ## Results
 
-`spacy-persian` delivers production‑ready Persian NLP that stands alongside Hazm—the most popular Persian toolkit—while bringing the full power of the spaCy ecosystem.
+Compared against Hazm (the most-used Persian toolkit) and `en_core_web_sm` (English reference).
 
 | Metric | **`spacy-persian`**<br>`fa_core_news_sm` | **Hazm**<br>(Persian toolkit) | `en_core_web_sm`<br>(English reference) |
 |--------|:---:|:---:|:---:|
@@ -48,42 +39,63 @@ pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_n
 > ⚠️ **Note on comparability:** These benchmarks come from *different evaluation sets, treebanks, and test splits*.
 
 
+From `spacy benchmark accuracy`, stored in `metrics/`.
+| Package | Components | Licence | Score | Wheel |
+| --- | --- | --- | --- | --- |
+| `fa_dep_news_sm` | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser | CC BY-SA 4.0 | LEMMA 97.91 | 7.5 MB |
+| `fa_core_news_sm` | the above plus ner | CC BY-SA 4.0 | ENTS_F 71.87 | 13 MB |
+| `fa_dep_news_md` | same as `fa_dep_news_sm`, plus floret vectors | CC BY-SA 4.0 | LEMMA 97.96 | 62 MB |
+| `fa_core_news_md` | same as `fa_core_news_sm`, plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 68 MB |
+| `fa_ent_news_md` | `ner` alone (own embedded tok2vec), plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 58 MB |
 
-| Metric | Score | Reference |
-| --- | --- | --- |
-| `TOKEN_ACC` / `TOKEN_F` | 99.96 / 99.11 | |
-| `TAG_ACC` (XPOS) | 95.96 | |
-| `POS_ACC` (UPOS) | 96.24 | |
-| `MORPH_ACC` | 96.29 | |
-| `LEMMA_ACC` | 97.91 | |
-| `SENTS_F` | 99.25 | |
-| `DEP_UAS` | 89.69 | hazm+ParsBERT: 92.46 |
-| `DEP_LAS` | 85.15 | hazm+ParsBERT: 89.34 |
-| Speed | ~9,250 words/s | |
+The `md` tier adds a 50k x 300d floret vector table trained on 400k Persian documents. Its
+config differs from `sm` by exactly one line (`include_static_vectors`), so the columns below
+isolate what the vectors buy. Full breakdown in `docs/MODELS.md` §6.
 
-Entities, `fa_core_news_sm` only, on the PerDT NER test split: `ENTS_P` 77.67, `ENTS_R` 66.87,
-`ENTS_F` 71.87.
+| Metric | `sm` | `md` | Reference |
+| --- | --- | --- | --- |
+| `TOKEN_ACC` / `TOKEN_F` | 99.96 / 99.11 | 99.96 / 99.11 | |
+| `TAG_ACC` (XPOS) | 95.96 | 96.25 | |
+| `POS_ACC` (UPOS) | 96.24 | 96.64 | |
+| `MORPH_ACC` | 96.29 | 96.64 | |
+| `LEMMA_ACC` | 97.91 | 97.96 | |
+| `SENTS_F` | 99.25 | 99.28 | |
+| `DEP_UAS` | 89.69 | 90.52 | hazm+ParsBERT: 92.46 |
+| `DEP_LAS` | 85.15 | 86.34 | hazm+ParsBERT: 89.34 |
+| `ENTS_P` | 77.67 | 76.56 | |
+| `ENTS_R` | 66.87 | 72.95 | |
+| `ENTS_F` | 71.87 | 74.71 | |
+| Speed | ~9,250 words/s | ~7,700 words/s | |
 
-| Label | F | Train examples |
-| --- | --- | --- |
-| `LOC` | 80.24 | 4,954 |
-| `DAT` | 74.45 | 1,323 |
-| `MON` | 73.68 | 205 |
-| `ORG` | 68.77 | 2,643 |
-| `TIM` | 66.67 | 135 |
-| `PER` | 65.29 | 4,847 |
-| `PCT` | 57.14 | 121 |
+Entity scores are `fa_core_news_*` on the PerDT NER test split. The `md` gain is almost
+entirely recall (+6.08): static vectors give the model a lexical prior for rare proper nouns
+that hash embeddings never had.
+
+| Label | Gold in test | `sm` F | `md` F | Train examples |
+| --- | --- | --- | --- | --- |
+| `LOC` | 273 | 80.24 | 84.05 | 4,954 |
+| `PER` | 297 | 65.29 | 68.18 | 4,847 |
+| `ORG` | 144 | 68.77 | 70.25 | 2,643 |
+| `DAT` | 69 | 74.45 | 76.19 | 1,323 |
+| `MON` | 10 | 73.68 | 84.21 | 205 |
+| `TIM` | 9 | 66.67 | 66.67 | 135 |
+| `PCT` | 4 | 57.14 | 33.33 | 121 |
+
+`MON`, `TIM` and `PCT` have single-digit support in the test split, so their deltas are one
+or two entities changing hands, not signal. The three labels that carry the split (`PER`,
+`LOC`, `ORG`) all improve.
 
 
 For comparison, `en_core_web_sm` scores TAG 97, LAS 90, ENTS_F 84 on a larger, cleaner corpus.
-Trained on a 4-core i5-7200U with no GPU: 1h27m for the syntax components, 17 min for NER.
+Trained on a 4-core i5-7200U with no GPU: `sm` 1h27m syntax + 17 min NER, `md` 1h54m syntax
++ 25 min NER (the two `md` runs overlapped, so wall clock overstates each).
 
 ## Install
 
 ```bash
-pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-any-py3-none-any.whl
+pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-3.8.0-py3-none-any.whl
 # or, without NER:
-pip install https://huggingface.co/Phazel/fa_dep_news_sm/resolve/main/fa_dep_news_sm-any-py3-none-any.whl
+pip install https://huggingface.co/Phazel/fa_dep_news_sm/resolve/main/fa_dep_news_sm-3.8.0-py3-none-any.whl
 ```
 
 ## Caveats

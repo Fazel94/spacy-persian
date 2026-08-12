@@ -56,7 +56,12 @@ From <https://github.com/explosion/spaCy/blob/master/CONTRIBUTING.md>:
    python -m spacy package training/fa_dep_news_sm packages --name dep_news_sm --version 3.8.0 --build wheel
    python -m spacy huggingface-hub push packages/fa_dep_news_sm-3.8.0/dist/fa_dep_news_sm-3.8.0-py3-none-any.whl --org <org>
    ```
-   Users then `pip install https://huggingface.co/<org>/fa_dep_news_sm/resolve/main/fa_dep_news_sm-any-py3-none-any.whl`.
+   Users then `pip install https://huggingface.co/<org>/fa_dep_news_sm/resolve/main/fa_dep_news_sm-3.8.0-py3-none-any.whl`.
+   Note the filename: `spacy huggingface-hub push` uploads the wheel as `<name>-any-py3-none-any.whl`,
+   but `"any"` is not a valid PEP 440 version and current pip rejects it
+   (`Invalid wheel filename (invalid version)`). Upload a second copy under its real versioned
+   filename too (`api.upload_file(path_in_repo=f"{name}-{version}-py3-none-any.whl", ...)`) and
+   link to that one instead.
 2. PyPI or a self-hosted wheel: `spacy package … --build sdist,wheel` then `twine upload`, or
    attach the wheel to a GitHub Release. See <https://spacy.io/api/cli#package>.
 3. spaCy Universe, which lists the package on spacy.io but hosts nothing. Per

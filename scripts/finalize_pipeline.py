@@ -3,9 +3,13 @@
 Three variants, following spaCy's `[lang]_[type]_[genre]_[size]` naming
 (https://spacy.io/models#conventions):
 
-  dep  -> fa_dep_news_sm    tagger + morphologizer + trainable_lemmatizer + parser
-  core -> fa_core_news_sm   the above plus ner
-  ent  -> fa_ent_news_sm    ner only
+  dep  -> fa_dep_news_<size>    tagger + morphologizer + trainable_lemmatizer + parser
+  core -> fa_core_news_<size>   the above plus ner
+  ent  -> fa_ent_news_<size>    ner only
+
+`--size` fills the size slot: `sm` (hash embeddings only, the default) or `md` (the same
+architecture plus the fa_floret static vector table). It is metadata only; which vectors a
+model actually carries is decided at train time by `--paths.vectors`.
 
 All three are built from UD_Persian-PerDT alone, including the NER, which comes from that
 treebank's own `not-to-release/Dadegan with NER tag/` layer. That is what makes `core`
@@ -56,6 +60,25 @@ LANG_DATA = {
     "author": "Explosion and spaCy contributors",
     "license": "MIT",
 }
+FLORET = {
+    "name": "fa_floret static vectors (50k rows x 300d, floret mode, 400k Persian documents)",
+    "url": PROJECT_URL,
+    "author": "Kiyarash Fazeli",
+    "license": "CC BY-SA 4.0",
+}
+FLORET_LG = {
+    "name": "fa_floret static vectors (lg tier: larger floret table trained on fa Wikipedia + "
+            "OSCAR via spacy-vectors-builder)",
+    "url": PROJECT_URL,
+    "author": "Kiyarash Fazeli",
+    "license": "CC BY-SA 4.0",
+}
+TRANSFORMER = {
+    "name": "HooshvareLab/roberta-fa-zwnj-base",
+    "url": "https://huggingface.co/HooshvareLab/roberta-fa-zwnj-base",
+    "author": "Hooshvare Team",
+    "license": "Apache-2.0",
+}
 
 NER_NOTE = (
     "The ner component is trained on the NER layer shipped in UD_Persian-PerDT's "
@@ -78,6 +101,36 @@ CHUNK_NOTE = (
     "ClearNLP labels that do not exist in Universal Dependencies, see "
     "docs/upstream/fa-noun-chunks.md."
 )
+VECTORS_NOTE = (
+    "This is the `md` tier: identical architecture to the `sm` pipeline plus static floret "
+    "vectors (50,000 rows x 300 dimensions, minn=maxn=5, hash_count=2) trained on 400,000 "
+    "Persian documents. floret hashes subwords into a fixed table, so there are no "
+    "out-of-vocabulary tokens and `token.has_vector` is always True. That matters for "
+    "Persian, where inconsistent ZWNJ (U+200C) usage splits one word across several surface "
+    "forms (mi-ravad written joined, with ZWNJ, or with a space) that a classic word-vector "
+    "table would miss."
+)
+
+
+def vectors_note_lg(nlp):
+    """Row/dim counts come from the trained model, not a hardcoded description, because the
+    lg-tier floret table is still being iterated on (unlike md's fixed, shipped table)."""
+    rows, dim = nlp.vocab.vectors.shape
+    return (
+        f"This is the `lg` tier: identical architecture to `sm`/`md` but a larger static "
+        f"floret vector table ({rows:,} rows x {dim} dimensions, minn=maxn=5, hash_count=2) "
+        f"trained on Persian Wikipedia + OSCAR via spacy-vectors-builder. Same zero-OOV "
+        f"rationale as `md` (see docs/MODELS.md): floret hashes subwords into a fixed table, "
+        f"so `token.has_vector` is always True despite Persian's ZWNJ (U+200C) inconsistency."
+    )
+
+
+TRANSFORMER_NOTE = (
+    "This is the `trf` tier: no static vectors; contextual embeddings instead come from a "
+    "fine-tuned HooshvareLab/roberta-fa-zwnj-base (Apache-2.0) transformer via "
+    "spacy-transformers. Not ParsBERT: its model card carries no licence. GPU is recommended "
+    "for both training and inference."
+)
 # CC BY-SA 4.0 on the treebank propagates to anything derived from it.
 PERDT_LICENSE = "CC BY-SA 4.0"
 ATTRIBUTION = (
@@ -92,10 +145,10 @@ NER_KEYS = ("ents_p", "ents_r", "ents_f", "ents_per_type")
 
 VARIANTS = {
     "dep": {
-        "name": "dep_news_sm",
+        "name": "dep_news_{size}",
         "description": (
             "Persian dependency pipeline optimized for CPU. Components: tok2vec, tagger, "
-            "morphologizer, trainable_lemmatizer, parser. No NER, see fa_core_news_sm."
+            "morphologizer, trainable_lemmatizer, parser. No NER, see fa_core_news_{size}."
         ),
         "license": PERDT_LICENSE,
         "sources": [PERDT, LANG_DATA],
@@ -105,7 +158,7 @@ VARIANTS = {
         "require_msg": "a 'dep' pipeline must not contain an ner component",
     },
     "core": {
-        "name": "core_news_sm",
+        "name": "core_news_{size}",
         "description": (
             "Persian pipeline optimized for CPU. Components: tok2vec, tagger, morphologizer, "
             "trainable_lemmatizer, parser, ner. Entity labels: PER, LOC, ORG, DAT, MON, TIM, "
@@ -119,7 +172,7 @@ VARIANTS = {
         "require_msg": "a 'core' pipeline must contain both parser and ner",
     },
     "ent": {
-        "name": "ent_news_sm",
+        "name": "ent_news_{size}",
         "description": (
             "Persian named entity recognizer optimized for CPU, with its own internal "
             "tok2vec. Labels: PER, LOC, ORG, DAT, MON, TIM, PCT."
@@ -140,6 +193,10 @@ def main():
     ap.add_argument("output", help="destination directory")
     ap.add_argument("--variant", choices=sorted(VARIANTS), required=True)
     ap.add_argument("--version", default="3.8.0")
+    ap.add_argument("--size", choices=("sm", "md", "lg", "trf"), default="sm",
+                    help="size slot in the package name. 'md'/'lg' additionally record the "
+                         "floret vector table as a source and append a vectors note; 'trf' "
+                         "records the transformer source and appends a transformer note.")
     ap.add_argument("--ud-metrics", default=None,
                     help="benchmark accuracy JSON scored on the UD test split; supplies the "
                          "tagger/morph/lemma/parser keys only")
@@ -152,7 +209,20 @@ def main():
     args = ap.parse_args()
 
     spec = VARIANTS[args.variant]
+    name = spec["name"].format(size=args.size)
+    description = spec["description"].format(size=args.size)
+    sources = list(spec["sources"])
+    notes = spec["notes"]
     nlp = spacy.load(args.model)
+    if args.size == "md":
+        sources.append(FLORET)
+        notes = " ".join([notes, VECTORS_NOTE])
+    elif args.size == "lg":
+        sources.append(FLORET_LG)
+        notes = " ".join([notes, vectors_note_lg(nlp)])
+    elif args.size == "trf":
+        sources.append(TRANSFORMER)
+        notes = " ".join([notes, TRANSFORMER_NOTE])
     if args.add_ner:
         ner_nlp = spacy.load(args.add_ner)
         if ner_nlp.pipe_names != ["ner"]:
@@ -202,22 +272,22 @@ def main():
     nlp.meta.update(
         {
             "lang": "fa",
-            "name": spec["name"],
+            "name": name,
             "version": args.version,
-            "description": spec["description"],
+            "description": description,
             "author": AUTHOR,
             "email": EMAIL,
             "url": PROJECT_URL,
             "license": spec["license"],
-            "sources": spec["sources"],
-            "notes": spec["notes"],
+            "sources": sources,
+            "notes": notes,
             "performance": performance,
         }
     )
 
     out = Path(args.output)
     nlp.to_disk(out)
-    print(f"wrote {out} as fa_{spec['name']} {args.version} ({spec['license']})")
+    print(f"wrote {out} as fa_{name} {args.version} ({spec['license']})")
     scalars = {k: round(v * 100, 2) for k, v in performance.items() if isinstance(v, float)}
     print(json.dumps(scalars, indent=2))
 

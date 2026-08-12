@@ -29,6 +29,11 @@ vars:
   # -1 = CPU. A GTX 940MX (2 GB) is not worth the transfer overhead for an sm pipeline.
   gpu: -1
   n_sents: 10
+  # md tier. Same architecture as sm plus the fa_floret static vector table.
+  dep_md_package_name: "dep_news_md"
+  core_md_package_name: "core_news_md"
+  floret_wheel: "fa_floret-0.1.0-py3-none-any-400k-documents.whl"
+  vectors_dir: "assets/vectors/fa_floret_400k"
 
 directories:
   - "assets"
@@ -88,6 +93,18 @@ workflows:
     - finalize-ent
     - evaluate-ent
     - package-ent
+  # The md tier: same corpus and architecture, plus the fa_floret static vectors.
+  md:
+    - vectors-md
+    - train-dep-md
+    - train-ner-md
+    - finalize-dep-md
+    - assemble-core-md
+    - evaluate-md
+    - finalize-meta-md
+    - compare-md
+    - package-md
+    - smoke-md
 
 commands:
   - name: "inspect"
@@ -296,6 +313,122 @@ commands:
       - "training/fa_ent_news_sm"
     outputs:
       - "packages/${vars.lang}_${vars.ent_package_name}-${vars.package_version}"
+
+  # ---------------------------------------------------------------- md tier
+
+  - name: "vectors-md"
+    help: >
+      Unpack the fa_floret wheel into a plain spaCy model directory that
+      `--paths.vectors` can point at. The wheel is a vectors-only pipeline
+      (empty `pipeline: []`), 50k rows x 300d in floret mode, trained on 400k
+      Persian documents, so no `spacy init vectors` step is needed.
+    script:
+      - "python scripts/unpack_vectors.py ${vars.floret_wheel} ${vars.vectors_dir}"
+    deps:
+      - "${vars.floret_wheel}"
+      - "scripts/unpack_vectors.py"
+    outputs:
+      - "${vars.vectors_dir}"
+
+  - name: "train-dep-md"
+    help: "Train the dep pipeline with static floret vectors"
+    script:
+      - "python -m spacy train configs/fa_dep_news_md.cfg --output training/dep-md --paths.train corpus/merged/${vars.treebank}-ud-train.spacy --paths.dev corpus/merged/${vars.treebank}-ud-dev.spacy --paths.vectors ${vars.vectors_dir} --gpu-id ${vars.gpu}"
+    deps:
+      - "corpus/merged/${vars.treebank}-ud-train.spacy"
+      - "corpus/merged/${vars.treebank}-ud-dev.spacy"
+      - "configs/fa_dep_news_md.cfg"
+      - "${vars.vectors_dir}"
+    outputs:
+      - "training/dep-md/model-best"
+
+  - name: "train-ner-md"
+    help: "Train the NER component with static floret vectors"
+    script:
+      - "python -m spacy train configs/fa_ner_md.cfg --output training/perdt-ner-md --paths.train corpus/perdt-ner/train.spacy --paths.dev corpus/perdt-ner/dev.spacy --paths.vectors ${vars.vectors_dir} --gpu-id ${vars.gpu}"
+    deps:
+      - "corpus/perdt-ner/train.spacy"
+      - "corpus/perdt-ner/dev.spacy"
+      - "configs/fa_ner_md.cfg"
+      - "${vars.vectors_dir}"
+    outputs:
+      - "training/perdt-ner-md/model-best"
+
+  - name: "finalize-dep-md"
+    help: "Write fa_dep_news_md metadata onto the trained md model"
+    script:
+      - "python scripts/finalize_pipeline.py training/dep-md/model-best training/fa_dep_news_md --variant dep --size md --version ${vars.package_version}"
+    deps:
+      - "training/dep-md/model-best"
+      - "scripts/finalize_pipeline.py"
+    outputs:
+      - "training/fa_dep_news_md"
+
+  - name: "assemble-core-md"
+    help: "Source the md ner into the md dep pipeline to produce fa_core_news_md"
+    script:
+      - "python scripts/finalize_pipeline.py training/dep-md/model-best training/fa_core_news_md --variant core --size md --version ${vars.package_version} --add-ner training/perdt-ner-md/model-best"
+    deps:
+      - "training/dep-md/model-best"
+      - "training/perdt-ner-md/model-best"
+      - "scripts/finalize_pipeline.py"
+    outputs:
+      - "training/fa_core_news_md"
+
+  - name: "evaluate-md"
+    help: "Score both md packages on the held-out test splits"
+    script:
+      - "python -m spacy benchmark accuracy training/fa_dep_news_md corpus/merged/${vars.treebank}-ud-test.spacy --output metrics/md-ud-test.json --gpu-id ${vars.gpu}"
+      - "python -m spacy benchmark accuracy training/fa_core_news_md corpus/merged/${vars.treebank}-ud-test.spacy --output metrics/md-core-ud-test.json --gpu-id ${vars.gpu}"
+      - "python -m spacy benchmark accuracy training/fa_core_news_md corpus/perdt-ner/test.spacy --output metrics/md-perdt-ner-test.json --gpu-id ${vars.gpu}"
+    deps:
+      - "training/fa_dep_news_md"
+      - "training/fa_core_news_md"
+    outputs:
+      - "metrics/md-ud-test.json"
+      - "metrics/md-core-ud-test.json"
+      - "metrics/md-perdt-ner-test.json"
+
+  - name: "finalize-meta-md"
+    help: "Fold the md test scores into both md meta.json files"
+    script:
+      - "python scripts/finalize_pipeline.py training/dep-md/model-best training/fa_dep_news_md --variant dep --size md --version ${vars.package_version} --ud-metrics metrics/md-ud-test.json"
+      - "python scripts/finalize_pipeline.py training/dep-md/model-best training/fa_core_news_md --variant core --size md --version ${vars.package_version} --add-ner training/perdt-ner-md/model-best --ud-metrics metrics/md-core-ud-test.json --ner-metrics metrics/md-perdt-ner-test.json"
+    deps:
+      - "metrics/md-ud-test.json"
+      - "metrics/md-perdt-ner-test.json"
+      - "scripts/finalize_pipeline.py"
+
+  - name: "compare-md"
+    help: "Table the sm vs md deltas from the metrics/ JSON reports"
+    script:
+      - "python scripts/compare_tiers.py"
+    deps:
+      - "metrics/md-ud-test.json"
+      - "metrics/md-perdt-ner-test.json"
+      - "scripts/compare_tiers.py"
+
+  - name: "package-md"
+    help: "Build installable wheels + sdists for both md packages"
+    script:
+      - "python -m spacy package training/fa_dep_news_md packages --name ${vars.dep_md_package_name} --version ${vars.package_version} --build sdist,wheel --force"
+      - "python -m spacy package training/fa_core_news_md packages --name ${vars.core_md_package_name} --version ${vars.package_version} --build sdist,wheel --force"
+    deps:
+      - "training/fa_dep_news_md"
+      - "training/fa_core_news_md"
+    outputs:
+      - "packages/${vars.lang}_${vars.dep_md_package_name}-${vars.package_version}"
+      - "packages/${vars.lang}_${vars.core_md_package_name}-${vars.package_version}"
+
+  - name: "smoke-md"
+    help: "Load both md pipelines and run them over real Persian text"
+    script:
+      - "python scripts/smoke_test.py training/fa_dep_news_md"
+      - "python scripts/smoke_test.py training/fa_core_news_md"
+    deps:
+      - "training/fa_dep_news_md"
+      - "training/fa_core_news_md"
+
 
   - name: "clean"
     help: "Drop corpora, training runs and metrics (keeps downloaded assets)"

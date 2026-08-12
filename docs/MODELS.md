@@ -21,6 +21,13 @@ requirement. That ordering sets the roadmap below.
 
 Source: <https://spacy.io/models/en>.
 
+That last point does **not** transfer to Persian. The `sm` -> `md` step measured on this
+project buys +1.19 LAS and +2.85 NER F (§6), where English gets ~0.00 LAS. Two reasons: PerDT
+is roughly a tenth the size of OntoNotes, so hash embeddings have far less signal to learn a
+lexicon from, and floret's subword hashing gives 0% OOV on a language whose ZWNJ variation
+(می‌رود / میرود / می رود) fragments any fixed word-key table. English `md` uses 20k classic
+word vectors and hits OOV constantly. Do not use the English row as the Persian prior.
+
 ## 2. Target: the Persian pipelines
 
 Naming follows `[lang]_[type]_[genre]_[size]` (<https://spacy.io/models#conventions>). The
@@ -35,8 +42,9 @@ pipelines such as `de_core_news_sm` as `news`.
 | `fa_core_news_sm` | the above plus ner | hash embeddings | built, shipping |
 | `fa_ent_news_sm` | ner (own internal tok2vec) | hash embeddings | built, optional |
 | `fa_core_web_sm` | same as core, mixed-genre training data | hash embeddings | not built; would add ParsTwiNER to cover social media |
-| `fa_core_news_md` | + static vectors | floret, 50k rows | vectors must be trained first (CPU-days on fa Wikipedia + OSCAR) |
-| `fa_core_news_lg` | same | floret, 200k rows | same as md, bigger table |
+| `fa_dep_news_md` | same as `fa_dep_news_sm` | floret, 50k rows / 300d | built, shipping |
+| `fa_core_news_md` | same as `fa_core_news_sm` | floret, 50k rows / 300d | built, shipping |
+| `fa_core_news_lg` | same | floret, 200k rows | not built; bigger table, same recipe as md |
 | `fa_core_news_trf` | transformer instead of tok2vec | `HooshvareLab/roberta-fa-zwnj-base` (Apache-2.0) | not on this hardware; 2 GB VRAM cannot fine-tune a 125M-param encoder |
 
 ### Why `core` is honest here
@@ -276,3 +284,68 @@ Sources are recorded in each `meta.json` with their licences, per
 crediting Beheshti-NER. CC BY-SA 4.0 on PerDT means every package carries attribution and a
 share-alike notice, handled in `scripts/finalize_pipeline.py`, which also enforces the shape of
 each variant: it refuses to publish a `dep` pipeline containing `ner`, or a `core` one without it.
+
+## 6. The `md` tier: floret static vectors
+
+Built after the `sm` tier, from `fa_floret` — 50,000 rows x 300d, floret mode, `minn=maxn=5`,
+`hash_count=2`, trained on 400,000 Persian documents. The wheel is a vectors-only pipeline;
+`scripts/unpack_vectors.py` unwraps it into a directory `--paths.vectors` can read, so nothing
+needs pip-installing to train against it.
+
+`configs/fa_dep_news_md.cfg` and `configs/fa_ner_md.cfg` are their `sm` counterparts with one
+line changed, `include_static_vectors = false -> true`. Same seed, same corpus, same widths,
+same batcher, same patience. The deltas below are therefore attributable to the vector table
+and nothing else. Reproduce with `spacy project run md`, or the table alone with
+`python scripts/compare_tiers.py`.
+
+### UD_Persian-PerDT test split
+
+| Metric | `sm` | `md` | Delta |
+| --- | --- | --- | --- |
+| `TAG_ACC` | 95.96 | 96.25 | +0.29 |
+| `POS_ACC` | 96.24 | 96.64 | +0.40 |
+| `MORPH_ACC` | 96.29 | 96.64 | +0.35 |
+| `LEMMA_ACC` | 97.91 | 97.96 | +0.05 |
+| `SENTS_F` | 99.25 | 99.28 | +0.03 |
+| `DEP_UAS` | 89.69 | 90.52 | +0.83 |
+| `DEP_LAS` | 85.15 | 86.34 | +1.19 |
+| Speed (dep) | 12,505 w/s | 10,493 w/s | -16.1% |
+
+### PerDT NER test split, `fa_core_news_md`
+
+| Metric | `sm` | `md` | Delta |
+| --- | --- | --- | --- |
+| `ENTS_P` | 77.67 | 76.56 | -1.10 |
+| `ENTS_R` | 66.87 | 72.95 | +6.08 |
+| `ENTS_F` | 71.87 | 74.71 | +2.85 |
+
+Almost all of the NER gain is recall. That is the expected shape of a fix for a coverage
+problem: hash embeddings had no lexical prior for rare proper nouns, so the `sm` model
+declined to tag them. Precision slips ~1 point because the model now guesses more.
+
+| Label | Gold in test | `sm` F | `md` F | Delta |
+| --- | --- | --- | --- | --- |
+| `PER` | 297 | 65.29 | 68.18 | +2.89 |
+| `LOC` | 273 | 80.24 | 84.05 | +3.81 |
+| `ORG` | 144 | 68.77 | 70.25 | +1.48 |
+| `DAT` | 69 | 74.45 | 76.19 | +1.74 |
+| `MON` | 10 | 73.68 | 84.21 | +10.53 |
+| `TIM` | 9 | 66.67 | 66.67 | +0.00 |
+| `PCT` | 4 | 57.14 | 33.33 | -23.81 |
+
+Read the bottom three rows as noise, not signal. `PCT` has four gold entities in the whole
+test split, so its -23.81 F is one entity changing hands; `MON`'s +10.53 is likewise one of
+ten. The three labels with real support (`PER`, `LOC`, `ORG`, 714 entities between them) all
+improve, which is the finding.
+
+### Cost
+
+The vectors dominate the artifact: `fa_dep_news_md` is a 62 MB wheel against 7.5 MB for `sm`,
+`fa_core_news_md` 68 MB against 13 MB. Inference is ~16% slower across all three pipelines,
+a uniform hit consistent with the extra 300d concatenation per token rather than anything
+component-specific. Training cost was comparable to `sm` (early stop at step 12,400 of 20,000,
+best checkpoint near 10,800).
+
+Whether that trade is worth it depends on deployment. For a 1.19 LAS and 2.85 NER F gain, a
+9x larger download and 16% slower parse is a good deal on a server and a bad one in a browser
+or a Lambda cold start. Both tiers ship; pick per target.

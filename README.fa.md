@@ -12,7 +12,7 @@
 **بازشناسی موجودیت‌های نام‌دار** را دارد. هر دو تحت لیسانس CC BY-SA ۴٫۰ منتشر شده‌اند.
 
 ```bash
-pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-any-py3-none-any.whl
+pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-3.8.0-py3-none-any.whl
 ```
 
 ```python
