@@ -67,8 +67,8 @@ FLORET = {
     "license": "CC BY-SA 4.0",
 }
 FLORET_LG = {
-    "name": "fa_floret static vectors (lg tier: larger floret table trained on fa Wikipedia + "
-            "OSCAR via spacy-vectors-builder)",
+    "name": "fa_floret static vectors (lg tier: 200k rows x 300d floret table trained on "
+            "the full Persian Wikipedia dump, 5 epochs, via spacy-vectors-builder)",
     "url": PROJECT_URL,
     "author": "Kiyarash Fazeli",
     "license": "CC BY-SA 4.0",
@@ -119,9 +119,10 @@ def vectors_note_lg(nlp):
     return (
         f"This is the `lg` tier: identical architecture to `sm`/`md` but a larger static "
         f"floret vector table ({rows:,} rows x {dim} dimensions, minn=maxn=5, hash_count=2) "
-        f"trained on Persian Wikipedia + OSCAR via spacy-vectors-builder. Same zero-OOV "
-        f"rationale as `md` (see docs/MODELS.md): floret hashes subwords into a fixed table, "
-        f"so `token.has_vector` is always True despite Persian's ZWNJ (U+200C) inconsistency."
+        f"trained on the full Persian Wikipedia dump for 5 epochs via spacy-vectors-builder. "
+        f"Same zero-OOV rationale as `md` (see docs/MODELS.md): floret hashes subwords into "
+        f"a fixed table, so `token.has_vector` is always True despite Persian's ZWNJ "
+        f"(U+200C) inconsistency."
     )
 
 

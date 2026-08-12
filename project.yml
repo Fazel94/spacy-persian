@@ -34,6 +34,12 @@ vars:
   core_md_package_name: "core_news_md"
   floret_wheel: "fa_floret-0.1.0-py3-none-any-400k-documents.whl"
   vectors_dir: "assets/vectors/fa_floret_400k"
+  # lg tier. Same architecture as sm/md, but ner only (no dep/core trained yet), with a
+  # larger floret table: 200k rows x 300d, trained on the full Persian Wikipedia dump for
+  # 5 epochs (vs md's 50k rows / 400k documents).
+  ent_lg_package_name: "ent_news_lg"
+  floret_lg_wheel: "fa_floret-0.1.0-py3-none-any-full-wiki-200k-5epoch.whl"
+  vectors_lg_dir: "assets/vectors/fa_floret_lg"
 
 directories:
   - "assets"
@@ -93,6 +99,16 @@ workflows:
     - finalize-ent
     - evaluate-ent
     - package-ent
+  # The lg tier: ner only, same corpus as sm/md, with a bigger floret table (200k rows,
+  # full Persian Wikipedia, 5 epochs) than md's (50k rows, 400k documents).
+  ent-lg:
+    - vectors-lg
+    - train-ner-lg
+    - finalize-ent-lg
+    - evaluate-ent-lg
+    - compare-lg
+    - package-ent-lg
+    - smoke-ent-lg
   # The md tier: same corpus and architecture, plus the fa_floret static vectors.
   md:
     - vectors-md
@@ -313,6 +329,80 @@ commands:
       - "training/fa_ent_news_sm"
     outputs:
       - "packages/${vars.lang}_${vars.ent_package_name}-${vars.package_version}"
+
+  # ---------------------------------------------------------------- lg tier (ner only)
+
+  - name: "vectors-lg"
+    help: >
+      Unpack the lg-tier fa_floret wheel into a plain spaCy model directory. 200k rows x
+      300d in floret mode, trained on the full Persian Wikipedia dump for 5 epochs, vs
+      vectors-md's 50k rows / 400k documents.
+    script:
+      - "python scripts/unpack_vectors.py ${vars.floret_lg_wheel} ${vars.vectors_lg_dir}"
+    deps:
+      - "${vars.floret_lg_wheel}"
+      - "scripts/unpack_vectors.py"
+    outputs:
+      - "${vars.vectors_lg_dir}"
+
+  - name: "train-ner-lg"
+    help: "Train the NER component with the lg-tier static floret vectors"
+    script:
+      - "python -m spacy train configs/fa_ner_lg.cfg --output training/perdt-ner-lg --paths.train corpus/perdt-ner/train.spacy --paths.dev corpus/perdt-ner/dev.spacy --paths.vectors ${vars.vectors_lg_dir} --gpu-id ${vars.gpu}"
+    deps:
+      - "corpus/perdt-ner/train.spacy"
+      - "corpus/perdt-ner/dev.spacy"
+      - "configs/fa_ner_lg.cfg"
+      - "${vars.vectors_lg_dir}"
+    outputs:
+      - "training/perdt-ner-lg/model-best"
+
+  - name: "finalize-ent-lg"
+    help: "Write fa_ent_news_lg metadata onto the trained lg model"
+    script:
+      - "python scripts/finalize_pipeline.py training/perdt-ner-lg/model-best training/fa_ent_news_lg --variant ent --size lg --version ${vars.package_version}"
+    deps:
+      - "training/perdt-ner-lg/model-best"
+      - "scripts/finalize_pipeline.py"
+    outputs:
+      - "training/fa_ent_news_lg"
+
+  - name: "evaluate-ent-lg"
+    help: "Score fa_ent_news_lg on the held-out PerDT NER test split"
+    script:
+      - "python -m spacy benchmark accuracy training/fa_ent_news_lg corpus/perdt-ner/test.spacy --output metrics/lg-perdt-ner-test.json --gpu-id ${vars.gpu}"
+      - "python scripts/finalize_pipeline.py training/perdt-ner-lg/model-best training/fa_ent_news_lg --variant ent --size lg --version ${vars.package_version} --ner-metrics metrics/lg-perdt-ner-test.json"
+    deps:
+      - "training/fa_ent_news_lg"
+      - "corpus/perdt-ner/test.spacy"
+    outputs:
+      - "metrics/lg-perdt-ner-test.json"
+
+  - name: "compare-lg"
+    help: "Table the sm vs md vs lg ent NER deltas from the metrics/ JSON reports"
+    script:
+      - "python scripts/compare_tiers.py"
+    deps:
+      - "metrics/perdt-ner-test.json"
+      - "metrics/md-perdt-ner-test.json"
+      - "metrics/lg-perdt-ner-test.json"
+      - "scripts/compare_tiers.py"
+
+  - name: "package-ent-lg"
+    help: "Build the installable fa_ent_news_lg wheel + sdist"
+    script:
+      - "python -m spacy package training/fa_ent_news_lg packages --name ${vars.ent_lg_package_name} --version ${vars.package_version} --build sdist,wheel --force"
+    deps:
+      - "training/fa_ent_news_lg"
+    outputs:
+      - "packages/${vars.lang}_${vars.ent_lg_package_name}-${vars.package_version}"
+
+  - name: "smoke-ent-lg"
+    help: "Load fa_ent_news_lg and run it over real Persian text"
+    script:
+      - "python scripts/smoke_test.py training/fa_ent_news_lg"
+    deps:
+      - "training/fa_ent_news_lg"
 
   # ---------------------------------------------------------------- md tier
 

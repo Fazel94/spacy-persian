@@ -44,6 +44,7 @@ pipelines such as `de_core_news_sm` as `news`.
 | `fa_core_web_sm` | same as core, mixed-genre training data | hash embeddings | not built; would add ParsTwiNER to cover social media |
 | `fa_dep_news_md` | same as `fa_dep_news_sm` | floret, 50k rows / 300d | built, shipping |
 | `fa_core_news_md` | same as `fa_core_news_sm` | floret, 50k rows / 300d | built, shipping |
+| `fa_ent_news_lg` | ner (own internal tok2vec) | floret, 200k rows / 300d, full-wiki 5 epochs | built, optional |
 | `fa_core_news_lg` | same | floret, 200k rows | not built; bigger table, same recipe as md |
 | `fa_core_news_trf` | transformer instead of tok2vec | `HooshvareLab/roberta-fa-zwnj-base` (Apache-2.0) | not on this hardware; 2 GB VRAM cannot fine-tune a 125M-param encoder |
 
@@ -349,3 +350,59 @@ best checkpoint near 10,800).
 Whether that trade is worth it depends on deployment. For a 1.19 LAS and 2.85 NER F gain, a
 9x larger download and 16% slower parse is a good deal on a server and a bad one in a browser
 or a Lambda cold start. Both tiers ship; pick per target.
+
+## 7. The `lg` tier: bigger floret table, `ent` only
+
+Built after `md`, from a new `fa_floret` table — 200,000 rows x 300d, floret mode,
+`minn=maxn=5`, `hash_count=2`, trained on the full Persian Wikipedia dump for 5 epochs (4x
+the rows of `md`'s 50k-row table trained on 400k documents). Unpacked the same way as `md`
+via `scripts/unpack_vectors.py`, into `assets/vectors/fa_floret_lg`.
+
+`configs/fa_ner_lg.cfg` is `fa_ner_md.cfg` unchanged except `--paths.vectors`. Only `ent` was
+trained at this tier (`fa_ent_news_lg`), not `dep`/`core`: the point of this run was to check
+whether a 4x larger table is worth it before spending the CPU time on `dep`/`core` too. Same
+seed, same corpus, same architecture as `sm`/`md`. Reproduce with `spacy project run ent-lg`,
+or the table alone with `python scripts/compare_tiers.py`.
+
+### PerDT NER test split, `fa_ent_news_lg`
+
+| Metric | `sm` | `md` | `lg` | Delta (lg vs sm) |
+| --- | --- | --- | --- | --- |
+| `ENTS_P` | 77.67 | 76.56 | 81.51 | +3.84 |
+| `ENTS_R` | 66.87 | 72.95 | 71.09 | +4.22 |
+| `ENTS_F` | 71.87 | 74.71 | 75.94 | +4.08 |
+
+`lg` beats both `sm` and `md` on `ENTS_F`, and unlike `md`'s recall-only gain over `sm`, `lg`
+improves precision too (+3.84 over `sm`, whereas `md` cost -1.10). Consistent with a bigger,
+less collision-prone floret table giving both better recall on rare proper nouns and fewer
+false positives from hash collisions.
+
+| Label | Gold in test | `sm` F | `md` F | `lg` F | Delta (lg vs sm) |
+| --- | --- | --- | --- | --- | --- |
+| `PER` | 297 | 65.29 | 68.18 | 72.63 | +7.33 |
+| `LOC` | 273 | 80.24 | 84.05 | 83.66 | +3.42 |
+| `ORG` | 144 | 68.77 | 70.25 | 71.01 | +2.24 |
+| `DAT` | 69 | 74.45 | 76.19 | 70.83 | -3.62 |
+| `MON` | 10 | 73.68 | 84.21 | 88.89 | +15.20 |
+| `TIM` | 9 | 66.67 | 66.67 | 61.54 | -5.13 |
+| `PCT` | 4 | 57.14 | 33.33 | 57.14 | +0.00 |
+
+`PER`, `LOC` and `ORG` (714 entities, the labels with real support) all improve over both
+smaller tiers. `DAT` and `TIM` regress a few points against `md`; `MON`/`TIM`/`PCT` swings are
+one-or-two-entity noise, same caveat as §6.
+
+### Cost
+
+The bigger table dominates the artifact even more than `md`'s did: `fa_ent_news_lg` is a
+217 MB wheel against 5.6 MB for `sm` and 58 MB for `md` — the 200k x 300d float32 vector
+table alone is ~240 MB uncompressed. Training cost was comparable to `sm`/`md` (early stop
+at step 7,200 of 20,000, best checkpoint at step 5,600). The `spacy benchmark accuracy`
+words/s figures swung in `lg`'s favor in this run (15,614 vs 8,500 `sm` / 7,149 `md`); given
+`lg`'s tok2vec architecture is identical to `md`'s and only the static-vector table lookup
+differs, treat that as single-run CPU contention noise on shared hardware, not a real
+architectural speedup, and re-benchmark before citing a number.
+
+For a 4x download over `md` (and 39x over `sm`) buying +4.08 ENTS_F over `sm` (+1.23 over
+`md`), `lg` is a server/offline-batch pipeline, not something to ship to a browser or a
+cold-start function. `dep`/`core` at this tier are not yet built; the `ent`-only result above
+is the signal for whether that investment is worth making.
