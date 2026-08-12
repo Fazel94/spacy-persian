@@ -289,7 +289,7 @@ each variant: it refuses to publish a `dep` pipeline containing `ner`, or a `cor
 
 ## 6. The `md` tier: floret static vectors
 
-Built after the `sm` tier, from `fa_floret` — 50,000 rows x 300d, floret mode, `minn=maxn=5`,
+Built after the `sm` tier, from `fa_floret`: 50,000 rows x 300d, floret mode, `minn=maxn=5`,
 `hash_count=2`, trained on 400,000 Persian documents. The wheel is a vectors-only pipeline;
 `scripts/unpack_vectors.py` unwraps it into a directory `--paths.vectors` can read, so nothing
 needs pip-installing to train against it.
@@ -354,7 +354,7 @@ or a Lambda cold start. Both tiers ship; pick per target.
 
 ## 7. The `lg` tier: bigger floret table, full pipeline
 
-Built after `md`, from a new `fa_floret` table — 200,000 rows x 300d, floret mode,
+Built after `md`, from a new `fa_floret` table: 200,000 rows x 300d, floret mode,
 `minn=maxn=5`, `hash_count=2`, trained on the full Persian Wikipedia dump for 5 epochs (4x
 the rows of `md`'s 50k-row table trained on 400k documents). Raw `.floret`/`.vec` and the
 packaged spaCy wheel are at <https://huggingface.co/Phazel/fa-floret-wiki-vectors>. Unpacked
@@ -377,10 +377,10 @@ table alone. Reproduce with `spacy project run lg`, or the tables alone with
 | `DEP_UAS` | 89.69 | 90.52 | 90.96 | +1.27 | +0.44 |
 | `DEP_LAS` | 85.15 | 86.34 | 86.60 | +1.45 | +0.26 |
 
-`lg` beats `md` on every UD metric, same monotonic pattern as `md` beating `sm` in §6 — a
-bigger, less collision-prone floret table keeps paying off, though the `md`-to-`lg` gains
-(4x the vector rows) are smaller than the `sm`-to-`md` gains (going from none to 50k rows):
-diminishing returns, as expected.
+`lg` beats `md` on every UD metric, the same monotonic pattern as `md` beating `sm` in §6.
+The bigger, less collision-prone floret table keeps paying off, though the `md`-to-`lg`
+gains (4x the vector rows) are smaller than the `sm`-to-`md` gains (going from none to 50k
+rows): diminishing returns, as expected.
 
 ### PerDT NER test split, `fa_ent_news_lg` (identical `ner` component embedded in `fa_core_news_lg`)
 
@@ -416,18 +416,18 @@ vector table is ~240 MB uncompressed, so `fa_dep_news_lg` is a 219 MB wheel (vs 
 60 MB `md`), `fa_core_news_lg` 225 MB (vs 13 MB `sm`, 66 MB `md`), and `fa_ent_news_lg` alone
 217 MB (vs 5.6 MB `sm`, 58 MB `md`). Training cost roughly doubled `md`'s: `dep_lg` ran to
 early stop at step 12,000 of 20,000 over ~2h08m CPU wall time (vs `dep_md`'s single-digit
-minutes territory implied by its architecture-identical config — `lg`'s extra time is
+minutes territory implied by its architecture-identical config; `lg`'s extra time is
 entirely the larger embedding table's per-step cost, not more steps). `ner_lg` early-stopped
 at step 7,200, ~13 min, in line with `sm`/`md`.
 
 `words/s` from `spacy benchmark accuracy` were noisier at this tier than `sm`-vs-`md`: dep/core
 throughput dropped as expected (9,387 / 6,655 words/s vs `sm`'s 12,505 / 8,834, `md`'s
-10,493 / 7,269 — the larger table costs real lookup time), but the standalone `ent_lg` run
+10,493 / 7,269 words/s; the larger table costs real lookup time), but the standalone `ent_lg` run
 showed 15,614 words/s, higher than `sm`/`md`'s ent runs despite an identical `ner`
 architecture and the same larger table. Treat that one figure as single-run CPU contention
 noise on shared hardware, not a real speedup, and re-benchmark before citing it.
 
 For a 4x download over `md` (and up to 39x over `sm`) buying +1.45 DEP_LAS / +1.23 ENTS_F
 over `md` (+1.45 DEP_LAS / +4.08 ENTS_F over `sm`), `lg` is a server/offline-batch pipeline,
-not something to ship to a browser or a cold-start function. All three variants — `dep`,
-`ent`, `core` — are built and evaluated at this tier, same as `md`.
+not something to ship to a browser or a cold-start function. All three variants (`dep`,
+`ent`, `core`) are built and evaluated at this tier, same as `md`.
