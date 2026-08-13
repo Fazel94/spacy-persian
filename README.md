@@ -25,13 +25,12 @@ pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_n
 
 Compared against Hazm (the most-used Persian toolkit) and `en_core_web_sm` (English reference).
 
-| Metric | **`spacy-persian`**<br>`fa_core_news_sm` | **Hazm**<br>(Persian toolkit) | `en_core_web_sm`<br>(English reference) |
+| Metric | **`spacy-persian`**<br>`fa_core_news_trf` | **Hazm**<br>(Persian toolkit) | `en_core_web_sm`<br>(English reference) |
 |--------|:---:|:---:|:---:|
-| **POS Accuracy (UPOS)** | **96.24%** | ~95.69%¹ | 97.21%² |
-| **Lemma Accuracy** | **97.91%** | 89.9%¹ | — |
-| **Dependency LAS** | 85.15% | 85.6%¹ | 91.85%² |
-| **NER F-score** | 71.87% | — | 83.80%² |
-| **Package Size** | **13 MB** (syntax+NER)<br>**7.5 MB** (syntax-only) | ~7 MB | 12 MB |
+| **POS Accuracy (UPOS)** | **97.63%** | ~95.69%¹ | 97.21%² |
+| **Lemma Accuracy** | **97.31%** | 89.9%¹ | — |
+| **Dependency LAS** | **90.79%** | 85.6%¹ | 91.85%² |
+| **NER F-score** | **82.89%** | — | 83.80%² |
 
 > **¹** Hazm scores from its official README 
 > **²** `en_core_web_sm` scores from spaCy's official model card
@@ -48,6 +47,7 @@ From `spacy benchmark accuracy`, stored in `metrics/`.
 | `fa_dep_news_md` | same as `fa_dep_news_sm`, plus floret vectors | CC BY-SA 4.0 | LEMMA 97.96 | 62 MB |
 | `fa_core_news_md` | same as `fa_core_news_sm`, plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 68 MB |
 | `fa_ent_news_md` | `ner` alone (own embedded tok2vec), plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 58 MB |
+| `fa_core_news_trf` | transformer, tagger, morphologizer, trainable_lemmatizer, parser, ner | see §8, encoder unlicensed | ENTS_F 82.89, LAS 90.79 | 608 MB |
 
 The `md` tier adds a 50k x 300d floret vector table trained on 400k Persian documents. Its
 config differs from `sm` by exactly one line (`include_static_vectors`), so the columns below
@@ -69,11 +69,9 @@ isolate what the vectors buy. Full breakdown in `docs/MODELS.md` §6.
 | Speed (940MX, batch 32) | 10,235 words/s | 9,058 words/s | 9,215 words/s | see §Throughput | |
 | Wheel size | 13.5 MB | 68.5 MB | 235 MB | 608 MB | |
 
-`trf` fine-tunes ParsBERT and wins everywhere except lemmatization and sentence
-segmentation, where `lg`'s edit-tree lemmatizer over floret subwords still leads. It is the
-only tier to pass the hazm+ParsBERT `DEP_LAS` reference of 89.34. It needs a GPU and its
-encoder has no stated licence, so it is not redistributable; `docs/MODELS.md` §8 has both
-caveats.
+`trf` leads everywhere except lemmatization and sentence segmentation, and is the only tier to
+pass the hazm+ParsBERT `DEP_LAS` reference of 89.34. It needs a GPU, and its encoder states no
+licence so it is not redistributable (`docs/MODELS.md` §8).
 
 Entity scores are `fa_core_news_*` on the PerDT NER test split; per-label breakdown and
 caveats are in [Named entity recognition](#named-entity-recognition).
@@ -97,16 +95,10 @@ timing the pipe only, warmup discarded. Reproduce with
 | `lg` | 4,715 | 9,215 | |
 | `trf` | 187 | | 8,320 |
 
-The `trf` tier is a different kind of thing: 187 words/s on the same laptop CPU that runs
-`sm` at 5,484, so about 29x slower. On a T4 it reaches 8,320, and on that VM's own Xeon it
-manages 336, a 25x GPU speedup. Treat GPU as a requirement rather than an optimization.
-The 940MX cannot run `trf` at all, since current PyTorch wheels have dropped its sm_50
-compute capability.
-
-`sm`, `md` and `lg` are within about 15% of each other on CPU, which is smaller than the
-gap in vector-table size suggests: the tok2vec is not the bottleneck, the parser and
-lemmatizer are. Run-to-run spread on the laptop is roughly +/-10% depending on thermal
-state, so treat differences under that as noise.
+`trf` runs 29x slower than `sm` on the same CPU, and 25x faster on a T4 than on that VM's own
+Xeon (336 words/s), so a GPU is a requirement rather than an optimization. The CPU tiers sit
+within 15% of each other, so the tok2vec lookup is not the bottleneck; the parser and
+lemmatizer are. Laptop spread is about 10% with thermal state.
 
 ## Named entity recognition
 
@@ -119,23 +111,25 @@ recall, so the `ENTS_F` numbers below partly reflect agreement with that tagger,
 human annotation.
 
 `ner` runs standalone with its own embedded tok2vec (`fa_ent_news_sm`, `fa_ent_news_md`), or
-bundled into `fa_core_news_sm`/`fa_core_news_md` alongside the syntax pipeline.
+bundled into `fa_core_news_sm`/`fa_core_news_md` alongside the syntax pipeline. In `trf` it is
+trained jointly against the shared transformer instead, so there is no standalone trf variant.
 
-| Label | Gold in test | `sm` F | `md` F | Train examples |
-| --- | --- | --- | --- | --- |
-| `LOC` | 273 | 80.24 | 84.05 | 4,954 |
-| `PER` | 297 | 65.29 | 68.18 | 4,847 |
-| `ORG` | 144 | 68.77 | 70.25 | 2,643 |
-| `DAT` | 69 | 74.45 | 76.19 | 1,323 |
-| `MON` | 10 | 73.68 | 84.21 | 205 |
-| `TIM` | 9 | 66.67 | 66.67 | 135 |
-| `PCT` | 4 | 57.14 | 33.33 | 121 |
+| Label | `sm` F | `md` F | `lg` F | `trf` F | Train examples |
+| --- | --- | --- | --- | --- | --- |
+| `LOC` | 80.24 | 84.05 | 83.66 | **87.78** | 4,954 |
+| `PER` | 65.29 | 68.18 | 72.63 | **81.88** | 4,847 |
+| `ORG` | 68.77 | 70.25 | 71.01 | **78.50** | 2,643 |
+| `DAT` | 74.45 | 76.19 | 70.83 | **82.52** | 1,323 |
+| `MON` | 73.68 | 84.21 | 88.89 | 88.89 | 205 |
+| `TIM` | 66.67 | 66.67 | 61.54 | 50.00 | 135 |
+| `PCT` | 57.14 | 33.33 | 57.14 | 33.33 | 121 |
 
-`MON`, `TIM` and `PCT` have single-digit support in the test split, so their deltas are one
-or two entities changing hands, not signal. `PER`, `LOC` and `ORG` carry the split and all
-improve with floret vectors; the `md` gain over `sm` (`ENTS_F` 71.87 to 74.71) is almost
-entirely recall (+6.08), the lexical prior static vectors give rare proper nouns that hash
-embeddings never had.
+`MON`, `TIM` and `PCT` have single-digit support in the test split, so their deltas are one or
+two entities changing hands, not signal. `PER`, `LOC` and `ORG` carry the split. The `md` gain
+over `sm` (`ENTS_F` 71.87 to 74.71) is almost entirely recall (+6.08), the lexical prior static
+vectors give rare proper nouns that hash embeddings never had. `trf` adds another +6.95 F over
+`lg`, again mostly recall (71.09 to 81.76), and its largest per-label gains are `PER` (+9.25)
+and `DAT` (+11.69).
 
 
 ## Install
