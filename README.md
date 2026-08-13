@@ -43,17 +43,16 @@ From `spacy benchmark accuracy`, stored in `metrics/`.
 | --- | --- | --- | --- | --- |
 | [`fa_dep_news_sm`](https://huggingface.co/Phazel/fa_dep_news_sm) | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser | CC BY-SA 4.0 | LEMMA 97.91 | 7.9 MB |
 | [`fa_core_news_sm`](https://huggingface.co/Phazel/fa_core_news_sm) | the above plus ner | CC BY-SA 4.0 | ENTS_F 71.87 | 13.5 MB |
-| `fa_ent_news_sm` | `ner` alone (own embedded tok2vec) | CC BY-SA 4.0 | ENTS_F 71.87 | 5.9 MB |
-| `fa_dep_news_md` | same as `fa_dep_news_sm`, plus floret vectors | CC BY-SA 4.0 | LEMMA 97.96 | 62.6 MB |
-| `fa_core_news_md` | same as `fa_core_news_sm`, plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 68.5 MB |
+| [`fa_ent_news_sm`](https://huggingface.co/Phazel/fa_ent_news_sm) | `ner` alone (own embedded tok2vec) | CC BY-SA 4.0 | ENTS_F 71.87 | 5.9 MB |
+| [`fa_dep_news_md`](https://huggingface.co/Phazel/fa_dep_news_md) | same as `fa_dep_news_sm`, plus floret vectors | CC BY-SA 4.0 | LEMMA 97.96 | 62.6 MB |
+| [`fa_core_news_md`](https://huggingface.co/Phazel/fa_core_news_md) | same as `fa_core_news_sm`, plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 68.5 MB |
 | [`fa_ent_news_md`](https://huggingface.co/Phazel/fa_ent_news_md) | `ner` alone (own embedded tok2vec), plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 60.6 MB |
 | [`fa_dep_news_lg`](https://huggingface.co/Phazel/fa_dep_news_lg) | same as `fa_dep_news_sm`, plus full-wiki floret vectors | CC BY-SA 4.0 | LEMMA 98.08 | 229.3 MB |
 | [`fa_core_news_lg`](https://huggingface.co/Phazel/fa_core_news_lg) | same as `fa_core_news_sm`, plus full-wiki floret vectors | CC BY-SA 4.0 | ENTS_F 75.94 | 235.2 MB |
 | [`fa_ent_news_lg`](https://huggingface.co/Phazel/fa_ent_news_lg) | `ner` alone (own embedded tok2vec), plus full-wiki floret vectors | CC BY-SA 4.0 | ENTS_F 75.94 | 227.3 MB |
 | [`fa_core_news_trf`](https://huggingface.co/Phazel/fa_core_news_trf) | transformer, tagger, morphologizer, trainable_lemmatizer, parser, ner | see §8, encoder unlicensed | ENTS_F 82.89, LAS 90.79 | 608.2 MB |
 
-`fa_ent_news_sm`, `fa_dep_news_md` and `fa_core_news_md` are built by `project.yml` but not
-published yet. Standalone floret vector packages:
+Standalone floret vector packages:
 [`fa_floret_400k`](https://huggingface.co/Phazel/fa_floret_400k),
 [`fa_floret_full_wiki`](https://huggingface.co/Phazel/fa_floret_full_wiki).
 
