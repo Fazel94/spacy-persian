@@ -508,7 +508,7 @@ warmup discarded. Raw records in `metrics/throughput-*.json`.
 | `sm` | 5,484 | 10,235 | | |
 | `md` | 5,408 | 9,058 | | |
 | `lg` | 4,715 | 9,215 | | |
-| `trf` | 187 | 1,158 | 336 | 8,320 |
+| `trf` | 187 | 1,106 | 336 | 8,320 |
 
 The CPU tiers sit within about 15% of each other, less than their vector-table sizes suggest,
 so the tok2vec lookup is not the bottleneck; the parser and lemmatizer are. Run-to-run spread

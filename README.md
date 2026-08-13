@@ -100,7 +100,7 @@ timing the pipe only, warmup discarded. Reproduce with
 | `sm` | 5,484 | 10,235 | |
 | `md` | 5,408 | 9,058 | |
 | `lg` | 4,715 | 9,215 | |
-| `trf` | 187 | 1,158 | 8,320 |
+| `trf` | 187 | 1,106 | 8,320 |
 
 `trf` is 29x slower than `sm` on the same CPU. The T4 and Xeon figures come from one Colab VM,
 a 25x GPU speedup. The CPU tiers sit within 15% of each other, so the bottleneck is the parser
