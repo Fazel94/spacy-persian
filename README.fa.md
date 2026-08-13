@@ -25,6 +25,9 @@ print(doc.ents)   # (محمدرضا شجریان, مشهد)
 بسته‌های منتشرشده روی Hugging Face:
 [`fa_core_news_sm`](https://huggingface.co/Phazel/fa_core_news_sm) ·
 [`fa_dep_news_sm`](https://huggingface.co/Phazel/fa_dep_news_sm) ·
+[`fa_ent_news_sm`](https://huggingface.co/Phazel/fa_ent_news_sm) ·
+[`fa_core_news_md`](https://huggingface.co/Phazel/fa_core_news_md) ·
+[`fa_dep_news_md`](https://huggingface.co/Phazel/fa_dep_news_md) ·
 [`fa_ent_news_md`](https://huggingface.co/Phazel/fa_ent_news_md) ·
 [`fa_core_news_lg`](https://huggingface.co/Phazel/fa_core_news_lg) ·
 [`fa_dep_news_lg`](https://huggingface.co/Phazel/fa_dep_news_lg) ·
