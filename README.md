@@ -41,13 +41,21 @@ Compared against Hazm (the most-used Persian toolkit) and `en_core_web_sm` (Engl
 From `spacy benchmark accuracy`, stored in `metrics/`.
 | Package | Components | Licence | Score | Wheel |
 | --- | --- | --- | --- | --- |
-| `fa_dep_news_sm` | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser | CC BY-SA 4.0 | LEMMA 97.91 | 7.5 MB |
-| `fa_core_news_sm` | the above plus ner | CC BY-SA 4.0 | ENTS_F 71.87 | 13 MB |
-| `fa_ent_news_sm` | `ner` alone (own embedded tok2vec) | CC BY-SA 4.0 | ENTS_F 71.87 | 5.6 MB |
-| `fa_dep_news_md` | same as `fa_dep_news_sm`, plus floret vectors | CC BY-SA 4.0 | LEMMA 97.96 | 62 MB |
-| `fa_core_news_md` | same as `fa_core_news_sm`, plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 68 MB |
-| `fa_ent_news_md` | `ner` alone (own embedded tok2vec), plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 58 MB |
-| `fa_core_news_trf` | transformer, tagger, morphologizer, trainable_lemmatizer, parser, ner | see §8, encoder unlicensed | ENTS_F 82.89, LAS 90.79 | 608 MB |
+| [`fa_dep_news_sm`](https://huggingface.co/Phazel/fa_dep_news_sm) | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser | CC BY-SA 4.0 | LEMMA 97.91 | 7.9 MB |
+| [`fa_core_news_sm`](https://huggingface.co/Phazel/fa_core_news_sm) | the above plus ner | CC BY-SA 4.0 | ENTS_F 71.87 | 13.5 MB |
+| `fa_ent_news_sm` | `ner` alone (own embedded tok2vec) | CC BY-SA 4.0 | ENTS_F 71.87 | 5.9 MB |
+| `fa_dep_news_md` | same as `fa_dep_news_sm`, plus floret vectors | CC BY-SA 4.0 | LEMMA 97.96 | 62.6 MB |
+| `fa_core_news_md` | same as `fa_core_news_sm`, plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 68.5 MB |
+| [`fa_ent_news_md`](https://huggingface.co/Phazel/fa_ent_news_md) | `ner` alone (own embedded tok2vec), plus floret vectors | CC BY-SA 4.0 | ENTS_F 74.71 | 60.6 MB |
+| [`fa_dep_news_lg`](https://huggingface.co/Phazel/fa_dep_news_lg) | same as `fa_dep_news_sm`, plus full-wiki floret vectors | CC BY-SA 4.0 | LEMMA 98.08 | 229.3 MB |
+| [`fa_core_news_lg`](https://huggingface.co/Phazel/fa_core_news_lg) | same as `fa_core_news_sm`, plus full-wiki floret vectors | CC BY-SA 4.0 | ENTS_F 75.94 | 235.2 MB |
+| [`fa_ent_news_lg`](https://huggingface.co/Phazel/fa_ent_news_lg) | `ner` alone (own embedded tok2vec), plus full-wiki floret vectors | CC BY-SA 4.0 | ENTS_F 75.94 | 227.3 MB |
+| [`fa_core_news_trf`](https://huggingface.co/Phazel/fa_core_news_trf) | transformer, tagger, morphologizer, trainable_lemmatizer, parser, ner | see §8, encoder unlicensed | ENTS_F 82.89, LAS 90.79 | 608.2 MB |
+
+`fa_ent_news_sm`, `fa_dep_news_md` and `fa_core_news_md` are built by `project.yml` but not
+published yet. Standalone floret vector packages:
+[`fa_floret_400k`](https://huggingface.co/Phazel/fa_floret_400k),
+[`fa_floret_full_wiki`](https://huggingface.co/Phazel/fa_floret_full_wiki).
 
 The `md` tier adds a 50k x 300d floret vector table trained on 400k Persian documents. Its
 config differs from `sm` by exactly one line (`include_static_vectors`), so the columns below
@@ -96,10 +104,9 @@ timing the pipe only, warmup discarded. Reproduce with
 | `trf` | 187 | 1,158 | 8,320 |
 
 `trf` is 29x slower than `sm` on the same CPU. The T4 and Xeon figures come from one Colab VM,
-a 25x GPU speedup. On the 940MX batch 32 fits in 2 GB, and torch must be a `cu126` build:
-sm_50 kernels were dropped from the `cu128`/`cu129` wheels at torch 2.8. The CPU tiers sit
-within 15% of each other, so the bottleneck is the parser and lemmatizer, not the tok2vec
-lookup. Laptop spread is about 10% with thermal state.
+a 25x GPU speedup. The CPU tiers sit within 15% of each other, so the bottleneck is the parser
+and lemmatizer, not the tok2vec lookup. Laptop spread is about 10% with thermal state. Running
+`trf` on the 940MX needs a specific torch build, see `docs/MODELS.md` §9.
 
 ## Named entity recognition
 

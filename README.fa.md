@@ -22,6 +22,18 @@ doc = nlp("محمدرضا شجریان در مشهد به دنیا آمد.")
 print(doc.ents)   # (محمدرضا شجریان, مشهد)
 ```
 
+بسته‌های منتشرشده روی Hugging Face:
+[`fa_core_news_sm`](https://huggingface.co/Phazel/fa_core_news_sm) ·
+[`fa_dep_news_sm`](https://huggingface.co/Phazel/fa_dep_news_sm) ·
+[`fa_ent_news_md`](https://huggingface.co/Phazel/fa_ent_news_md) ·
+[`fa_core_news_lg`](https://huggingface.co/Phazel/fa_core_news_lg) ·
+[`fa_dep_news_lg`](https://huggingface.co/Phazel/fa_dep_news_lg) ·
+[`fa_ent_news_lg`](https://huggingface.co/Phazel/fa_ent_news_lg) ·
+[`fa_core_news_trf`](https://huggingface.co/Phazel/fa_core_news_trf).
+جدول‌های بردار floret جداگانه:
+[`fa_floret_400k`](https://huggingface.co/Phazel/fa_floret_400k) ·
+[`fa_floret_full_wiki`](https://huggingface.co/Phazel/fa_floret_full_wiki).
+
 ## کارایی
 
 ارزیابی با `spacy benchmark accuracy` روی بخش آزمون همان پیکره انجام شده است:
@@ -68,10 +80,9 @@ print(doc.ents)   # (محمدرضا شجریان, مشهد)
 | `trf` | ۱۸۷ | ۱٬۱۵۸ | ۸٬۳۲۰ |
 
 ردهٔ `trf` روی یک پردازنده ۲۹ برابر کندتر از `sm` است. عددهای T4 و Xeon از یک ماشین Colab
-می‌آیند، یعنی شتاب ۲۵ برابری. روی 940MX دستهٔ ۳۲ در ۲ گیگابایت جا می‌شود و torch باید نسخهٔ
-`cu126` باشد، چون هستهٔ sm_50 از نسخه‌های `cu128`/`cu129` در torch 2.8 حذف شده است. فاصلهٔ
-رده‌های پردازنده‌ای کمتر از ۱۵ درصد است، پس گلوگاه تجزیه‌گر و واژه‌یاب است نه جست‌وجوی tok2vec.
-پراکندگی اجراها روی لپ‌تاپ حدود ۱۰± درصد است.
+می‌آیند، یعنی شتاب ۲۵ برابری. فاصلهٔ رده‌های پردازنده‌ای کمتر از ۱۵ درصد است، پس گلوگاه
+تجزیه‌گر و واژه‌یاب است نه جست‌وجوی tok2vec. پراکندگی اجراها روی لپ‌تاپ حدود ۱۰± درصد است.
+اجرای `trf` روی 940MX به نسخهٔ مشخصی از torch نیاز دارد؛ بخش ۹ از `docs/MODELS.md` را ببینید.
 
 گام‌های تبدیل پیکره، آموزش، ارزیابی و بسته‌بندی در [`project.yml`](project.yml) تعریف شده‌اند.
 توضیح بیشتر دربارهٔ گزینش پیکره و پروانه‌ها در [`docs/MODELS.md`](docs/MODELS.md) و شرح انگلیسی
