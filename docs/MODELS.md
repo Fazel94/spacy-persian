@@ -518,10 +518,7 @@ every number, so treat small differences as noise.
 `trf` is 29x slower than `sm` on the same CPU. The T4 and Xeon columns come from the same Colab
 VM, giving a clean 25x GPU speedup for the transformer.
 
-The 940MX runs `trf` at 1,158 words/s, 6.2x its host CPU, and fits batch 32 inside 2 GB without
-running out of memory, so the GPU note in §3.4 that dismissed this card for transformer work
-holds only for training, not inference. It does need a `cu126` build of torch: Maxwell sm_50
-kernels were dropped from the `cu128` and `cu129` wheels starting torch 2.8, and `pip install
-torch` now resolves to one of those. `.venv-trf-gpu` pins `torch==2.7.1+cu126` for this reason,
-and is kept separate from `.venv` because torch's pinned `nvidia-*` wheels would downgrade the
-CUDA libraries cupy runs on there from 12.9 to 12.6.
+`trf` on the 940MX needs a `cu126` torch build. sm_50 kernels were dropped from the `cu128` and
+`cu129` wheels at torch 2.8, which is what `pip install torch` resolves to. `.venv-trf-gpu` pins
+`torch==2.7.1+cu126`, separate from `.venv` because torch's pinned `nvidia-*` wheels downgrade
+the CUDA libraries cupy uses there from 12.9 to 12.6. Batch 32 fits in 2 GB.

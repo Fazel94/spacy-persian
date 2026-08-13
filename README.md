@@ -95,12 +95,11 @@ timing the pipe only, warmup discarded. Reproduce with
 | `lg` | 4,715 | 9,215 | |
 | `trf` | 187 | 1,158 | 8,320 |
 
-`trf` runs 29x slower than `sm` on the same CPU, and 25x faster on a T4 than on that VM's own
-Xeon (336 words/s), so a GPU is a requirement rather than an optimization. Even a 2 GB 940MX
-gives 6.2x over its host CPU and fits batch 32 without running out of memory, though it needs
-a `cu126` torch build: sm_50 kernels were dropped from the 2.8 `cu128`/`cu129` wheels. The CPU
-tiers sit within 15% of each other, so the tok2vec lookup is not the bottleneck; the parser and
-lemmatizer are. Laptop spread is about 10% with thermal state.
+`trf` is 29x slower than `sm` on the same CPU. The T4 and Xeon figures come from one Colab VM,
+a 25x GPU speedup. On the 940MX batch 32 fits in 2 GB, and torch must be a `cu126` build:
+sm_50 kernels were dropped from the `cu128`/`cu129` wheels at torch 2.8. The CPU tiers sit
+within 15% of each other, so the bottleneck is the parser and lemmatizer, not the tok2vec
+lookup. Laptop spread is about 10% with thermal state.
 
 ## Named entity recognition
 
