@@ -9,6 +9,10 @@ packages/
 # Separate env for `spacy huggingface-hub push`: it caps typer<0.8, which breaks the
 # spaCy CLI in the training venv. See .omp/AGENTS.md.
 .venv-publish/
+# Local envs for verifying and benchmarking the trf wheel: CPU-only torch, and a cu126 build
+# for the 940MX. Kept out of .venv so a CUDA-lib downgrade cannot reach the training env.
+.venv-trf/
+.venv-trf-gpu/
 __pycache__/
 *.pyc
 # Personal scratch list, not part of the project

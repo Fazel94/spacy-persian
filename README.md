@@ -53,20 +53,27 @@ The `md` tier adds a 50k x 300d floret vector table trained on 400k Persian docu
 config differs from `sm` by exactly one line (`include_static_vectors`), so the columns below
 isolate what the vectors buy. Full breakdown in `docs/MODELS.md` §6.
 
-| Metric | `sm` | `md` | Reference |
-| --- | --- | --- | --- |
-| `TOKEN_ACC` / `TOKEN_F` | 99.96 / 99.11 | 99.96 / 99.11 | |
-| `TAG_ACC` (XPOS) | 95.96 | 96.25 | |
-| `POS_ACC` (UPOS) | 96.24 | 96.64 | |
-| `MORPH_ACC` | 96.29 | 96.64 | |
-| `LEMMA_ACC` | 97.91 | 97.96 | |
-| `SENTS_F` | 99.25 | 99.28 | |
-| `DEP_UAS` | 89.69 | 90.52 | hazm+ParsBERT: 92.46 |
-| `DEP_LAS` | 85.15 | 86.34 | hazm+ParsBERT: 89.34 |
-| `ENTS_P` | 77.67 | 76.56 | |
-| `ENTS_R` | 66.87 | 72.95 | |
-| `ENTS_F` | 71.87 | 74.71 | |
-| Speed | ~9,250 words/s | ~7,700 words/s | |
+| Metric | `sm` | `md` | `lg` | `trf` | Reference |
+| --- | --- | --- | --- | --- | --- |
+| `TOKEN_ACC` / `TOKEN_F` | 99.96 / 99.11 | 99.96 / 99.11 | 99.96 / 99.11 | 99.96 / 99.11 | |
+| `TAG_ACC` (XPOS) | 95.96 | 96.25 | 96.55 | **97.62** | |
+| `POS_ACC` (UPOS) | 96.24 | 96.64 | 96.68 | **97.63** | |
+| `MORPH_ACC` | 96.29 | 96.64 | 96.70 | **97.82** | |
+| `LEMMA_ACC` | 97.91 | 97.96 | **98.08** | 97.31 | |
+| `SENTS_F` | 99.25 | **99.28** | 99.18 | 97.35 | |
+| `DEP_UAS` | 89.69 | 90.52 | 90.96 | **93.87** | hazm+ParsBERT: 92.46 |
+| `DEP_LAS` | 85.15 | 86.34 | 86.60 | **90.79** | hazm+ParsBERT: 89.34 |
+| `ENTS_P` | 77.67 | 76.56 | 81.51 | **84.06** | |
+| `ENTS_R` | 66.87 | 72.95 | 71.09 | **81.76** | |
+| `ENTS_F` | 71.87 | 74.71 | 75.94 | **82.89** | |
+| Speed (940MX, batch 32) | 10,235 words/s | 9,058 words/s | 9,215 words/s | see §Throughput | |
+| Wheel size | 13.5 MB | 68.5 MB | 235 MB | 608 MB | |
+
+`trf` fine-tunes ParsBERT and wins everywhere except lemmatization and sentence
+segmentation, where `lg`'s edit-tree lemmatizer over floret subwords still leads. It is the
+only tier to pass the hazm+ParsBERT `DEP_LAS` reference of 89.34. It needs a GPU and its
+encoder has no stated licence, so it is not redistributable; `docs/MODELS.md` §8 has both
+caveats.
 
 Entity scores are `fa_core_news_*` on the PerDT NER test split; per-label breakdown and
 caveats are in [Named entity recognition](#named-entity-recognition).
@@ -75,6 +82,31 @@ caveats are in [Named entity recognition](#named-entity-recognition).
 For comparison, `en_core_web_sm` scores TAG 97, LAS 90, ENTS_F 84 on a larger, cleaner corpus.
 Trained on a 4-core i5-7200U with no GPU: `sm` 1h27m syntax + 17 min NER, `md` 1h54m syntax
 + 25 min NER (the two `md` runs overlapped, so wall clock overstates each).
+
+## Throughput
+
+Median of repeated `nlp.pipe` passes over the 146-document PerDT test split (23,825 tokens),
+timing the pipe only, warmup discarded. Reproduce with
+`python scripts/benchmark_throughput.py <model> --gpu-id <n>`; raw records are in
+`metrics/throughput-*.json`.
+
+| Tier | CPU, i5-7200U | GPU, GeForce 940MX | GPU, Tesla T4 |
+| --- | ---: | ---: | ---: |
+| `sm` | 5,484 | 10,235 | |
+| `md` | 5,408 | 9,058 | |
+| `lg` | 4,715 | 9,215 | |
+| `trf` | 187 | | 8,320 |
+
+The `trf` tier is a different kind of thing: 187 words/s on the same laptop CPU that runs
+`sm` at 5,484, so about 29x slower. On a T4 it reaches 8,320, and on that VM's own Xeon it
+manages 336, a 25x GPU speedup. Treat GPU as a requirement rather than an optimization.
+The 940MX cannot run `trf` at all, since current PyTorch wheels have dropped its sm_50
+compute capability.
+
+`sm`, `md` and `lg` are within about 15% of each other on CPU, which is smaller than the
+gap in vector-table size suggests: the tok2vec is not the bottleneck, the parser and
+lemmatizer are. Run-to-run spread on the laptop is roughly +/-10% depending on thermal
+state, so treat differences under that as noise.
 
 ## Named entity recognition
 

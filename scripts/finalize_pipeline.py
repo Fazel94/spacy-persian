@@ -73,11 +73,15 @@ FLORET_LG = {
     "author": "Kiyarash Fazeli",
     "license": "CC BY-SA 4.0",
 }
-TRANSFORMER = {
-    "name": "HooshvareLab/roberta-fa-zwnj-base",
-    "url": "https://huggingface.co/HooshvareLab/roberta-fa-zwnj-base",
-    "author": "Hooshvare Team",
-    "license": "Apache-2.0",
+# Whatever encoder the config actually names wins; hardcoding one would silently mislabel a
+# wheel the moment configs/fa_core_news_trf.cfg's `name` changes. Licences are recorded per
+# encoder because they differ sharply, and two of the Persian ones have none at all.
+ENCODER_LICENSES = {
+    "HooshvareLab/roberta-fa-zwnj-base": ("Hooshvare Team", "Apache-2.0"),
+    "HooshvareLab/bert-fa-zwnj-base": ("Hooshvare Team", "Apache-2.0"),
+    "m3hrdadfi/albert-fa-base-v2": ("Mehrdad Farahani", "Apache-2.0"),
+    "HooshvareLab/bert-base-parsbert-uncased": ("Hooshvare Team", "no licence stated on the model card"),
+    "sbunlp/fabert": ("SBU NLP Lab", "no licence stated on the model card"),
 }
 
 NER_NOTE = (
@@ -126,12 +130,48 @@ def vectors_note_lg(nlp):
     )
 
 
-TRANSFORMER_NOTE = (
-    "This is the `trf` tier: no static vectors; contextual embeddings instead come from a "
-    "fine-tuned HooshvareLab/roberta-fa-zwnj-base (Apache-2.0) transformer via "
-    "spacy-transformers. Not ParsBERT: its model card carries no licence. GPU is recommended "
-    "for both training and inference."
-)
+def encoder_name(nlp):
+    """Read the encoder out of the trained pipeline's own config."""
+    try:
+        return nlp.config["components"]["transformer"]["model"]["name"]
+    except KeyError:
+        raise SystemExit(
+            "--size trf expects a pipeline with a `transformer` component whose model names "
+            f"an encoder; got pipeline {list(nlp.pipe_names)}"
+        )
+
+
+def transformer_source(nlp):
+    name = encoder_name(nlp)
+    author, license_ = ENCODER_LICENSES.get(name, ("unknown", "unknown, check the model card"))
+    return {
+        "name": name,
+        "url": f"https://huggingface.co/{name}",
+        "author": author,
+        "license": license_,
+    }
+
+
+def transformer_note(nlp):
+    name = encoder_name(nlp)
+    _, license_ = ENCODER_LICENSES.get(name, ("unknown", "unknown, check the model card"))
+    note = (
+        f"This is the `trf` tier: no static vectors. Contextual embeddings come from a "
+        f"fine-tuned {name} ({license_}) via spacy-transformers, shared by every component "
+        f"through a TransformerListener, so one encoder forward pass serves the tagger, "
+        f"morphologizer, lemmatizer, parser and ner. Unlike the sm/md/lg tiers the ner is "
+        f"trained jointly rather than sourced, because a shared encoder cannot be fine-tuned "
+        f"twice and then merged. GPU is strongly recommended for both training and inference."
+    )
+    if "no licence" in license_ or license_.startswith("unknown"):
+        note += (
+            f" REDISTRIBUTION WARNING: {name} states no licence, so this wheel embeds weights "
+            f"whose terms are unknown and must not be republished. Retrain against "
+            f"HooshvareLab/roberta-fa-zwnj-base (Apache-2.0) for a publishable artifact."
+        )
+    return note
+
+
 # CC BY-SA 4.0 on the treebank propagates to anything derived from it.
 PERDT_LICENSE = "CC BY-SA 4.0"
 ATTRIBUTION = (
@@ -222,8 +262,15 @@ def main():
         sources.append(FLORET_LG)
         notes = " ".join([notes, vectors_note_lg(nlp)])
     elif args.size == "trf":
-        sources.append(TRANSFORMER)
-        notes = " ".join([notes, TRANSFORMER_NOTE])
+        sources.append(transformer_source(nlp))
+        notes = " ".join([notes, transformer_note(nlp)])
+        # The stock description advertises a CPU tok2vec pipeline, which is wrong here.
+        description = (
+            "Persian pipeline built on a fine-tuned "
+            f"{encoder_name(nlp)} transformer. Components: transformer, tagger, "
+            "morphologizer, trainable_lemmatizer, parser, ner. Entity labels: PER, LOC, ORG, "
+            "DAT, MON, TIM, PCT. GPU recommended."
+        )
     if args.add_ner:
         ner_nlp = spacy.load(args.add_ner)
         if ner_nlp.pipe_names != ["ner"]:

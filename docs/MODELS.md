@@ -424,10 +424,98 @@ at step 7,200, ~13 min, in line with `sm`/`md`.
 throughput dropped as expected (9,387 / 6,655 words/s vs `sm`'s 12,505 / 8,834, `md`'s
 10,493 / 7,269 words/s; the larger table costs real lookup time), but the standalone `ent_lg` run
 showed 15,614 words/s, higher than `sm`/`md`'s ent runs despite an identical `ner`
-architecture and the same larger table. Treat that one figure as single-run CPU contention
-noise on shared hardware, not a real speedup, and re-benchmark before citing it.
+architecture and the same larger table. That figure was single-run CPU contention noise on
+shared hardware, not a real speedup. Those numbers are superseded by §9, which times
+`nlp.pipe` alone instead of reading a scoring-contaminated figure off the benchmark command.
 
 For a 4x download over `md` (and up to 39x over `sm`) buying +1.45 DEP_LAS / +1.23 ENTS_F
 over `md` (+1.45 DEP_LAS / +4.08 ENTS_F over `sm`), `lg` is a server/offline-batch pipeline,
 not something to ship to a browser or a cold-start function. All three variants (`dep`,
 `ent`, `core`) are built and evaluated at this tier, same as `md`.
+
+## 8. The `trf` tier: one fine-tuned ParsBERT
+
+`configs/fa_core_news_trf.cfg` replaces the static-vector tok2vec with
+`HooshvareLab/bert-base-parsbert-uncased`, fine-tuned during training. Trained on a rented
+Colab T4 in 1h58m: 3000 steps, no early stop, the full learning-rate anneal.
+
+### One corpus, because a transformer cannot be trained twice
+
+The `sm`/`md`/`lg` tiers train `ner` as its own pipeline with its own embedded tok2vec and
+then source it into the dep model. That is affordable because a hash-embed tok2vec is cheap.
+A 162M-parameter encoder is not: fine-tuning it once per component would double GPU cost and
+put two encoders in one wheel, and sourcing the second would collide on the `transformer`
+component name.
+
+So every component listens to a single shared transformer through a `TransformerListener`,
+which requires one corpus carrying both the UD and NER annotation layers on the same `Doc`.
+`scripts/merge_joint_corpus.py` builds it. The fusion is exact rather than approximate:
+`corpus/perdt-ner/` was converted from the same `--merge-subtokens` CoNLL-U as
+`corpus/merged/` with the same `--n-sents`, so the two DocBins are token-for-token identical.
+The script asserts that per document and copies only `doc.ents` across. Char offsets are not
+usable for the copy, because the two converters differ in trailing whitespace, which shifts
+`char_span` off the token grid and returns None; the transfer goes by token index.
+
+### Results against `lg`
+
+| Metric | `lg` | `trf` | Delta |
+| --- | ---: | ---: | ---: |
+| `TAG_ACC` | 96.55 | 97.62 | +1.07 |
+| `POS_ACC` | 96.68 | 97.63 | +0.95 |
+| `MORPH_ACC` | 96.70 | 97.82 | +1.12 |
+| `LEMMA_ACC` | 98.08 | 97.31 | -0.77 |
+| `DEP_UAS` | 90.96 | 93.87 | +2.91 |
+| `DEP_LAS` | 86.60 | 90.79 | +4.19 |
+| `SENTS_F` | 99.18 | 97.35 | -1.83 |
+| `ENTS_F` | 75.94 | 82.89 | +6.95 |
+
+The parser gain is the headline: `DEP_LAS` 90.79 passes the hazm+ParsBERT reference of 89.34,
+which no CPU tier reached. NER gains 6.95 F, almost all of it recall (71.09 to 81.76) at
+higher precision, which is what a pretrained encoder buys on the difflib-transferred layer.
+
+Two metrics regress. `SENTS_F` drops 1.83, most likely because `strided_spans` at
+`window = 128, stride = 96` leaves 32 tokens of overlap, so tokens near a span edge see
+truncated right context where the CPU tiers' tok2vec sees the whole doc. `LEMMA_ACC` drops
+0.77 and is the one metric where a static-vector tier wins: `trainable_lemmatizer` reads a
+single `reduce_mean`-pooled vector per token, while `lg` runs an edit-tree lemmatizer over
+floret subwords that model Persian orthography directly. Neither is a training-length
+problem; see TODO.md for the evidence that more steps do not help.
+
+### Cost, and the licence problem
+
+608 MB wheel, 2.6x `lg` and 45x `sm`. 187 words/s on the laptop CPU against `sm`'s 5,484
+(§9), so this tier needs a GPU in production rather than merely benefiting from one.
+
+ParsBERT's model card states no licence. §3.4 picked `HooshvareLab/roberta-fa-zwnj-base`
+(Apache-2.0) for exactly this reason, and the published wheel therefore embeds weights whose
+redistribution terms are unknown. `scripts/finalize_pipeline.py` reads the encoder name out
+of the trained config and writes a redistribution warning into `meta.json` when the encoder
+has no licence, so the artifact carries the caveat. Retraining on the Apache-2.0 encoder is a
+one-line change to `name` in the config.
+
+## 9. Throughput
+
+Measured with `scripts/benchmark_throughput.py`, which times `nlp.pipe` and nothing else.
+The `words/s` printed by `spacy benchmark accuracy` runs the Scorer's per-token alignment
+inside the timed region, which is why the §7 numbers disagree with these and why one of them
+was impossible.
+
+Median of repeated passes over the 146-document PerDT test split (23,825 tokens), batch 32,
+warmup discarded. Raw records in `metrics/throughput-*.json`.
+
+| Tier | CPU, i5-7200U | GPU, GeForce 940MX | CPU, Xeon @ 2.00GHz | GPU, Tesla T4 |
+| --- | ---: | ---: | ---: | ---: |
+| `sm` | 5,484 | 10,235 | | |
+| `md` | 5,408 | 9,058 | | |
+| `lg` | 4,715 | 9,215 | | |
+| `trf` | 187 | | 336 | 8,320 |
+
+The CPU tiers sit within about 15% of each other, less than their vector-table sizes suggest,
+so the tok2vec lookup is not the bottleneck; the parser and lemmatizer are. Run-to-run spread
+on the laptop is roughly 10% either way with thermal state, and a background rsync halved
+every number, so treat small differences as noise.
+
+`trf` is 29x slower than `sm` on the same CPU. The T4 column and the Xeon column come from
+the same Colab VM, giving a clean 25x GPU speedup for the transformer. The 940MX column is
+empty for `trf` because current PyTorch wheels dropped sm_50, so that GPU cannot run it at
+all.

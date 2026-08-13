@@ -41,6 +41,10 @@ vars:
   core_lg_package_name: "core_news_lg"
   floret_lg_wheel: "fa_floret-0.1.0-py3-none-any-full-wiki-200k-5epoch.whl"
   vectors_lg_dir: "assets/vectors/fa_floret_lg"
+  # trf tier: one fine-tuned ParsBERT shared by every component. Needs a real GPU; the
+  # 940MX cannot fine-tune a 162M-parameter encoder, so `gpu_trf` is set for a rented card.
+  core_trf_package_name: "core_news_trf"
+  gpu_trf: 0
 
 directories:
   - "assets"
@@ -125,6 +129,17 @@ workflows:
     - compare-md
     - package-md
     - smoke-md
+  # The trf tier: one fine-tuned ParsBERT shared by every component, including ner, so it
+  # trains against a single joint corpus instead of the sm/md/lg dep+ner split. GPU only.
+  trf:
+    - merge-joint
+    - debug-data-trf
+    - train-trf
+    - finalize-trf
+    - evaluate-trf
+    - finalize-meta-trf
+    - package-trf
+    - smoke-trf
 
 commands:
   - name: "inspect"
@@ -603,6 +618,92 @@ commands:
     deps:
       - "training/fa_dep_news_md"
       - "training/fa_core_news_md"
+
+  # ---------------------------------------------------------------- trf tier
+
+  - name: "merge-joint"
+    help: >
+      Fuse the UD layer and the transferred NER layer onto one set of Docs. The trf tier
+      shares a single transformer across every component, so it needs one corpus carrying
+      both annotation layers; the two DocBins are token-for-token identical by construction
+      and the script asserts it.
+    script:
+      - "python scripts/merge_joint_corpus.py --ud-dir corpus/merged --ner-dir corpus/perdt-ner --out corpus/joint"
+    deps:
+      - "corpus/merged/${vars.treebank}-ud-train.spacy"
+      - "corpus/perdt-ner/train.spacy"
+      - "scripts/merge_joint_corpus.py"
+    outputs:
+      - "corpus/joint/train.spacy"
+      - "corpus/joint/dev.spacy"
+      - "corpus/joint/test.spacy"
+
+  - name: "debug-data-trf"
+    help: "Validate the joint corpus against the trf config before renting GPU time"
+    script:
+      - "python -m spacy debug data configs/fa_core_news_trf.cfg --paths.train corpus/joint/train.spacy --paths.dev corpus/joint/dev.spacy"
+    deps:
+      - "corpus/joint/train.spacy"
+      - "configs/fa_core_news_trf.cfg"
+
+  - name: "train-trf"
+    help: "Fine-tune ParsBERT with tagger + morphologizer + lemmatizer + parser + ner listening"
+    script:
+      - "python -m spacy train configs/fa_core_news_trf.cfg --output training/core-trf --paths.train corpus/joint/train.spacy --paths.dev corpus/joint/dev.spacy --gpu-id ${vars.gpu_trf}"
+    deps:
+      - "corpus/joint/train.spacy"
+      - "corpus/joint/dev.spacy"
+      - "configs/fa_core_news_trf.cfg"
+    outputs:
+      - "training/core-trf/model-best"
+
+  - name: "finalize-trf"
+    help: "Write fa_core_news_trf metadata onto the trained model"
+    script:
+      - "python scripts/finalize_pipeline.py training/core-trf/model-best training/fa_core_news_trf --variant core --size trf --version ${vars.package_version}"
+    deps:
+      - "training/core-trf/model-best"
+      - "scripts/finalize_pipeline.py"
+    outputs:
+      - "training/fa_core_news_trf"
+
+  - name: "evaluate-trf"
+    help: "Score fa_core_news_trf on the held-out UD and NER test splits"
+    script:
+      - "python -m spacy benchmark accuracy training/fa_core_news_trf corpus/merged/${vars.treebank}-ud-test.spacy --output metrics/trf-core-ud-test.json --gpu-id ${vars.gpu_trf}"
+      - "python -m spacy benchmark accuracy training/fa_core_news_trf corpus/perdt-ner/test.spacy --output metrics/trf-perdt-ner-test.json --gpu-id ${vars.gpu_trf}"
+    deps:
+      - "training/fa_core_news_trf"
+      - "corpus/merged/${vars.treebank}-ud-test.spacy"
+      - "corpus/perdt-ner/test.spacy"
+    outputs:
+      - "metrics/trf-core-ud-test.json"
+      - "metrics/trf-perdt-ner-test.json"
+
+  - name: "finalize-meta-trf"
+    help: "Fold the trf test scores into meta.json"
+    script:
+      - "python scripts/finalize_pipeline.py training/core-trf/model-best training/fa_core_news_trf --variant core --size trf --version ${vars.package_version} --ud-metrics metrics/trf-core-ud-test.json --ner-metrics metrics/trf-perdt-ner-test.json"
+    deps:
+      - "metrics/trf-core-ud-test.json"
+      - "metrics/trf-perdt-ner-test.json"
+      - "scripts/finalize_pipeline.py"
+
+  - name: "package-trf"
+    help: "Build the installable fa_core_news_trf wheel + sdist"
+    script:
+      - "python -m spacy package training/fa_core_news_trf packages --name ${vars.core_trf_package_name} --version ${vars.package_version} --build sdist,wheel --force"
+    deps:
+      - "training/fa_core_news_trf"
+    outputs:
+      - "packages/${vars.lang}_${vars.core_trf_package_name}-${vars.package_version}"
+
+  - name: "smoke-trf"
+    help: "Load fa_core_news_trf and run it over real Persian text"
+    script:
+      - "python scripts/smoke_test.py training/fa_core_news_trf"
+    deps:
+      - "training/fa_core_news_trf"
 
 
   - name: "clean"
