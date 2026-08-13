@@ -508,14 +508,20 @@ warmup discarded. Raw records in `metrics/throughput-*.json`.
 | `sm` | 5,484 | 10,235 | | |
 | `md` | 5,408 | 9,058 | | |
 | `lg` | 4,715 | 9,215 | | |
-| `trf` | 187 | | 336 | 8,320 |
+| `trf` | 187 | 1,158 | 336 | 8,320 |
 
 The CPU tiers sit within about 15% of each other, less than their vector-table sizes suggest,
 so the tok2vec lookup is not the bottleneck; the parser and lemmatizer are. Run-to-run spread
 on the laptop is roughly 10% either way with thermal state, and a background rsync halved
 every number, so treat small differences as noise.
 
-`trf` is 29x slower than `sm` on the same CPU. The T4 column and the Xeon column come from
-the same Colab VM, giving a clean 25x GPU speedup for the transformer. The 940MX column is
-empty for `trf` because current PyTorch wheels dropped sm_50, so that GPU cannot run it at
-all.
+`trf` is 29x slower than `sm` on the same CPU. The T4 and Xeon columns come from the same Colab
+VM, giving a clean 25x GPU speedup for the transformer.
+
+The 940MX runs `trf` at 1,158 words/s, 6.2x its host CPU, and fits batch 32 inside 2 GB without
+running out of memory, so the GPU note in §3.4 that dismissed this card for transformer work
+holds only for training, not inference. It does need a `cu126` build of torch: Maxwell sm_50
+kernels were dropped from the `cu128` and `cu129` wheels starting torch 2.8, and `pip install
+torch` now resolves to one of those. `.venv-trf-gpu` pins `torch==2.7.1+cu126` for this reason,
+and is kept separate from `.venv` because torch's pinned `nvidia-*` wheels would downgrade the
+CUDA libraries cupy runs on there from 12.9 to 12.6.

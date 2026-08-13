@@ -114,15 +114,6 @@ def main():
         for device, batch, wps in rows:
             lines.append(f"| {device} | {batch} | {wps:,.0f} |")
         lines.append("")
-        gpu = next((r for r in rows if r[0].startswith("gpu")), None)
-        cpu = next((r for r in rows if r[0].startswith("cpu")), None)
-        if gpu and cpu:
-            lines += [
-                f"A transformer pipeline is GPU-bound: the T4 is {gpu[2] / cpu[2]:.0f}x the "
-                f"CPU on the same machine. On CPU this runs roughly 25x slower than the "
-                f"`sm`/`md`/`lg` tiers, which is the price of the accuracy below.",
-                "",
-            ]
 
     lines += ["## Sources", "", "| Source | Author | Licence |", "| --- | --- | --- |"]
     for s in meta.get("sources", []):
