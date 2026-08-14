@@ -47,7 +47,7 @@ pipelines such as `de_core_news_sm` as `news`.
 | `fa_dep_news_lg` | same as `fa_dep_news_sm` | floret, 200k rows / 300d, full-wiki 5 epochs | built, shipping |
 | `fa_core_news_lg` | same as `fa_core_news_sm` | floret, 200k rows / 300d, full-wiki 5 epochs | built, shipping |
 | `fa_ent_news_lg` | ner (own internal tok2vec) | floret, 200k rows / 300d, full-wiki 5 epochs | built, optional |
-| `fa_core_news_trf` | transformer instead of tok2vec | `HooshvareLab/roberta-fa-zwnj-base` (Apache-2.0) | not on this hardware; 2 GB VRAM cannot fine-tune a 125M-param encoder |
+| `fa_core_news_trf` | transformer instead of tok2vec | `HooshvareLab/bert-base-parsbert-uncased`, fine-tuned | built on a rented Colab T4 (not on this hardware: 2 GB VRAM cannot fine-tune a 125M-param encoder), shipping with a redistribution caveat because that encoder's card states no licence; §3.4 and §8 |
 
 ### Why `core` is honest here
 

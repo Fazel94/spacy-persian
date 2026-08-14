@@ -52,9 +52,8 @@ From `spacy benchmark accuracy`, stored in `metrics/`.
 | [`fa_ent_news_lg`](https://huggingface.co/Phazel/fa_ent_news_lg) | `ner` alone (own embedded tok2vec), plus full-wiki floret vectors | CC BY-SA 4.0 | ENTS_F 75.94 | 227.3 MB |
 | [`fa_core_news_trf`](https://huggingface.co/Phazel/fa_core_news_trf) | transformer, tagger, morphologizer, trainable_lemmatizer, parser, ner | see §8, encoder unlicensed | ENTS_F 82.89, LAS 90.79 | 608.2 MB |
 
-Standalone floret vector packages:
-[`fa_floret_400k`](https://huggingface.co/Phazel/fa_floret_400k),
-[`fa_floret_full_wiki`](https://huggingface.co/Phazel/fa_floret_full_wiki).
+Raw `fa.floret` and `fa.vec` exports of the 200k table are in
+[`fa-floret-wiki-vectors`](https://huggingface.co/Phazel/fa-floret-wiki-vectors).
 
 The `md` tier adds a 50k x 300d floret vector table trained on 400k Persian documents. Its
 config differs from `sm` by exactly one line (`include_static_vectors`), so the columns below
@@ -73,7 +72,7 @@ isolate what the vectors buy. Full breakdown in `docs/MODELS.md` §6.
 | `ENTS_P` | 77.67 | 76.56 | 81.51 | **84.06** | |
 | `ENTS_R` | 66.87 | 72.95 | 71.09 | **81.76** | |
 | `ENTS_F` | 71.87 | 74.71 | 75.94 | **82.89** | |
-| Speed (940MX, batch 32) | 10,235 words/s | 9,058 words/s | 9,215 words/s | see §Throughput | |
+| Speed (940MX, batch 32) | 10,235 words/s | 9,058 words/s | 9,215 words/s | 1,106 words/s | |
 | Wheel size | 13.5 MB | 68.5 MB | 235 MB | 608 MB | |
 
 `trf` leads everywhere except lemmatization and sentence segmentation, and is the only tier to
@@ -87,6 +86,20 @@ caveats are in [Named entity recognition](#named-entity-recognition).
 For comparison, `en_core_web_sm` scores TAG 97, LAS 90, ENTS_F 84 on a larger, cleaner corpus.
 Trained on a 4-core i5-7200U with no GPU: `sm` 1h27m syntax + 17 min NER, `md` 1h54m syntax
 + 25 min NER (the two `md` runs overlapped, so wall clock overstates each).
+
+Standalone floret vector packages (vectors only, `pipeline: []`), usable as
+`--paths.vectors` for your own training or as a plain embedding table:
+
+```bash
+# 50k rows x 300d, 400k Persian documents (the md tier's table)
+pip install https://huggingface.co/Phazel/fa_floret_400k/resolve/main/fa_floret_400k-0.1.0-py3-none-any.whl
+# 50k rows x 300d, full Persian Wikipedia dump
+pip install https://huggingface.co/Phazel/fa_floret_full_wiki/resolve/main/fa_floret_full_wiki-0.1.0-py3-none-any.whl
+# 200k rows x 300d, full Persian Wikipedia dump, 5 epochs (the lg tier's table)
+pip install https://huggingface.co/Phazel/fa-floret-wiki-vectors/resolve/main/fa_floret_wiki_200k-0.1.0-py3-none-any.whl
+```
+
+
 
 ## Throughput
 

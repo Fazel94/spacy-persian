@@ -33,9 +33,16 @@ print(doc.ents)   # (محمدرضا شجریان, مشهد)
 [`fa_dep_news_lg`](https://huggingface.co/Phazel/fa_dep_news_lg) ·
 [`fa_ent_news_lg`](https://huggingface.co/Phazel/fa_ent_news_lg) ·
 [`fa_core_news_trf`](https://huggingface.co/Phazel/fa_core_news_trf).
-جدول‌های بردار floret جداگانه:
-[`fa_floret_400k`](https://huggingface.co/Phazel/fa_floret_400k) ·
-[`fa_floret_full_wiki`](https://huggingface.co/Phazel/fa_floret_full_wiki).
+جدول‌های بردار floret جداگانه (فقط بردار، بدون هیچ مؤلفه‌ای):
+
+```bash
+# ۵۰ هزار سطر × ۳۰۰ بعد، ۴۰۰ هزار سند فارسی (جدول ردهٔ md)
+pip install https://huggingface.co/Phazel/fa_floret_400k/resolve/main/fa_floret_400k-0.1.0-py3-none-any.whl
+# ۵۰ هزار سطر × ۳۰۰ بعد، کل دامپ ویکی‌پدیای فارسی
+pip install https://huggingface.co/Phazel/fa_floret_full_wiki/resolve/main/fa_floret_full_wiki-0.1.0-py3-none-any.whl
+# ۲۰۰ هزار سطر × ۳۰۰ بعد، کل دامپ ویکی‌پدیای فارسی، ۵ دوره (جدول ردهٔ lg)
+pip install https://huggingface.co/Phazel/fa-floret-wiki-vectors/resolve/main/fa_floret_wiki_200k-0.1.0-py3-none-any.whl
+```
 
 ## کارایی
 
