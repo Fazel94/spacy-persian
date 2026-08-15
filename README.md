@@ -1,6 +1,6 @@
 # Persian (Farsi) pipelines for spaCy
 
-Trained spaCy pipelines for Persian, installable now. spaCy has never shipped an official one, and `spacy.blank("fa")` only gives you a tokenizer and stop words. Choose between `fa_core_news_sm` (full syntax + NER) or `fa_dep_news_sm` (syntax only).
+Trained spaCy pipelines for Persian, installable with pip. spaCy has never shipped an official one, and `spacy.blank("fa")` only gives you a tokenizer and stop words. Choose between `fa_core_news_sm` (full syntax + NER) or `fa_dep_news_sm` (syntax only).
 
 ```bash
 pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-3.8.0-py3-none-any.whl
@@ -35,10 +35,10 @@ Compared against Hazm (the most-used Persian toolkit) and `en_core_web_sm` (Engl
 > **¹** Hazm scores from its official README 
 > **²** `en_core_web_sm` scores from spaCy's official model card
 
-> **Note on comparability:** These benchmarks come from *different evaluation sets, treebanks, and test splits*.
+> **Note on comparability:** these benchmarks come from different evaluation sets, treebanks, and test splits.
 
+### Packages
 
-From `spacy benchmark accuracy`, stored in `metrics/`.
 | Package | Components | Licence | Score | Wheel |
 | --- | --- | --- | --- | --- |
 | [`fa_dep_news_sm`](https://huggingface.co/Phazel/fa_dep_news_sm) | tok2vec, tagger, morphologizer, trainable_lemmatizer, parser | CC BY-SA 4.0 | LEMMA 97.91 | 7.9 MB |
@@ -52,8 +52,12 @@ From `spacy benchmark accuracy`, stored in `metrics/`.
 | [`fa_ent_news_lg`](https://huggingface.co/Phazel/fa_ent_news_lg) | `ner` alone (own embedded tok2vec), plus full-wiki floret vectors | CC BY-SA 4.0 | ENTS_F 75.94 | 227.3 MB |
 | [`fa_core_news_trf`](https://huggingface.co/Phazel/fa_core_news_trf) | transformer, tagger, morphologizer, trainable_lemmatizer, parser, ner | see §8, encoder unlicensed | ENTS_F 82.89, LAS 90.79 | 608.2 MB |
 
-Raw `fa.floret` and `fa.vec` exports of the 200k table are in
+These scores are from `spacy benchmark accuracy`, stored in `metrics/`.
+
+Raw `fa.floret` and `fa.vec` exports of the `lg` tier's 200k-row table are in
 [`fa-floret-wiki-vectors`](https://huggingface.co/Phazel/fa-floret-wiki-vectors).
+
+### Tier comparison
 
 The `md` tier adds a 50k x 300d floret vector table trained on 400k Persian documents. Its
 config differs from `sm` by exactly one line (`include_static_vectors`), so the columns below
@@ -67,25 +71,25 @@ isolate what the vectors buy. Full breakdown in `docs/MODELS.md` §6.
 | `MORPH_ACC` | 96.29 | 96.64 | 96.70 | **97.82** | |
 | `LEMMA_ACC` | 97.91 | 97.96 | **98.08** | 97.31 | |
 | `SENTS_F` | 99.25 | **99.28** | 99.18 | 97.35 | |
-| `DEP_UAS` | 89.69 | 90.52 | 90.96 | **93.87** | hazm+ParsBERT: 92.46 |
-| `DEP_LAS` | 85.15 | 86.34 | 86.60 | **90.79** | hazm+ParsBERT: 89.34 |
+| `DEP_UAS` | 89.69 | 90.52 | 90.96 | **93.87** | Hazm+ParsBERT: 92.46 |
+| `DEP_LAS` | 85.15 | 86.34 | 86.60 | **90.79** | Hazm+ParsBERT: 89.34 |
 | `ENTS_P` | 77.67 | 76.56 | 81.51 | **84.06** | |
 | `ENTS_R` | 66.87 | 72.95 | 71.09 | **81.76** | |
 | `ENTS_F` | 71.87 | 74.71 | 75.94 | **82.89** | |
 | Speed (940MX, batch 32) | 10,235 words/s | 9,058 words/s | 9,215 words/s | 1,106 words/s | |
 | Wheel size | 13.5 MB | 68.5 MB | 235 MB | 608 MB | |
 
-`trf` leads everywhere except lemmatization and sentence segmentation, and is the only tier to
-pass the hazm+ParsBERT `DEP_LAS` reference of 89.34. It needs a GPU, and its encoder states no
-licence so it is not redistributable (`docs/MODELS.md` §8).
+`trf` leads on every metric except lemmatization and sentence segmentation. It is also the only
+tier to clear the Hazm+ParsBERT `DEP_LAS` reference of 89.34. It needs a GPU, and its encoder
+states no licence, so it is not redistributable (`docs/MODELS.md` §8).
 
 Entity scores are `fa_core_news_*` on the PerDT NER test split; per-label breakdown and
 caveats are in [Named entity recognition](#named-entity-recognition).
 
+Trained on a 4-core i5-7200U with no GPU: `sm` took 1h27m for syntax plus 17 min for NER,
+`md` 1h54m plus 25 min (the two `md` runs overlapped, so wall clock overstates each).
 
-For comparison, `en_core_web_sm` scores TAG 97, LAS 90, ENTS_F 84 on a larger, cleaner corpus.
-Trained on a 4-core i5-7200U with no GPU: `sm` 1h27m syntax + 17 min NER, `md` 1h54m syntax
-+ 25 min NER (the two `md` runs overlapped, so wall clock overstates each).
+### Vector packages
 
 Standalone floret vector packages (vectors only, `pipeline: []`), usable as
 `--paths.vectors` for your own training or as a plain embedding table:
@@ -99,8 +103,6 @@ pip install https://huggingface.co/Phazel/fa_floret_full_wiki/resolve/main/fa_fl
 pip install https://huggingface.co/Phazel/fa-floret-wiki-vectors/resolve/main/fa_floret_wiki_200k-0.1.0-py3-none-any.whl
 ```
 
-
-
 ## Throughput
 
 Median of repeated `nlp.pipe` passes over the 146-document PerDT test split (23,825 tokens),
@@ -108,24 +110,24 @@ timing the pipe only, warmup discarded. Reproduce with
 `python scripts/benchmark_throughput.py <model> --gpu-id <n>`; raw records are in
 `metrics/throughput-*.json`.
 
-| Tier | CPU, i5-7200U | GPU, GeForce 940MX | GPU, Tesla T4 |
-| --- | ---: | ---: | ---: |
-| `sm` | 5,484 | 10,235 | |
-| `md` | 5,408 | 9,058 | |
-| `lg` | 4,715 | 9,215 | |
-| `trf` | 187 | 1,106 | 8,320 |
+| Tier | CPU, i5-7200U | GPU, GeForce 940MX | CPU, Xeon @ 2.00GHz | GPU, Tesla T4 |
+| --- | ---: | ---: | ---: | ---: |
+| `sm` | 5,484 | 10,235 | | |
+| `md` | 5,408 | 9,058 | | |
+| `lg` | 4,715 | 9,215 | | |
+| `trf` | 187 | 1,106 | 336 | 8,320 |
 
-`trf` is 29x slower than `sm` on the same CPU. The T4 and Xeon figures come from one Colab VM,
+`trf` is 29x slower than `sm` on the same CPU. The Xeon and T4 columns come from one Colab VM,
 a 25x GPU speedup. The CPU tiers sit within 15% of each other, so the bottleneck is the parser
 and lemmatizer, not the tok2vec lookup. Laptop spread is about 10% with thermal state. Running
-`trf` on the 940MX needs a specific torch build, see `docs/MODELS.md` §9.
+`trf` on the 940MX needs a `cu126` torch build, see `docs/MODELS.md` §9.
 
 ## Named entity recognition
 
 Seven labels: `LOC`, `PER`, `ORG`, `DAT`, `MON`, `TIM`, `PCT`. They come from PerDT's own
 `not-to-release/Dadegan with NER tag/` layer, transferred onto this pipeline's tokenization
-by difflib at a 99.86% alignment rate; spans that could not be aligned exactly were dropped
-rather than guessed (`scripts/transfer_perdt_ner.py`). That layer is silver: PerDT's README
+by difflib at a 99.86% alignment rate (`scripts/transfer_perdt_ner.py`). Spans that could not
+be aligned exactly were dropped rather than guessed. That layer is silver: PerDT's README
 states it was produced by the BERT-based Beheshti-NER tagger with manual corrections for
 recall, so the `ENTS_F` numbers below partly reflect agreement with that tagger, not with
 human annotation.
@@ -151,7 +153,6 @@ vectors give rare proper nouns that hash embeddings never had. `trf` adds anothe
 `lg`, again mostly recall (71.09 to 81.76), and its largest per-label gains are `PER` (+9.25)
 and `DAT` (+11.69).
 
-
 ## Install
 
 ```bash
@@ -165,8 +166,8 @@ pip install https://huggingface.co/Phazel/fa_dep_news_sm/resolve/main/fa_dep_new
 - **Some lemmas contain a space.** Multiword tokens were merged, so `کتاب‌هایش` is one token
   tagged `N_IANM_PR_JOPER` with lemma `کتاب او`. This affects about 1.5% of tokens.
 - **`doc.noun_chunks` under-fires.** `spacy/lang/fa/syntax_iterators.py` upstream matches
-  ClearNLP labels that do not exist in Universal Dependencies. Patch in
-  [`docs/upstream/fa-noun-chunks.md`](docs/upstream/fa-noun-chunks.md).
+  ClearNLP labels that do not exist in Universal Dependencies. Bug analysis and proposed
+  upstream patch in [`docs/upstream/fa-noun-chunks.md`](docs/upstream/fa-noun-chunks.md).
 
 ## Build
 
@@ -217,9 +218,9 @@ The two training runs are single-threaded and independent, so they can run concu
    instead of unmeasurable rule coverage.
 4. PerDT, not Seraji: 3.7x more tokens, and Seraji has no `PROPN` tag.
 
-## Why not hazm's own models
+## Why not Hazm's own models
 
-hazm is the reference Persian NLP toolkit and publishes spaCy-format pipelines on the HF Hub,
+Hazm is the reference Persian NLP toolkit and publishes spaCy-format pipelines on the HF Hub,
 so it was the obvious starting point. Four problems:
 
 - Its trainable models are pycrfsuite CRFs (`hazm/sequence_tagger.py`). The repo contains no
@@ -232,7 +233,7 @@ so it was the obvious starting point. Four problems:
 - Most corpora it reads (Bijankhan, Peykare, Hamshahri, raw PerDT) sit behind `peykaregan.ir`
   or `dadegan.ir` under research-only terms.
 
-It did confirm the corpus choice. hazm's own spaCy parser was trained on
+It did confirm the corpus choice. Hazm's own spaCy parser was trained on
 `modified_fa_perdt-ud-train.spacy`, the same treebank used here.
 
 ## More
@@ -241,5 +242,5 @@ It did confirm the corpus choice. hazm's own spaCy parser was trained on
 - How spaCy models get published, and what upstream `fa` already has:
   [`docs/CONTRIBUTING-GUIDE.md`](docs/CONTRIBUTING-GUIDE.md)
 - The build: [`project.yml`](project.yml)
+- Language data comes from `spacy/lang/fa` upstream, whose stop word list came from Hazm.
 - خلاصهٔ فارسی: [`README.fa.md`](README.fa.md)
-- Language data comes from `spacy/lang/fa` upstream, whose stop word list came from hazm.
