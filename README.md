@@ -1,3 +1,5 @@
+
+
 # Persian (Farsi) pipelines for spaCy
 
 Trained spaCy pipelines for Persian, installable with pip. spaCy has never shipped an official one, and `spacy.blank("fa")` only gives you a tokenizer and stop words. Choose between `fa_core_news_sm` (full syntax + NER) or `fa_dep_news_sm` (syntax only).
@@ -132,8 +134,9 @@ states it was produced by the BERT-based Beheshti-NER tagger with manual correct
 recall, so the `ENTS_F` numbers below partly reflect agreement with that tagger, not with
 human annotation.
 
-`ner` runs standalone with its own embedded tok2vec (`fa_ent_news_sm`, `fa_ent_news_md`), or
-bundled into `fa_core_news_sm`/`fa_core_news_md` alongside the syntax pipeline. In `trf` it is
+`ner` runs standalone with its own embedded tok2vec (`fa_ent_news_sm`, `fa_ent_news_md`,
+`fa_ent_news_lg`), or bundled into `fa_core_news_sm`/`fa_core_news_md`/`fa_core_news_lg`
+alongside the syntax pipeline. In `trf` it is
 trained jointly against the shared transformer instead, so there is no standalone trf variant.
 
 | Label | `sm` F | `md` F | `lg` F | `trf` F | Train examples |
