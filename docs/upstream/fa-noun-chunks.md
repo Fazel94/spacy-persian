@@ -8,10 +8,10 @@
 labels = ["nsubj", "dobj", "nsubjpass", "pcomp", "pobj", "dative", "appos", "attr", "ROOT"]
 ```
 
-`dobj`, `nsubjpass`, `pobj`, `dative` and `attr` are ClearNLP/English labels. They are not
-Universal Dependencies relations, and every Persian treebank is UD (`UD_Persian-PerDT`,
+`dobj`, `nsubjpass`, `pcomp`, `pobj`, `dative` and `attr` are ClearNLP/English labels. They
+are not Universal Dependencies relations, and every Persian treebank is UD (`UD_Persian-PerDT`,
 `UD_Persian-Seraji`, `UD_Persian-PUD`, `UD_Persian-IPerUDT`). Any trained `fa` pipeline emits
-UD labels, so five of the nine labels are dead code and `doc.noun_chunks` returns bare head
+UD labels, so six of the nine labels are dead code and `doc.noun_chunks` returns bare head
 nouns.
 
 `spacy/lang/fr/syntax_iterators.py` and `spacy/lang/es/syntax_iterators.py` use UD labels
@@ -48,9 +48,9 @@ deprels on NOUN/PROPN/PRON tokens in dev (top 15):
   nsubj:pass         38  -
 ```
 
-At 1.31 tokens per chunk the shipped iterator is returning single head nouns. The four most
-common noun-bearing relations after `nsubj`, namely `nmod` (2894), `obl` (1401), `obl:arg`
-(1095) and `obj` (973), are all unreachable.
+At 1.31 tokens per chunk the shipped iterator is returning single head nouns. The most common
+noun-bearing relations after `nsubj` are all unreachable: `nmod` (2894), `obl` (1401),
+`compound:lvc` (1294), `obl:arg` (1095) and `obj` (973).
 
 Live text:
 

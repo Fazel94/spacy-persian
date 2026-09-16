@@ -1,6 +1,6 @@
 # Persian (Farsi) pipelines for spaCy
 
-Trained spaCy pipelines for Persian, installable with pip. spaCy has never shipped an official one, and `spacy.blank("fa")` only gives you a tokenizer and stop words. Choose between `fa_core_news_sm` (full syntax + NER) or `fa_dep_news_sm` (syntax only).
+Trained spaCy pipelines for Persian, installable with pip. spaCy has never shipped an official one, and `spacy.blank("fa")` only gives you a tokenizer and stop words. Ten packages across four tiers: `sm` (hash embeddings), `md` and `lg` (floret static vectors), `trf` (fine-tuned ParsBERT). Each of `sm`/`md`/`lg` ships as syntax only (`fa_dep_news_*`), syntax + NER (`fa_core_news_*`), or NER alone (`fa_ent_news_*`); `trf` ships as `fa_core_news_trf` only.
 
 ```bash
 pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-3.8.0-py3-none-any.whl
@@ -23,19 +23,27 @@ pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_n
 
 ## Results
 
-Compared against Hazm (the most-used Persian toolkit) and `en_core_web_sm` (English reference).
+Compared against Hazm (<https://github.com/roshan-research/hazm>) and `en_core_web_sm`
+(English reference).
 
 | Metric | **`spacy-persian`**<br>`fa_core_news_trf` | **Hazm**<br>(Persian toolkit) | `en_core_web_sm`<br>(English reference) |
 |--------|:---:|:---:|:---:|
-| **POS Accuracy (UPOS)** | **97.63%** | ~95.69%¹ | 97.21%² |
-| **Lemma Accuracy** | **97.31%** | 89.9%¹ | — |
-| **Dependency LAS** | **90.79%** | 85.6%¹ | 91.85%² |
-| **NER F-score** | **82.89%** | — | 83.80%² |
+| POS accuracy | **97.63%** UPOS | 98.8% own tagset¹ | 97.29% PTB XPOS² |
+| Lemma accuracy | **97.31%** | 89.9%¹ | not reported² |
+| Dependency UAS / LAS | **93.87% / 90.79%** | 92.30% / 89.15%¹ | 91.77% / 89.92%² |
+| NER F-score | **82.89%** | not reported¹ | 84.33%² |
 
-> **¹** Hazm scores from its official README 
-> **²** `en_core_web_sm` scores from spaCy's official model card
-
-> **Note on comparability:** these benchmarks come from different evaluation sets, treebanks, and test splits.
+> **¹** Hazm's own README, <https://github.com/roshan-research/hazm#evaluation>: `POSTagger`
+> 98.8% on Hazm's EZ-augmented tagset, which is not UPOS; `Lemmatizer` 89.9%;
+> `SpacyDependencyParser` UAS 92.30 / LAS 89.15. It reports no NER score.
+>
+> **²** `en_core_web_sm` 3.8.0 `meta.json`,
+> <https://github.com/explosion/spacy-models/blob/master/meta/en_core_web_sm-3.8.0.json>:
+> `tag_acc` 0.9729, `dep_uas` 0.9177, `dep_las` 0.8992, `ents_f` 0.8433. That pipeline
+> reports no `pos_acc` and no `lemma_acc`, because OntoNotes has no UPOS or lemma layer.
+>
+> **Note on comparability:** these benchmarks come from different evaluation sets, treebanks,
+> and test splits.
 
 ### Packages
 
@@ -50,7 +58,7 @@ Compared against Hazm (the most-used Persian toolkit) and `en_core_web_sm` (Engl
 | [`fa_dep_news_lg`](https://huggingface.co/Phazel/fa_dep_news_lg) | same as `fa_dep_news_sm`, plus full-wiki floret vectors | CC BY-SA 4.0 | LEMMA 98.08 | 229.3 MB |
 | [`fa_core_news_lg`](https://huggingface.co/Phazel/fa_core_news_lg) | same as `fa_core_news_sm`, plus full-wiki floret vectors | CC BY-SA 4.0 | ENTS_F 75.94 | 235.2 MB |
 | [`fa_ent_news_lg`](https://huggingface.co/Phazel/fa_ent_news_lg) | `ner` alone (own embedded tok2vec), plus full-wiki floret vectors | CC BY-SA 4.0 | ENTS_F 75.94 | 227.3 MB |
-| [`fa_core_news_trf`](https://huggingface.co/Phazel/fa_core_news_trf) | transformer, tagger, morphologizer, trainable_lemmatizer, parser, ner | see §8, encoder unlicensed | ENTS_F 82.89, LAS 90.79 | 608.2 MB |
+| [`fa_core_news_trf`](https://huggingface.co/Phazel/fa_core_news_trf) | transformer, tagger, morphologizer, trainable_lemmatizer, parser, ner | encoder states no licence, §8 | ENTS_F 82.89, LAS 90.79 | 608.2 MB |
 
 These scores are from `spacy benchmark accuracy`, stored in `metrics/`.
 
@@ -71,23 +79,29 @@ isolate what the vectors buy. Full breakdown in `docs/MODELS.md` §6.
 | `MORPH_ACC` | 96.29 | 96.64 | 96.70 | **97.82** | |
 | `LEMMA_ACC` | 97.91 | 97.96 | **98.08** | 97.31 | |
 | `SENTS_F` | 99.25 | **99.28** | 99.18 | 97.35 | |
-| `DEP_UAS` | 89.69 | 90.52 | 90.96 | **93.87** | Hazm+ParsBERT: 92.46 |
-| `DEP_LAS` | 85.15 | 86.34 | 86.60 | **90.79** | Hazm+ParsBERT: 89.34 |
+| `DEP_UAS` | 89.69 | 90.52 | 90.96 | **93.87** | `hazm-bert-dependency-parser`: 92.46 |
+| `DEP_LAS` | 85.15 | 86.34 | 86.60 | **90.79** | `hazm-bert-dependency-parser`: 89.34 |
 | `ENTS_P` | 77.67 | 76.56 | 81.51 | **84.06** | |
 | `ENTS_R` | 66.87 | 72.95 | 71.09 | **81.76** | |
 | `ENTS_F` | 71.87 | 74.71 | 75.94 | **82.89** | |
 | Speed (940MX, batch 32) | 10,235 words/s | 9,058 words/s | 9,215 words/s | 1,106 words/s | |
-| Wheel size | 13.5 MB | 68.5 MB | 235 MB | 608 MB | |
+| Wheel size | 13.5 MB | 68.5 MB | 235.2 MB | 608.2 MB | |
+
+Reference cells are [`hazm-bert-dependency-parser`](https://huggingface.co/roshan-research/hazm-bert-dependency-parser)'s
+own `meta.json`, trained on the same treebank (`docs/MODELS.md` §4).
 
 `trf` leads on every metric except lemmatization and sentence segmentation. It is also the only
-tier to clear the Hazm+ParsBERT `DEP_LAS` reference of 89.34. It needs a GPU, and its encoder
-states no licence, so it is not redistributable (`docs/MODELS.md` §8).
+tier to clear the `hazm-bert-dependency-parser` `DEP_LAS` reference of 89.34. It needs a GPU in
+production (187 words/s on the laptop CPU), and its `HooshvareLab/bert-base-parsbert-uncased`
+encoder states no licence, so the published wheel carries a redistribution warning in its
+`meta.json` and its terms are unknown (`docs/MODELS.md` §8).
 
 Entity scores are `fa_core_news_*` on the PerDT NER test split; per-label breakdown and
 caveats are in [Named entity recognition](#named-entity-recognition).
 
 Trained on a 4-core i5-7200U with no GPU: `sm` took 1h27m for syntax plus 17 min for NER,
-`md` 1h54m plus 25 min (the two `md` runs overlapped, so wall clock overstates each).
+`md` 1h54m plus 25 min (the two `md` runs overlapped, so wall clock overstates each), `lg`
+about 2h08m plus 13 min. `trf` took 1h58m on a rented Colab T4.
 
 ### Vector packages
 
@@ -156,9 +170,26 @@ and `DAT` (+11.69).
 ## Install
 
 ```bash
+# syntax + NER, 13.5 MB
 pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_news_sm-3.8.0-py3-none-any.whl
-# or, without NER:
+# syntax only, 7.9 MB
 pip install https://huggingface.co/Phazel/fa_dep_news_sm/resolve/main/fa_dep_news_sm-3.8.0-py3-none-any.whl
+# NER only, 5.9 MB
+pip install https://huggingface.co/Phazel/fa_ent_news_sm/resolve/main/fa_ent_news_sm-3.8.0-py3-none-any.whl
+```
+
+For the vector tiers, swap `sm` for `md` or `lg` in both the repo name and the filename:
+
+```bash
+pip install https://huggingface.co/Phazel/fa_core_news_md/resolve/main/fa_core_news_md-3.8.0-py3-none-any.whl
+pip install https://huggingface.co/Phazel/fa_core_news_lg/resolve/main/fa_core_news_lg-3.8.0-py3-none-any.whl
+```
+
+`fa_core_news_trf` is versioned 1.0.0, not 3.8.0, and needs `spacy-transformers`:
+
+```bash
+pip install spacy-transformers
+pip install https://huggingface.co/Phazel/fa_core_news_trf/resolve/main/fa_core_news_trf-1.0.0-py3-none-any.whl
 ```
 
 ## Caveats
@@ -176,7 +207,7 @@ Everything is reproducible from checksummed assets. Python 3.12:
 ```bash
 python -m venv .venv
 .venv/bin/python -m pip install -U pip
-.venv/bin/python -m pip install "spacy>=3.8,<3.9" spacy-lookups-data
+.venv/bin/python -m pip install -r requirements.txt
 
 .venv/bin/python -m spacy project assets      # download + checksum the corpora
 .venv/bin/python -m spacy project run all     # -> fa_dep_news_sm + fa_core_news_sm
@@ -199,8 +230,37 @@ python -m venv .venv
 | `finalize-meta` | re-run finalize on both, folding test scores into `meta.json["performance"]` |
 | `package` | build wheels + sdists for both |
 | `smoke` | run both pipelines over Persian text and print every annotation layer |
+| `finalize-ent` | write `fa_ent_news_sm` metadata from the standalone NER run |
+| `evaluate-ent` | `spacy benchmark accuracy` for the NER-only package |
+| `package-ent` | build the `fa_ent_news_sm` wheel + sdist |
 
 The two training runs are single-threaded and independent, so they can run concurrently.
+
+The vector and transformer tiers are separate workflows:
+
+```bash
+.venv/bin/python -m spacy project run md      # -> fa_dep_news_md, fa_core_news_md
+.venv/bin/python -m spacy project run lg      # -> fa_dep_news_lg, fa_core_news_lg
+.venv/bin/python -m spacy project run trf     # -> fa_core_news_trf, GPU only
+```
+
+The `md` and `lg` workflows stop at the dep and core packages. `fa_ent_news_lg` is built by
+`finalize-ent-lg`, `evaluate-ent-lg` and `package-ent-lg`, which no workflow calls; run them
+by name.
+
+`md` and `lg` start by unpacking a floret vector wheel that `spacy project assets` does not
+download, because it is built by this project rather than fetched. Put it in the repo root
+under the exact filename `project.yml` expects (`vars.floret_wheel`, `vars.floret_lg_wheel`):
+
+```bash
+curl -L -o fa_floret-0.1.0-py3-none-any-400k-documents.whl \
+  https://huggingface.co/Phazel/fa_floret_400k/resolve/main/fa_floret_400k-0.1.0-py3-none-any.whl
+curl -L -o fa_floret-0.1.0-py3-none-any-full-wiki-200k-5epoch.whl \
+  https://huggingface.co/Phazel/fa-floret-wiki-vectors/resolve/main/fa_floret_wiki_200k-0.1.0-py3-none-any.whl
+```
+
+`trf` additionally needs `spacy-transformers` and a real GPU (`vars.gpu_trf` is `0`); the
+940MX needs a `cu126` torch build in a separate venv, see `docs/MODELS.md` §9.
 
 ## Design decisions
 
@@ -220,8 +280,8 @@ The two training runs are single-threaded and independent, so they can run concu
 
 ## Why not Hazm's own models
 
-Hazm is the reference Persian NLP toolkit and publishes spaCy-format pipelines on the HF Hub,
-so it was the obvious starting point. Four problems:
+Hazm publishes spaCy-format pipelines on the HF Hub, so it was the obvious starting point.
+Four problems:
 
 - Its trainable models are pycrfsuite CRFs (`hazm/sequence_tagger.py`). The repo contains no
   `config.cfg` and no `spacy train`; the `Spacy*` classes only download pretrained pipelines.

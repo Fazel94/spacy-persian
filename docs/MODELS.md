@@ -62,7 +62,7 @@ corpus scoring 67.22 F against 85-98 for the UD components, and folding that int
 would have hidden a genre and quality gap behind a single name and version number. Finding the
 treebank's own layer removed the objection rather than answering it.
 
-`fa_dep_news_sm` still ships alongside `core`, for users who want a 7.5 MB syntax-only model or
+`fa_dep_news_sm` still ships alongside `core`, for users who want a 7.9 MB syntax-only model or
 who would rather not depend on silver entity labels.
 
 ### Why `morphologizer` + `trainable_lemmatizer`
@@ -189,8 +189,9 @@ reintroduce the redistribution problem that stopped the 2018 attempt.
 
 ## 4. What already exists, and why it is not enough
 
-No trained spaCy Persian pipeline exists. There are zero `persian`, `farsi` or `fa_` hits in
-spaCy's `website/meta/universe.json`, and `spacy.load("fa_core_news_sm")` has never worked.
+When this project started, no trained spaCy Persian pipeline existed: there are zero
+`persian`, `farsi` or `fa_` hits in spaCy's `website/meta/universe.json`, and
+`spacy.load("fa_core_news_sm")` worked only after the wheels below were published.
 
 hazm ships three single-task spaCy pipelines on the HF Hub: `hazm-parsbert-postagger`
 (`tag_acc` 0.9862, hazm's own EZ-augmented tagset), `hazm-bert-dependency-parser` (`dep_uas`
@@ -245,7 +246,7 @@ an upstream PR rather than a model change. Recorded in `docs/CONTRIBUTING-GUIDE.
 
 ### Final composition
 
-Shared trained components, in both `fa_dep_news_sm` (7.5 MB) and `fa_core_news_sm` (13 MB),
+Shared trained components, in both `fa_dep_news_sm` (7.9 MB) and `fa_core_news_sm` (13.5 MB),
 both CC BY-SA 4.0:
 
 | Component | Trained on | Metric | Test score |
@@ -342,14 +343,14 @@ improve, which is the finding.
 
 ### Cost
 
-The vectors dominate the artifact: `fa_dep_news_md` is a 62 MB wheel against 7.5 MB for `sm`,
-`fa_core_news_md` 68 MB against 13 MB. Inference is ~16% slower across all three pipelines,
+The vectors dominate the artifact: `fa_dep_news_md` is a 62.6 MB wheel against 7.9 MB for `sm`,
+`fa_core_news_md` 68.5 MB against 13.5 MB. Inference is ~16% slower across all three pipelines,
 a uniform hit consistent with the extra 300d concatenation per token rather than anything
 component-specific. Training cost was comparable to `sm` (early stop at step 12,400 of 20,000,
 best checkpoint near 10,800).
 
-Whether that trade is worth it depends on deployment. For a 1.19 LAS and 2.85 NER F gain, a
-9x larger download and 16% slower parse is a good deal on a server and a bad one in a browser
+Whether that trade is worth it depends on deployment. For a 1.19 LAS and 2.85 NER F gain,
+an 8x larger download and 16% slower parse is a good deal on a server and a bad one in a browser
 or a Lambda cold start. Both tiers ship; pick per target.
 
 ## 7. The `lg` tier: bigger floret table, full pipeline
@@ -412,13 +413,12 @@ one-or-two-entity noise, same caveat as §6.
 ### Cost
 
 The bigger table dominates the artifact even more than `md`'s did: the 200k x 300d float32
-vector table is ~240 MB uncompressed, so `fa_dep_news_lg` is a 219 MB wheel (vs 7.5 MB `sm`,
-60 MB `md`), `fa_core_news_lg` 225 MB (vs 13 MB `sm`, 66 MB `md`), and `fa_ent_news_lg` alone
-217 MB (vs 5.6 MB `sm`, 58 MB `md`). Training cost roughly doubled `md`'s: `dep_lg` ran to
-early stop at step 12,000 of 20,000 over ~2h08m CPU wall time (vs `dep_md`'s single-digit
-minutes territory implied by its architecture-identical config; `lg`'s extra time is
-entirely the larger embedding table's per-step cost, not more steps). `ner_lg` early-stopped
-at step 7,200, ~13 min, in line with `sm`/`md`.
+vector table is ~240 MB uncompressed, so `fa_dep_news_lg` is a 229.3 MB wheel (vs 7.9 MB `sm`,
+62.6 MB `md`), `fa_core_news_lg` 235.2 MB (vs 13.5 MB `sm`, 68.5 MB `md`), and `fa_ent_news_lg`
+alone 227.3 MB (vs 5.9 MB `sm`, 60.6 MB `md`). Training cost roughly doubled `md`'s: `dep_lg`
+ran to early stop at step 12,000 of 20,000 over ~2h08m CPU wall time against `dep_md`'s 1h54m,
+the extra time being the larger embedding table's per-step cost, not more steps. `ner_lg`
+early-stopped at step 7,200, ~13 min, in line with `sm`/`md`.
 
 `words/s` from `spacy benchmark accuracy` were noisier at this tier than `sm`-vs-`md`: dep/core
 throughput dropped as expected (9,387 / 6,655 words/s vs `sm`'s 12,505 / 8,834, `md`'s
@@ -483,7 +483,7 @@ problem; see TODO.md for the evidence that more steps do not help.
 
 ### Cost, and the licence problem
 
-608 MB wheel, 2.6x `lg` and 45x `sm`. 187 words/s on the laptop CPU against `sm`'s 5,484
+608.2 MB wheel, 2.6x `lg` and 45x `sm`. 187 words/s on the laptop CPU against `sm`'s 5,484
 (§9), so this tier needs a GPU in production rather than merely benefiting from one.
 
 ParsBERT's model card states no licence. §3.4 picked `HooshvareLab/roberta-fa-zwnj-base`

@@ -10,8 +10,9 @@ how it has to be shaped, so read this before writing code.
 | Language data (`fa`) | Hand-written rules: tokenizer exceptions, stop words, `LIKE_NUM`, punctuation, noun-chunk iterator | `spacy/lang/fa/*.py` inside the spaCy repo | Normal PR to `explosion/spaCy` |
 | Trained pipeline (`fa_dep_news_sm`) | Statistical weights + `config.cfg` + `meta.json`, shipped as a pip wheel | `explosion/spacy-models` releases | You cannot. Publish it yourself (PyPI or HF Hub) and get it listed in spaCy Universe |
 
-`spacy/lang/fa` already exists upstream. No trained `fa` pipeline does. So this is a publishing
-project, with optional upstream PRs for the language-data gaps found along the way.
+`spacy/lang/fa` already exists upstream. No trained `fa` pipeline did when this started; the
+ten packages under `Phazel/` on the HF Hub are the output of this project. So this is a
+publishing project, with optional upstream PRs for the language-data gaps found along the way.
 
 ## 1. Policy, verbatim
 
@@ -49,19 +50,39 @@ From <https://github.com/explosion/spaCy/blob/master/CONTRIBUTING.md>:
 ## 2. Three publishing routes for the trained pipeline
 
 1. Hugging Face Hub, using Explosion's own tool
-   (<https://github.com/explosion/spacy-huggingface-hub>):
+   (<https://github.com/explosion/spacy-huggingface-hub>). It needs its own virtualenv:
+   version 0.0.10 pins `typer<0.8`, and typer 0.7 against click 8.4 makes every `spacy`
+   command die with `TypeError: Secondary flag is not valid for non-boolean flag`, so
+   installing it into the training venv breaks training.
    ```bash
-   pip install spacy-huggingface-hub
-   huggingface-cli login
-   python -m spacy package training/fa_dep_news_sm packages --name dep_news_sm --version 3.8.0 --build wheel
-   python -m spacy huggingface-hub push packages/fa_dep_news_sm-3.8.0/dist/fa_dep_news_sm-3.8.0-py3-none-any.whl --org <org>
+   /home/fazel/anaconda3/envs/p12/bin/python -m venv .venv-publish
+   .venv-publish/bin/python -m pip install "spacy>=3.8,<3.9" spacy-huggingface-hub "click<8.2"
    ```
-   Users then `pip install https://huggingface.co/<org>/fa_dep_news_sm/resolve/main/fa_dep_news_sm-3.8.0-py3-none-any.whl`.
-   Note the filename: `spacy huggingface-hub push` uploads the wheel as `<name>-any-py3-none-any.whl`,
-   but `"any"` is not a valid PEP 440 version and current pip rejects it
-   (`Invalid wheel filename (invalid version)`). Upload a second copy under its real versioned
-   filename too (`api.upload_file(path_in_repo=f"{name}-{version}-py3-none-any.whl", ...)`) and
-   link to that one instead.
+   Publishing needs an HF **write** token (`hf_...`); the account password will not work.
+   Strip the proxy for the upload: `huggingface.co` is reachable through it, but multi-MB LFS
+   blobs die mid-transfer (`RemoteProtocolError: Server disconnected without sending a
+   response`) regardless of retries.
+   ```bash
+   export HF_TOKEN=$(rbw get api/huggingface_token)
+   NO_PROXY="*" no_proxy="*" http_proxy="" https_proxy="" HTTP_PROXY="" HTTPS_PROXY="" \
+     ALL_PROXY="" all_proxy="" \
+     .venv-publish/bin/python -m spacy huggingface-hub push \
+       packages/fa_dep_news_sm-3.8.0/dist/fa_dep_news_sm-3.8.0-py3-none-any.whl -V
+   ```
+   Omit `--org` to publish into the personal namespace. Then upload a second copy under the
+   real versioned filename, because `spacy huggingface-hub push` renames the artifact to
+   `<name>-any-py3-none-any.whl`, and `any` is not a valid PEP 440 version, so current pip
+   rejects it with `Invalid wheel filename (invalid version)`:
+   ```python
+   from huggingface_hub import HfApi
+   HfApi().upload_file(
+       path_or_fileobj="packages/fa_dep_news_sm-3.8.0/dist/fa_dep_news_sm-3.8.0-py3-none-any.whl",
+       path_in_repo="fa_dep_news_sm-3.8.0-py3-none-any.whl",
+       repo_id="Phazel/fa_dep_news_sm",
+   )
+   ```
+   Link the versioned copy; leave the `-any-` file in place, unlinked. Users then
+   `pip install https://huggingface.co/Phazel/fa_dep_news_sm/resolve/main/fa_dep_news_sm-3.8.0-py3-none-any.whl`.
 2. PyPI or a self-hosted wheel: `spacy package … --build sdist,wheel` then `twine upload`, or
    attach the wheel to a GitHub Release. See <https://spacy.io/api/cli#package>.
 3. spaCy Universe, which lists the package on spacy.io but hosts nothing. Per
@@ -71,7 +92,8 @@ From <https://github.com/explosion/spaCy/blob/master/CONTRIBUTING.md>:
    `image`, `author`, `author_links`, `category`, `tags`. The package must be open-source with
    a user-friendly license and "at least somewhat documented".
 
-Route taken here: HF Hub for the artifact, plus a Universe PR once metrics are respectable.
+Route taken here: HF Hub for the artifacts, all ten published under `Phazel/`. The Universe
+PR is still open work.
 
 ## 3. Naming and versioning
 
