@@ -61,14 +61,15 @@ LANG_DATA = {
     "license": "MIT",
 }
 FLORET = {
-    "name": "fa_floret static vectors (50k rows x 300d, floret mode, 400k Persian documents)",
-    "url": PROJECT_URL,
+    "name": "fa_floret static vectors (50k rows x 300d, floret mode, 400,000 Persian "
+            "Wikipedia articles, trained with floret-torch)",
+    "url": "https://huggingface.co/Phazel/fa_floret_400k",
     "author": "Kiyarash Fazeli",
     "license": "CC BY-SA 4.0",
 }
 FLORET_LG = {
     "name": "fa_floret static vectors (lg tier: 200k rows x 300d floret table trained on "
-            "the full Persian Wikipedia dump, 5 epochs, via spacy-vectors-builder)",
+            "the full Persian Wikipedia dump, 5 epochs, with floret-torch)",
     "url": "https://huggingface.co/Phazel/fa-floret-wiki-vectors",
     "author": "Kiyarash Fazeli",
     "license": "CC BY-SA 4.0",
@@ -107,12 +108,13 @@ CHUNK_NOTE = (
 )
 VECTORS_NOTE = (
     "This is the `md` tier: identical architecture to the `sm` pipeline plus static floret "
-    "vectors (50,000 rows x 300 dimensions, minn=maxn=5, hash_count=2) trained on 400,000 "
-    "Persian documents. floret hashes subwords into a fixed table, so there are no "
-    "out-of-vocabulary tokens and `token.has_vector` is always True. That matters for "
-    "Persian, where inconsistent ZWNJ (U+200C) usage splits one word across several surface "
-    "forms (mi-ravad written joined, with ZWNJ, or with a space) that a classic word-vector "
-    "table would miss."
+    "vectors (50,000 rows x 300 dimensions, minn=maxn=5, hash_count=2) trained with "
+    "floret-torch on 400,000 Persian Wikipedia articles (fawiki, WikiExtractor "
+    "--no-templates, spaCy blank('fa') tokenization, ~163M tokens). floret hashes subwords "
+    "into a fixed table, so there are no out-of-vocabulary tokens and `token.has_vector` is "
+    "always True. That matters for Persian, where inconsistent ZWNJ (U+200C) usage splits "
+    "one word across several surface forms (mi-ravad written joined, with ZWNJ, or with a "
+    "space) that a classic word-vector table would miss."
 )
 
 
@@ -123,7 +125,7 @@ def vectors_note_lg(nlp):
     return (
         f"This is the `lg` tier: identical architecture to `sm`/`md` but a larger static "
         f"floret vector table ({rows:,} rows x {dim} dimensions, minn=maxn=5, hash_count=2) "
-        f"trained on the full Persian Wikipedia dump for 5 epochs via spacy-vectors-builder. "
+        f"trained on the full Persian Wikipedia dump for 5 epochs with floret-torch. "
         f"Same zero-OOV rationale as `md` (see docs/MODELS.md): floret hashes subwords into "
         f"a fixed table, so `token.has_vector` is always True despite Persian's ZWNJ "
         f"(U+200C) inconsistency."

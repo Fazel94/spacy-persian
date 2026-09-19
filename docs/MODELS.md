@@ -160,8 +160,14 @@ prose-only.
 
 | Option | License | Note |
 | --- | --- | --- |
-| floret vectors trained via `spacy-vectors-builder` (MIT tooling) on fa Wikipedia + OSCAR | corpus-dependent | recommended: subword + Bloom-hash embeddings, bounded table size, zero OOV |
+| floret vectors on fa Wikipedia (+ OSCAR, if reachable) | corpus-dependent | chosen: subword + Bloom-hash embeddings, bounded table size, zero OOV |
 | fastText `cc.fa.300` | CC BY-SA 3.0 | fallback; classic word table, large and OOV-prone |
+
+Both shipped tables were trained with [floret-torch](https://github.com/Fazel94/floret-torch),
+a PyTorch/GPU port of [explosion/floret](https://github.com/explosion/floret), on Wikipedia
+alone: `spacy-vectors-builder` expects OSCAR 21.09, whose `deduplicated_fa` subset is now
+gated behind an agreement and fails to load unauthenticated. §6 and §7 record the exact
+corpora and hyperparameters.
 
 Persian surface forms multiply through suffixation and through inconsistent ZWNJ (U+200C)
 usage: the same word appears as `می‌رود`, `میرود` and `می رود` in real text. A classic
@@ -291,7 +297,11 @@ each variant: it refuses to publish a `dep` pipeline containing `ner`, or a `cor
 ## 6. The `md` tier: floret static vectors
 
 Built after the `sm` tier, from `fa_floret`: 50,000 rows x 300d, floret mode, `minn=maxn=5`,
-`hash_count=2`, trained on 400,000 Persian documents. The wheel is a vectors-only pipeline;
+`hash_count=2`, trained with [floret-torch](https://github.com/Fazel94/floret-torch) on the
+first 400,000 articles of the Persian Wikipedia (`fawiki`) dump: WikiExtractor
+`--no-templates`, sentence-tokenized with spaCy `blank("fa")`, roughly 163M tokens. The dump
+date was not pinned (the run used `wikipedia_date: latest`). Wikipedia text is the reason the
+table carries CC BY-SA 4.0. The wheel is a vectors-only pipeline;
 `scripts/unpack_vectors.py` unwraps it into a directory `--paths.vectors` can read, so nothing
 needs pip-installing to train against it.
 
@@ -356,8 +366,10 @@ or a Lambda cold start. Both tiers ship; pick per target.
 ## 7. The `lg` tier: bigger floret table, full pipeline
 
 Built after `md`, from a new `fa_floret` table: 200,000 rows x 300d, floret mode,
-`minn=maxn=5`, `hash_count=2`, trained on the full Persian Wikipedia dump for 5 epochs (4x
-the rows of `md`'s 50k-row table trained on 400k documents). Raw `.floret`/`.vec` and the
+`minn=maxn=5`, `hash_count=2`, trained with
+[floret-torch](https://github.com/Fazel94/floret-torch) on the full Persian Wikipedia dump
+for 5 epochs (8,428,449 sentences, 190,781,621 tokens; 4x the rows of `md`'s 50k-row table
+over the first 400,000 articles). Raw `.floret`/`.vec` and the
 packaged spaCy wheel are at <https://huggingface.co/Phazel/fa-floret-wiki-vectors>. Unpacked
 the same way as `md` via `scripts/unpack_vectors.py`, into `assets/vectors/fa_floret_lg`.
 

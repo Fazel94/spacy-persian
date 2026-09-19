@@ -67,7 +67,8 @@ Raw `fa.floret` and `fa.vec` exports of the `lg` tier's 200k-row table are in
 
 ### Tier comparison
 
-The `md` tier adds a 50k x 300d floret vector table trained on 400k Persian documents. Its
+The `md` tier adds a 50k x 300d floret vector table trained on the first 400,000 Persian
+Wikipedia articles. Its
 config differs from `sm` by exactly one line (`include_static_vectors`), so the columns below
 isolate what the vectors buy. Full breakdown in `docs/MODELS.md` §6.
 
@@ -109,7 +110,7 @@ Standalone floret vector packages (vectors only, `pipeline: []`), usable as
 `--paths.vectors` for your own training or as a plain embedding table:
 
 ```bash
-# 50k rows x 300d, 400k Persian documents (the md tier's table)
+# 50k rows x 300d, first 400,000 Persian Wikipedia articles (the md tier's table)
 pip install https://huggingface.co/Phazel/fa_floret_400k/resolve/main/fa_floret_400k-0.1.0-py3-none-any.whl
 # 50k rows x 300d, full Persian Wikipedia dump
 pip install https://huggingface.co/Phazel/fa_floret_full_wiki/resolve/main/fa_floret_full_wiki-0.1.0-py3-none-any.whl

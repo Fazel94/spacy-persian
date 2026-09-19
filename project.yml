@@ -35,7 +35,7 @@ vars:
   floret_wheel: "fa_floret-0.1.0-py3-none-any-400k-documents.whl"
   vectors_dir: "assets/vectors/fa_floret_400k"
   # lg tier: same architecture as sm/md, larger floret table (200k rows x 300d, trained on
-  # the full Persian Wikipedia dump for 5 epochs, vs md's 50k rows / 400k documents).
+  # the full Persian Wikipedia dump for 5 epochs, vs md's 50k rows / first 400k fawiki articles).
   ent_lg_package_name: "ent_news_lg"
   dep_lg_package_name: "dep_news_lg"
   core_lg_package_name: "core_news_lg"
@@ -105,7 +105,7 @@ workflows:
     - evaluate-ent
     - package-ent
   # The lg tier: same corpus and architecture as sm/md, with a bigger floret table (200k
-  # rows, full Persian Wikipedia, 5 epochs) than md's (50k rows, 400k documents).
+  # rows, full Persian Wikipedia, 5 epochs) than md's (50k rows, first 400k fawiki articles).
   lg:
     - vectors-lg
     - train-dep-lg
@@ -355,7 +355,7 @@ commands:
     help: >
       Unpack the lg-tier fa_floret wheel into a plain spaCy model directory. 200k rows x
       300d in floret mode, trained on the full Persian Wikipedia dump for 5 epochs, vs
-      vectors-md's 50k rows / 400k documents.
+      vectors-md's 50k rows / first 400k fawiki articles.
     script:
       - "python scripts/unpack_vectors.py ${vars.floret_lg_wheel} ${vars.vectors_lg_dir}"
     deps:
@@ -510,8 +510,9 @@ commands:
     help: >
       Unpack the fa_floret wheel into a plain spaCy model directory that
       `--paths.vectors` can point at. The wheel is a vectors-only pipeline
-      (empty `pipeline: []`), 50k rows x 300d in floret mode, trained on 400k
-      Persian documents, so no `spacy init vectors` step is needed.
+      (empty `pipeline: []`), 50k rows x 300d in floret mode, trained on the
+      first 400,000 Persian Wikipedia articles, so no `spacy init vectors` step
+      is needed.
     script:
       - "python scripts/unpack_vectors.py ${vars.floret_wheel} ${vars.vectors_dir}"
     deps:
@@ -705,6 +706,20 @@ commands:
     deps:
       - "training/fa_core_news_trf"
 
+
+  - name: "model-cards"
+    help: >
+      Regenerate every Hugging Face model card from the packaged `meta.json`
+      files and the wheels on disk. Needs the packages built first: the cards
+      quote wheel sizes and cross-link the whole family, so one card cannot be
+      rebuilt in isolation. Upload with `huggingface_hub`'s `upload_file`, the
+      README.md of each repo.
+    script:
+      - "python scripts/make_model_card.py --all --out-dir cards"
+    deps:
+      - "scripts/make_model_card.py"
+    outputs:
+      - "cards"
 
   - name: "clean"
     help: "Drop corpora, training runs and metrics (keeps downloaded assets)"

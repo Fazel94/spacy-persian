@@ -40,7 +40,7 @@ print(doc.ents)   # (محمدرضا شجریان, مشهد)
 جدول‌های بردار floret جداگانه (فقط بردار، بدون هیچ مؤلفه‌ای):
 
 ```bash
-# ۵۰ هزار سطر × ۳۰۰ بعد، ۴۰۰ هزار سند فارسی (جدول ردهٔ md)
+# ۵۰ هزار سطر × ۳۰۰ بعد، ۴۰۰ هزار مقالهٔ نخست ویکی‌پدیای فارسی (جدول ردهٔ md)
 pip install https://huggingface.co/Phazel/fa_floret_400k/resolve/main/fa_floret_400k-0.1.0-py3-none-any.whl
 # ۵۰ هزار سطر × ۳۰۰ بعد، کل دامپ ویکی‌پدیای فارسی
 pip install https://huggingface.co/Phazel/fa_floret_full_wiki/resolve/main/fa_floret_full_wiki-0.1.0-py3-none-any.whl

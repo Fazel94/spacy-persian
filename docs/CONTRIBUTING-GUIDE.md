@@ -83,6 +83,22 @@ From <https://github.com/explosion/spaCy/blob/master/CONTRIBUTING.md>:
    ```
    Link the versioned copy; leave the `-any-` file in place, unlinked. Users then
    `pip install https://huggingface.co/Phazel/fa_dep_news_sm/resolve/main/fa_dep_news_sm-3.8.0-py3-none-any.whl`.
+
+   `spacy package` writes a README that is a metadata dump: no YAML frontmatter, so the Hub
+   cannot index the model by language or task, and no install line. Generate the real cards
+   and upload them as `README.md`, after the wheels exist (a card quotes its wheel's size
+   and cross-links every other package, so they are written in one pass):
+   ```bash
+   python scripts/make_model_card.py --all --out-dir cards   # or: spacy project run model-cards
+   ```
+   ```python
+   from huggingface_hub import HfApi
+   HfApi().upload_file(path_or_fileobj="cards/fa_dep_news_sm.md", path_in_repo="README.md",
+                       repo_id="Phazel/fa_dep_news_sm")
+   ```
+   Everything on a card comes from `meta.json`, the wheel, and `metrics/throughput-*.json`,
+   so fixing a card means fixing the artifact's metadata and rebuilding, never editing
+   Markdown on the Hub.
 2. PyPI or a self-hosted wheel: `spacy package … --build sdist,wheel` then `twine upload`, or
    attach the wheel to a GitHub Release. See <https://spacy.io/api/cli#package>.
 3. spaCy Universe, which lists the package on spacy.io but hosts nothing. Per

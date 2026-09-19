@@ -5,6 +5,11 @@ corpus/
 training/
 metrics/
 packages/
+packages_hf/
+# Model cards, regenerate with `python scripts/make_model_card.py --all`
+cards/
+# Vector wheels downloaded by `spacy project assets`
+*.whl
 .venv/
 # Separate env for `spacy huggingface-hub push`: it caps typer<0.8, which breaks the
 # spaCy CLI in the training venv. See .omp/AGENTS.md.
