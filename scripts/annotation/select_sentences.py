@@ -100,6 +100,11 @@ def main():
     ap.add_argument("--split", default="test")
     ap.add_argument("--out-dir", default="annotation/data")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--mode", choices=("kit", "split"), default="kit",
+                    help="kit: test-all + pool-500 + select-100; "
+                         "split: the whole split as shards, for bulk relabelling")
+    ap.add_argument("--shard-size", type=int, default=2000,
+                    help="sentences per shard in split mode; 0 writes one file")
     args = ap.parse_args()
 
     sents = iob_sents(Path(args.corpus))
@@ -114,6 +119,17 @@ def main():
             rich.append(rec)
     print(f"corpus: {len(sents)} sentences, {len(rich)} rich (after length filter), "
           f"{len(empty)} empty")
+
+    if args.mode == "split":
+        out = Path(args.out_dir)
+        size = args.shard_size or len(every)
+        shards = [every[i:i + size] for i in range(0, len(every), size)]
+        for n, shard in enumerate(shards):
+            dump(out / f"shard-{n:03d}.jsonl", shard)
+        n_any = sum(1 for r in every if r["silver"])
+        report(args.split, every, n_any, len(every) - n_any)
+        print(f"{len(shards)} shards of <= {size} sentences in {out}")
+        return
 
     rng = random.Random(args.seed)
 
