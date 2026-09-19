@@ -1,0 +1,5 @@
+{"id": "test:14", "text": "فاطمه", "label": "PER", "reason": "no-align"}
+{"id": "test:56", "text": "ویندوز", "label": "O", "reason": "bad-label"}
+{"id": "test:199", "text": "کامل", "label": "O", "reason": "bad-label"}
+{"id": "test:824", "text": "آمریکا", "label": "LOC", "reason": "no-align"}
+{"id": "test:1070", "text": "زینبم", "label": "PER", "reason": "no-align"}

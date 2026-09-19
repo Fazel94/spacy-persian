@@ -8,6 +8,8 @@ packages/
 packages_hf/
 # Model cards, regenerate with `python scripts/make_model_card.py --all`
 cards/
+# Raw LLM annotation responses/cache — keep unvalidated subscription output unpublished
+annotation/work/
 # Vector wheels downloaded by `spacy project assets`
 *.whl
 .venv/
