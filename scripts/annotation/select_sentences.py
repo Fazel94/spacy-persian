@@ -122,13 +122,17 @@ def main():
 
     if args.mode == "split":
         out = Path(args.out_dir)
-        size = args.shard_size or len(every)
-        shards = [every[i:i + size] for i in range(0, len(every), size)]
-        for n, shard in enumerate(shards):
-            dump(out / f"shard-{n:03d}.jsonl", shard)
+        if args.shard_size:
+            shards = [every[i:i + args.shard_size] for i in range(0, len(every), args.shard_size)]
+            for n, shard in enumerate(shards):
+                dump(out / f"shard-{n:03d}.jsonl", shard)
+            where = f"{len(shards)} shards of <= {args.shard_size} sentences in {out}"
+        else:
+            dump(out / f"{args.split}-all.jsonl", every)
+            where = f"one file, {out}/{args.split}-all.jsonl"
         n_any = sum(1 for r in every if r["silver"])
         report(args.split, every, n_any, len(every) - n_any)
-        print(f"{len(shards)} shards of <= {size} sentences in {out}")
+        print(where)
         return
 
     rng = random.Random(args.seed)
