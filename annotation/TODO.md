@@ -101,6 +101,58 @@ these, the fix is a second recall-oriented pass, not more prompt text.
       verdicts live in `/tmp` and are rewritten each time. If adjudicated precision is going
       to be quoted, the script belongs in `scripts/annotation/`.
 
+## Stand up Potato for the human annotation pass
+
+Hand-editing IOB in a text editor is the weak link in the gold pass. Persian is
+bidirectional, so a tag column drifts visually away from its token, editors silently convert
+TAB to spaces or "fix" the text, and nothing stops an annotator corrupting the token column.
+A browser tool removes the whole class of problem and brings agreement metrics with it.
+
+Potato (`potato-annotation` on PyPI, 2.9.3, GPL-3.0, Python >=3.7) is the fit: span
+labelling is a first-class scheme, `examples/span/` ships an NER template, and it serves on
+the LAN by default so a local annotator just opens a link.
+
+- [ ] **Install into its own venv, never `../.venv`.** The precedent is in `.omp/AGENTS.md`:
+      `spacy-huggingface-hub` pulled `typer<0.8` into the training venv and broke every
+      `spacy` command. Use `.venv-annotate/`, add it to `.gitignore`, then
+      `potato start <config.yaml> -p 8000`. Clone the repo separately if the `examples/`
+      templates are wanted; the wheel does not carry them. Find the LAN address with
+      `hostname -I`.
+- [ ] **Write `scripts/annotation/to_potato.py`.** Potato reads JSON, JSONL or CSV with an
+      `id` and a `text` field, named through `item_properties: {id_key, text_key}`. Emit
+      `text` as `" ".join(tokens)` and nothing else, so a character offset maps back to a
+      token index by cumulative token length plus one per space. Any other rendering breaks
+      the round trip.
+- [ ] **Settle right-to-left display in the pilot, before converting all 200.** Potato
+      allows raw HTML in the text field, so `<div dir="rtl">…</div>` is the obvious fix —
+      but if the exported span offsets are then measured against the string *including* the
+      markup, every offset shifts and the mapping above is wrong. Check what the export
+      actually contains. If offsets do shift, style the container through a custom layout or
+      CSS instead of inline HTML, and leave `text` as bare tokens.
+- [ ] **Write `scripts/annotation/from_potato.py`.** Convert the export back to a worksheet
+      that `score_gold.py --check` accepts. It MUST reject any span whose boundaries do not
+      fall on token boundaries: a mouse selection can easily land mid-token, and Persian
+      ZWNJ inside words such as `احمدی‌نژاد` makes that likely rather than rare.
+- [ ] **Prove the round trip on 10 sentences.** Feed the v2.2 LLM spans in as if they were
+      annotations, export, convert back, and require span-for-span equality with
+      `gold-200.llm.iob`. Until that passes byte-clean, no annotator time goes in.
+- [ ] **Use two projects, not one.** A blind project over `gold-200.jsonl` with no
+      suggestions produces the measurement of record; a separate review project may
+      pre-load the existing labels. Potato has LLM label suggestions and an adjudication
+      workflow, which fit the review pass exactly — and would quietly destroy the blind one.
+- [ ] **Take the agreement metrics from Potato rather than reimplementing them.** It
+      computes Krippendorff's alpha and tracks per-annotator accuracy against gold
+      standards, which is strictly more than `score_gold.py --second` does. Keep
+      `score_gold.py` for scoring silver and the LLM against the finished gold, since that
+      is not something Potato knows about.
+- [ ] **Restrict sign-up.** `user_config: {allow_all_users: False, authorized_users: [...]}`
+      for a known annotator list, or `login: {type: url_direct, url_argument: ...}` for a
+      one-click link. The default is open self-registration, which is wrong for a LAN
+      service left running.
+
+Acceptance: the 10-sentence pilot round-trips with identical spans, Persian renders
+right-to-left in the browser, and the exported worksheet passes `--check`.
+
 ## Remaining annotation
 
 All three splits are relabelled under v2.2: **26,196 train** (13,644 entities, 1
