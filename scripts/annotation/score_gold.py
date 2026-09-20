@@ -120,6 +120,8 @@ def main():
     ap.add_argument("--judge", help="adjudication dump with per-span verdicts")
     ap.add_argument("--column", type=int, default=2,
                     help="1-based tag column; use 4 for a corrected gold-200.review.tsv")
+    ap.add_argument("--check", action="store_true",
+                    help="validate the worksheet's structure and exit, printing no scores")
     args = ap.parse_args()
 
     key = {json.loads(l)["id"]: json.loads(l) for l in Path(args.key).open(encoding="utf8")}
@@ -127,6 +129,24 @@ def main():
     missing = [sid for sid in key if sid not in gold]
     if missing:
         raise SystemExit(f"{len(missing)} sentences are unannotated, e.g. {missing[:3]}")
+
+    if args.check:
+        extra = sorted(set(gold) - set(key))
+        if extra:
+            raise SystemExit(f"{len(extra)} unknown sentence ids, e.g. {extra[:3]}")
+        moved = [sid for sid, k in key.items()
+                 if any(s[1] > len(k["tokens"]) for s in gold[sid])]
+        if moved:
+            raise SystemExit(f"spans run past the end of the sentence in {moved[:3]}")
+        spans = sum(len(v) for v in gold.values())
+        by_label = defaultdict(int)
+        for v in gold.values():
+            for s in v:
+                by_label[s[2]] += 1
+        print(f"OK — {len(gold)} sentences, {spans} spans, "
+              + ", ".join(f"{lab} {by_label[lab]}" for lab in LABELS))
+        print("Tags parse, every sentence is present, no span runs off the end.")
+        return
 
     if args.second:
         other = read_worksheet(args.second, args.column)

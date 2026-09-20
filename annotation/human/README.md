@@ -6,6 +6,11 @@ silver error rate) comes from an LLM judge belonging to the annotator's own mode
 and neither side's recall is measured at all, because entities that *both* annotators miss
 are invisible to a pairwise comparison. A human pass fixes both problems at once.
 
+Hand the annotator `ANNOTATOR-GUIDE.md`, or `ANNOTATOR-GUIDE.fa.md` for the Persian
+version. Those explain the label set with worked right-and-wrong examples and how to edit
+the files, and they are meant to be read once before starting. This README is the operator's
+view: which file is which, and what each one measures.
+
 ## Files
 
 | file | what it is |
