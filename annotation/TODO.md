@@ -49,10 +49,12 @@ test spans. That adjudication is LLM-judged, so it is an estimate, not a measure
       resolved model id — with no timestamp, temperature or script revision. Re-runs of the
       same prompt agree at F 0.95-0.98, so the committed files are the record of origin and
       cannot be reproduced bit-exact. Add a sidecar manifest per output tree.
-- [ ] **No human gold.** Every quality claim here is LLM-judged by a model from the
-      annotator's own family, and neither side's recall is measured (entities both miss are
-      invisible). 200 blind human-annotated sentences, stratified, would convert every
-      estimate in this file into a measurement and yield the missing IAA number.
+- [ ] **No human gold — the sample is drawn and waiting.** `human/gold-200.iob` is a blind
+      worksheet over 200 test sentences (3,667 tokens), stratified 30 both-empty / 50
+      agreeing / 120 disagreeing, with `human/README.md` for the protocol and
+      `../scripts/annotation/score_gold.py` to score it. Filling it in measures real recall
+      for both annotators, grades the LLM judge every precision estimate here depends on,
+      and — with a second annotator — yields the missing IAA number. 2-4 hours of work.
 
 ## v3 guideline changes
 
