@@ -22,7 +22,8 @@ annotation/work/
 .venv-trf-gpu/
 __pycache__/
 *.pyc
-# Personal scratch list, not part of the project
-TODO.md
+# Personal scratch list at the repo root, not part of the project. Anchored: a bare
+# TODO.md also swallowed annotation/TODO.md, which is a tracked deliverable.
+/TODO.md
 # Agent/session notes, local only
 .omp/
