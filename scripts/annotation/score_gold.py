@@ -30,8 +30,12 @@ from pathlib import Path
 LABELS = ("PER", "LOC", "ORG", "DAT")
 
 
-def read_worksheet(path):
-    """-> {id: [(start, end, label)]}, driven by the `# <id>` header before each block."""
+def read_worksheet(path, column=2):
+    """-> {id: [(start, end, label)]}, driven by the `# <id>` header before each block.
+
+    `column` is 1-based: 2 for the two-column worksheets, 4 for the verdict column of
+    gold-200.review.tsv (token, silver, llm, verdict).
+    """
     out, sid, tags = {}, None, []
     for line in Path(path).open(encoding="utf8"):
         line = line.rstrip("\n")
@@ -44,9 +48,9 @@ def read_worksheet(path):
                 sid, tags = None, []
             continue
         parts = line.split("\t")
-        if len(parts) < 2:
-            raise SystemExit(f"{path}: untagged line {line!r} — every token needs a tag column")
-        tags.append(parts[1].strip())
+        if len(parts) < column:
+            raise SystemExit(f"{path}: line {line!r} has {len(parts)} columns, need {column}")
+        tags.append(parts[column - 1].strip())
     if sid is not None and tags:
         out[sid] = spans_from_iob(tags)
     return out
@@ -114,16 +118,18 @@ def main():
     ap.add_argument("--key", default="annotation/human/gold-200.key.jsonl")
     ap.add_argument("--second", help="a second annotator's worksheet, for IAA")
     ap.add_argument("--judge", help="adjudication dump with per-span verdicts")
+    ap.add_argument("--column", type=int, default=2,
+                    help="1-based tag column; use 4 for a corrected gold-200.review.tsv")
     args = ap.parse_args()
 
     key = {json.loads(l)["id"]: json.loads(l) for l in Path(args.key).open(encoding="utf8")}
-    gold = read_worksheet(args.gold)
+    gold = read_worksheet(args.gold, args.column)
     missing = [sid for sid in key if sid not in gold]
     if missing:
         raise SystemExit(f"{len(missing)} sentences are unannotated, e.g. {missing[:3]}")
 
     if args.second:
-        other = read_worksheet(args.second)
+        other = read_worksheet(args.second, args.column)
         shared = sorted(set(gold) & set(other))
         counts = defaultdict(lambda: [0.0, 0.0, 0.0])
         same = 0

@@ -1,0 +1,4067 @@
+# test:492
+در	O	O	O
+صبح	O	O	O
+بهاری	O	O	O
+جمعه	O	B-DAT	B-DAT	*
+مسئولین	O	O	O
+و	O	O	O
+کارکنان	O	O	O
+دانشگاه	B-ORG	B-ORG	B-ORG
+علوم	I-ORG	I-ORG	I-ORG
+پزشکی	I-ORG	I-ORG	I-ORG
+به	O	O	O
+همراه	O	O	O
+خانواده	O	O	O
+خود	O	O	O
+از	O	O	O
+محل	O	O	O
+آرامگاه	O	O	O
+شهدای	O	O	O
+گمنام	O	O	O
+شروع	O	O	O
+به	O	O	O
+کوهنوردی	O	O	O
+خواهند	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:426
+یک	O	O	O
+هنرمند	O	O	O
+نیویورکی	O	O	O
+به	O	O	O
+نام	O	O	O
+رابرت	B-PER	B-PER	B-PER
+کتاب‌های	O	O	O
+قدیمی	O	O	O
+و	O	O	O
+نیز	O	O	O
+کتاب‌هایی	O	O	O
+که	O	O	O
+بدون	O	O	O
+استفاده	O	O	O
+در	O	O	O
+انبار	O	O	O
+فروشگاه‌ها	O	O	O
+بوده	O	O	O
+است	O	O	O
+را	O	O	O
+به	O	O	O
+شکل	O	O	O
+تفنگ	O	O	O
+برش	O	O	O
+داده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:965
+آثار	O	O	O
+23	O	O	O
+عکاس	O	O	O
+بر	O	O	O
+دیوار	O	O	O
+نگارخانهٔ	O	B-ORG	B-ORG	*
+ایوان	O	I-ORG	I-ORG	*
+نقش	O	O	O
+می‌زند	O	O	O
+.	O	O	O
+
+# test:669
+بسیاری	O	O	O
+از	O	O	O
+فقهای	O	O	O
+متقدم	O	O	O
+و	O	O	O
+معاصر	O	O	O
+در	O	O	O
+قواعد	O	O	O
+پژوهش	O	O	O
+و	O	O	O
+تتبع	O	O	O
+کرده‌اند	O	O	O
+.	O	O	O
+
+# test:595
+راحیل	B-PER	B-PER	B-PER
+چون	O	O	O
+دانست	O	O	O
+که	O	O	O
+نازا	B-PER	O	O	*
+ست	O	O	O
+،	O	O	O
+به	O	O	O
+خواهر	O	O	O
+خود	O	O	O
+حسد	O	O	O
+برد	O	O	O
+.	O	O	O
+
+# test:1141
+پیامبر	B-PER	B-PER	B-PER
+(	O	O	O
+ص	O	O	O
+)	O	O	O
+می‌فرماید	O	O	O
+:	O	O	O
+هر	O	O	O
+که	O	O	O
+با	O	O	O
+حسین	B-PER	B-PER	B-PER
+بجنگد	O	O	O
+با	O	O	O
+من	O	O	O
+جنگیده	O	O	O
+و	O	O	O
+هر	O	O	O
+کس	O	O	O
+با	O	O	O
+او	O	O	O
+مسالمت	O	O	O
+کند	O	O	O
+با	O	O	O
+من	O	O	O
+مسالمت	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:299
+آخوند	B-PER	B-PER	B-PER
+خراسانی	I-PER	I-PER	I-PER
+عقل	O	O	O
+را	O	O	O
+در	O	O	O
+لباس	O	O	O
+اصول	O	O	O
+به	O	O	O
+حوزه‌ها	O	O	O
+راه	O	O	O
+داد	O	O	O
+.	O	O	O
+
+# test:1229
+در	O	O	O
+کتاب‌ها	O	O	O
+چنین	O	O	O
+آمده	O	O	O
+است	O	O	O
+که	O	O	O
+خسرو	B-PER	B-PER	B-PER
+انوشیروان	I-PER	I-PER	I-PER
+افرادی	O	O	O
+که	O	O	O
+بنیهٔ	O	O	O
+طبیعی	O	O	O
+قوی	O	O	O
+داشته‌اند	O	O	O
+را	O	O	O
+در	O	O	O
+نواحی	O	O	O
+سرحدی	O	O	O
+استقرار	O	O	O
+می‌داد	O	O	O
+تا	O	O	O
+حملات	O	O	O
+دشمنان	O	O	O
+خارجی	O	O	O
+را	O	O	O
+دفع	O	O	O
+کنند	O	O	O
+.	O	O	O
+
+# test:1135
+یکی	O	O	O
+دیگر	O	O	O
+از	O	O	O
+اعضای	O	O	O
+فرقان	O	B-ORG	B-ORG	*
+گفت	O	O	O
+:	O	O	O
+بارها	O	O	O
+وقتی	O	O	O
+در	O	O	O
+مواردی	O	O	O
+از	O	O	O
+آقای	O	O	O
+گودرزی	B-PER	B-PER	B-PER
+مسائلی	O	O	O
+پرسیده	O	O	O
+شد	O	O	O
+،	O	O	O
+وی	O	O	O
+قرآن	O	O	O
+را	O	O	O
+می‌گشود	O	O	O
+و	O	O	O
+بدان	O	O	O
+استناد	O	O	O
+میجست	O	O	O
+!	O	O	O
+
+# test:1415
+یک	O	O	O
+نوع	O	O	O
+نگاه	O	O	O
+به	O	O	O
+موضوع	O	O	O
+این	O	O	O
+است	O	O	O
+که	O	O	O
+بگوییم	O	O	O
+این	O	O	O
+برد	O	O	O
+را	O	O	O
+در	O	O	O
+درجهٔ	O	O	O
+اول	O	O	O
+مایکل	B-PER	B-PER	B-PER
+اوون	I-PER	I-PER	I-PER
+یکی	O	O	O
+از	O	O	O
+مردان	O	O	O
+نسل	O	O	O
+قدیمی	O	O	O
+و	O	O	O
+کسی	O	O	O
+که	O	O	O
+جزیی	O	O	O
+از	O	O	O
+سیستم	O	O	O
+و	O	O	O
+نفرات	O	O	O
+جدید	O	O	O
+نبوده	O	O	O
+برای	O	O	O
+انگلیس	B-LOC	B-LOC	B-LOC
+به	O	O	O
+ارمغان	O	O	O
+آورده	O	O	O
+و	O	O	O
+به	O	O	O
+واقع	O	O	O
+نیز	O	O	O
+او	O	O	O
+2	O	O	O
+گل	O	O	O
+از	O	O	O
+3	O	O	O
+گل	O	O	O
+انگلیس	B-LOC	B-LOC	B-LOC
+را	O	O	O
+زد	O	O	O
+و	O	O	O
+دیگری	O	O	O
+را	O	O	O
+هم	O	O	O
+برای	O	O	O
+ریو	B-PER	B-PER	B-PER
+فردیناند	I-PER	I-PER	I-PER
+پایه‌گذاری	O	O	O
+کرد	O	O	O
+اما	O	O	O
+این	O	O	O
+نفرات	O	O	O
+تازه‌وارد	O	O	O
+و	O	O	O
+جانشینان	O	O	O
+افراد	O	O	O
+مصدوم	O	O	O
+بودند	O	O	O
+که	O	O	O
+بازی‌گردانی	O	O	O
+می‌کردند	O	O	O
+و	O	O	O
+همه	O	O	O
+چیز	O	O	O
+را	O	O	O
+در	O	O	O
+کنترل	O	O	O
+خود	O	O	O
+داشتند	O	O	O
+.	O	O	O
+
+# test:1161
+مأمورین	O	O	O
+امنیتی	O	O	O
+با	O	O	O
+همهٔ	O	O	O
+وجود	O	O	O
+از	O	O	O
+دانشمندان	O	O	O
+محافظت	O	O	O
+خواهند	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1174
+این	O	O	O
+روزها	O	O	O
+شاهد	O	O	O
+جشن	O	O	O
+سی	O	O	O
+سالگی	O	O	O
+انقلاب	O	O	O
+شکوهمند	O	O	O
+ایران	B-LOC	B-LOC	B-LOC
+اسلامی	O	O	O
+بوده‌ایم	O	O	O
+و	O	O	O
+شاید	O	O	O
+نام	O	O	O
+گرفتن	O	O	O
+امسال	B-DAT	B-DAT	B-DAT
+به	O	O	O
+نوآوری	O	O	O
+و	O	O	O
+شکوفایی	O	O	O
+،	O	O	O
+بر	O	O	O
+این	O	O	O
+اتفاق	O	O	O
+مهم	O	O	O
+تاریخی	O	O	O
+اشارت	O	O	O
+داشته	O	O	O
+باشد	O	O	O
+.	O	O	O
+
+# test:558
+به	O	O	O
+گزارش	O	O	O
+رسانه‌های	O	O	O
+ژاپنی	O	O	O
+مقام‌های	O	O	O
+ژاپنی	O	O	O
+امروز	B-DAT	B-DAT	B-DAT
+پنجشنبه	I-DAT	I-DAT	I-DAT
+با	O	O	O
+مقام‌های	O	O	O
+آمریکایی	O	O	O
+دربارهٔ	O	O	O
+جزئیات	O	O	O
+تحریم‌های	O	O	O
+نفتی	O	O	O
+ایران	B-LOC	B-LOC	B-LOC
+گفت	O	O	O
+و	O	O	O
+گو	O	O	O
+می‌کنند	O	O	O
+.	O	O	O
+
+# test:199
+او	O	O	O
+سفارش	O	O	O
+کرده	O	O	O
+بود	O	O	O
+اسبش	O	O	O
+را	O	O	O
+که	O	O	O
+کامل	O	B-PER	B-PER	*
+نام	O	O	O
+داشت	O	O	O
+از	O	O	O
+کوفه	B-LOC	B-LOC	B-LOC
+برایش	O	O	O
+بیاورند	O	O	O
+.	O	O	O
+
+# test:1328
+شما	O	O	O
+به	O	O	O
+خودتان	O	O	O
+این	O	O	O
+اجازه	O	O	O
+را	O	O	O
+دادید	O	O	O
+که	O	O	O
+جلوی	O	O	O
+این	O	O	O
+همه	O	O	O
+آدم	O	O	O
+شخصیت	O	O	O
+من	O	O	O
+را	O	O	O
+به	O	O	O
+راحتی	O	O	O
+لگدمال	O	O	O
+بکنی	O	O	O
+.	O	O	O
+
+# test:1110
+بیمهٔ	O	B-ORG	B-ORG	*
+ایران	B-LOC	I-ORG	I-ORG	*
+نیز	O	O	O
+بیش	O	O	O
+از	O	O	O
+200	O	O	O
+هزار	O	O	O
+سهم	O	O	O
+این	O	O	O
+شرکت	O	O	O
+را	O	O	O
+در	O	O	O
+بازار	O	O	O
+به	O	O	O
+فروش	O	O	O
+رسانیده	O	O	O
+بود	O	O	O
+.	O	O	O
+
+# test:862
+من	O	O	O
+در	O	O	O
+کمیسیون	B-ORG	O	O	*
+نفت	I-ORG	O	O	*
+معارضه	O	O	O
+کردم	O	O	O
+.	O	O	O
+
+# test:180
+رازی	B-PER	B-PER	B-PER
+در	O	O	O
+ابتدای	O	O	O
+کتاب	O	O	O
+طب	O	O	O
+روحانی	B-PER	O	O	*
+عقل	O	O	O
+را	O	O	O
+می‌ستاید	O	O	O
+و	O	O	O
+همهٔ	O	O	O
+سودها	O	O	O
+و	O	O	O
+بهره‌هایی	O	O	O
+که	O	O	O
+در	O	O	O
+این	O	O	O
+دنیا	O	O	O
+و	O	O	O
+عالم	O	O	O
+دیگر	O	O	O
+از	O	O	O
+آن	O	O	O
+می‌توان	O	O	O
+برخوردار	O	O	O
+شد	O	O	O
+را	O	O	O
+به	O	O	O
+عقل	O	O	O
+نسبت	O	O	O
+می‌دهد	O	O	O
+.	O	O	O
+
+# test:557
+شخصاً	O	O	O
+با	O	O	O
+خودروی	O	O	O
+غیراداری	O	O	O
+در	O	O	O
+بعدازظهرها	O	O	O
+و	O	O	O
+حتی	O	O	O
+شبانه	O	O	O
+در	O	O	O
+شهر	B-LOC	O	O	*
+گشت‌زنی	I-LOC	O	O	*
+می‌کنم	O	O	O
+.	O	O	O
+
+# test:1250
+چگونه	O	O	O
+می‌توان	O	O	O
+از	O	O	O
+خشونت	O	O	O
+دوری	O	O	O
+جست	O	O	O
+؟	O	O	O
+
+# test:779
+جهان	B-LOC	B-LOC	B-LOC
+علیه	O	O	O
+اسرائیل	B-LOC	B-LOC	B-LOC
+موضع	O	O	O
+می‌گیرد	O	O	O
+.	O	O	O
+
+# test:1417
+امپراطوری	B-ORG	O	O	*
+پارس	O	O	O
+را	O	O	O
+بنیاد	O	O	O
+گذاردم	O	O	O
+.	O	O	O
+
+# test:1003
+همهٔ	O	O	O
+ابرازهای	O	O	O
+تبلیغاتی	O	O	O
+و	O	O	O
+سیاسی	O	O	O
+آمریکا	B-LOC	B-LOC	B-LOC
+و	O	O	O
+دیگر	O	O	O
+سلطه‌طلبان	O	O	O
+،	O	O	O
+امروز	O	B-DAT	B-DAT	*
+به	O	O	O
+کار	O	O	O
+افتاده	O	O	O
+است	O	O	O
+تا	O	O	O
+نهضت	O	O	O
+بیداری	O	O	O
+اسلامی	O	O	O
+را	O	O	O
+به	O	O	O
+تأخیر	O	O	O
+اندازند	O	O	O
+و	O	O	O
+اگر	O	O	O
+بتوانند	O	O	O
+سرکوب	O	O	O
+کنند	O	O	O
+.	O	O	O
+
+# test:633
+اورانگوتانی	B-PER	O	O	*
+در	O	O	O
+باغ	B-LOC	O	O	*
+وحشی	I-LOC	O	O	*
+در	O	O	O
+مالزی	B-LOC	B-LOC	B-LOC
+که	O	O	O
+به	O	O	O
+دلیل	O	O	O
+سیگاری	O	O	O
+بودن	O	O	O
+اطرافیانش	O	O	O
+در	O	O	O
+باغ	B-LOC	O	O	*
+وحش	I-LOC	O	O	*
+به	O	O	O
+سیگار	O	O	O
+کشیدن	O	O	O
+عادت	O	O	O
+کرده	O	O	O
+بود	O	O	O
+،	O	O	O
+ترک	O	O	O
+داده	O	O	O
+شد	O	O	O
+.	O	O	O
+
+# test:358
+چنانچه	O	O	O
+طرحی	O	O	O
+علمی	O	O	O
+،	O	O	O
+منطقی	O	O	O
+و	O	O	O
+دارای	O	O	O
+مستندات	O	O	O
+کارشناسی	O	O	O
+باشد	O	O	O
+بانک	B-ORG	B-ORG	B-ORG
+مرکزی	I-ORG	I-ORG	I-ORG
+تنگ‌نظری	O	O	O
+نخواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:14
+دست	O	O	O
+فاطمه‌ام	B-PER	O	O	*
+پینه	O	O	O
+بسته	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:32
+استعمارگران	O	O	O
+و	O	O	O
+اقتدارگران	O	O	O
+شیطانی	O	O	O
+برای	O	O	O
+استیلا	B-PER	O	O	*
+بر	O	O	O
+ملت‌ها	O	O	O
+پیوسته	O	O	O
+از	O	O	O
+غفلت	O	O	O
+و	O	O	O
+عدم	O	O	O
+بصیرت	O	O	O
+سیاسی	O	O	O
+،	O	O	O
+تبلیغات	O	O	O
+دروغین	O	O	O
+و	O	O	O
+شیوهٔ	O	O	O
+تهدید	O	O	O
+و	O	O	O
+تطمیع	O	O	O
+استفاده	O	O	O
+می‌کنند	O	O	O
+و	O	O	O
+از	O	O	O
+آنجا	O	O	O
+که	O	O	O
+رهبری	O	O	O
+و	O	O	O
+مشعل‌داران	O	O	O
+واقعی	O	O	O
+نظام	O	O	O
+و	O	O	O
+مملکت	O	O	O
+در	O	O	O
+بیداری	O	O	O
+مردم	O	O	O
+نقش	O	O	O
+به‌سزایی	O	O	O
+دارد	O	O	O
+،	O	O	O
+ابتدا	O	O	O
+از	O	O	O
+تنقیص	O	O	O
+،	O	O	O
+تخریب	O	O	O
+و	O	O	O
+تضعیف	O	O	O
+این	O	O	O
+ارکان	O	O	O
+اجتماعی	O	O	O
+شروع	O	O	O
+می‌کنند	O	O	O
+و	O	O	O
+پس	O	O	O
+از	O	O	O
+ایجاد	O	O	O
+فاصله	O	O	O
+بین	O	O	O
+مردم	O	O	O
+و	O	O	O
+رهبری	O	O	O
+و	O	O	O
+یاوران	O	O	O
+راستین	O	O	O
+او	O	O	O
+و	O	O	O
+شکستن	O	O	O
+این	O	O	O
+خط	O	O	O
+مقدم	O	O	O
+جبهه	O	O	O
+به	O	O	O
+خطوط	O	O	O
+بعدی	O	O	O
+پنجه	O	O	O
+می‌افکنند	O	O	O
+و	O	O	O
+به	O	O	O
+راحتی	O	O	O
+بر	O	O	O
+چنین	O	O	O
+جامعه‌ای	O	O	O
+سلطه	O	O	O
+پیدا	O	O	O
+می‌کنند	O	O	O
+.	O	O	O
+
+# test:49
+تیم	B-ORG	B-ORG	B-ORG
+کانوپولو	I-ORG	I-ORG	I-ORG
+بانوان	O	I-ORG	I-ORG	*
+ایران	B-LOC	I-ORG	I-ORG	*
+برای	O	O	O
+عنوان	O	O	O
+هشتمی	O	O	O
+پارو	O	O	O
+خواهد	O	O	O
+زد	O	O	O
+.	O	O	O
+
+# test:280
+بالأخره	O	O	O
+لوگوی	O	O	O
+روزنامهٔ	B-ORG	O	O	*
+«	I-ORG	O	O	*
+تهران	I-ORG	B-ORG	B-ORG	*
+امروز	I-ORG	I-ORG	I-ORG
+»	I-ORG	O	O	*
+با	O	O	O
+ارزش‌های	O	O	O
+انقلاب	O	O	O
+تطبیق	O	O	O
+داده	O	O	O
+شد	O	O	O
+!	O	O	O
+
+# test:68
+طبیعت	O	O	O
+اوگاندا	O	B-LOC	B-LOC	*
+در	O	O	O
+سال‌های	O	O	O
+اخیر	O	O	O
+بار	O	O	O
+دیگر	O	O	O
+جان	O	O	O
+گرفته	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:1103
+تشکیل	O	O	O
+شورای	B-ORG	B-ORG	B-ORG
+عالی	I-ORG	I-ORG	I-ORG
+فضای	I-ORG	I-ORG	I-ORG
+مجازی	I-ORG	I-ORG	I-ORG
+نگرانی	O	O	O
+استکبار	O	O	O
+را	O	O	O
+به	O	O	O
+دنبال	O	O	O
+داشته	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:1259
+خشم	O	O	O
+و	O	O	O
+خشونت	O	O	O
+وقتی	O	O	O
+صورت	O	O	O
+سیستماتیک	O	O	O
+پیدا	O	O	O
+می‌کند	O	O	O
+دیگر	O	O	O
+هیچ	O	O	O
+فرق	O	O	O
+ندارد	O	O	O
+که	O	O	O
+این	O	O	O
+در	O	O	O
+شکل	O	O	O
+دم	O	O	O
+و	O	O	O
+دستگاه	O	O	O
+سخت	O	O	O
+قذافی	O	B-PER	B-PER	*
+ظاهر	O	O	O
+بشود	O	O	O
+و	O	O	O
+ابتدایی‌ترین	O	O	O
+حقوق	O	O	O
+مخالفان	O	O	O
+را	O	O	O
+به	O	O	O
+خشم	O	O	O
+از	O	O	O
+آنها	O	O	O
+سلب	O	O	O
+بکند	O	O	O
+یا	O	O	O
+در	O	O	O
+شکل	O	O	O
+فرهنگ	O	O	O
+سیاسی	O	O	O
+نفرت	O	O	O
+و	O	O	O
+خشم	O	O	O
+کور	O	O	O
+جماعت‌ها	O	O	O
+غلیان	O	O	O
+بکند	O	O	O
+.	O	O	O
+
+# test:821
+هر	O	O	O
+پژوهشگری	O	O	O
+در	O	O	O
+حوزهٔ	O	O	O
+تخصصی	O	O	O
+خودش	O	O	O
+می‌تواند	O	O	O
+نظریه‌پردازی	O	O	O
+بکند	O	O	O
+.	O	O	O
+
+# test:504
+سازمان	B-ORG	O	O	*
+پرداخت‌کنندهٔ	I-ORG	O	O	*
+حقوق	I-ORG	O	O	*
+می‌تواند	O	O	O
+از	O	O	O
+بانک	O	O	O
+خود	O	O	O
+بخواهد	O	O	O
+جمع	O	O	O
+مبلغ	O	O	O
+حقوق	O	O	O
+و	O	O	O
+دستمزد	O	O	O
+را	O	O	O
+از	O	O	O
+حساب	O	O	O
+سازمان	O	O	O
+برداشت	O	O	O
+و	O	O	O
+به	O	O	O
+حساب‌های	O	O	O
+بانکی	O	O	O
+کارکنان	O	O	O
+در	O	O	O
+بانک‌های	O	O	O
+مختلف	O	O	O
+حواله	O	O	O
+کند	O	O	O
+.	O	O	O
+
+# test:935
+خدا	B-PER	O	O	*
+مختار	B-PER	B-PER	B-PER
+را	O	O	O
+رحمت	O	O	O
+کند	O	O	O
+.	O	O	O
+
+# test:853
+حضرت	B-PER	O	O	*
+امام	I-PER	O	O	*
+ره	I-PER	O	O	*
+گاهی	O	O	O
+نوه‌های	O	O	O
+خود	O	O	O
+را	O	O	O
+سرگرم	O	O	O
+کرده	O	O	O
+و	O	O	O
+از	O	O	O
+این	O	O	O
+راه	O	O	O
+با	O	O	O
+آنها	O	O	O
+مطایبه	O	O	O
+می‌کردند	O	O	O
+.	O	O	O
+
+# test:196
+در	O	O	O
+این	O	O	O
+نوشتار	O	O	O
+به	O	O	O
+اختصار	O	O	O
+نخست	O	O	O
+از	O	O	O
+اسناد	O	O	O
+و	O	O	O
+پژوهش‌های	O	O	O
+تاریخی	O	O	O
+و	O	O	O
+سپس	O	O	O
+از	O	O	O
+تاریخ	O	O	O
+شفاهی	O	O	O
+در	O	O	O
+ایران	B-LOC	B-LOC	B-LOC
+سخن	O	O	O
+خواهد	O	O	O
+رفت	O	O	O
+.	O	O	O
+
+# test:950
+من	O	O	O
+در	O	O	O
+تعجب	O	O	O
+هستم	O	O	O
+از	O	O	O
+این	O	O	O
+امر	O	O	O
+که	O	O	O
+بنی‌عبد	B-PER	O	O	*
+شمس	I-PER	O	O	*
+و	O	O	O
+بنومغیره	B-PER	O	O	*
+در	O	O	O
+نبوت	O	O	O
+منازعه	O	O	O
+کردند	O	O	O
+اما	O	O	O
+خلافت	O	O	O
+را	O	O	O
+پذیرفتند	O	O	O
+.	O	O	O
+
+# test:502
+خانوادهٔ	O	O	O
+بوتو	B-PER	B-PER	B-PER
+بی‌گمان	O	O	O
+برای	O	O	O
+نسل‌ها	O	O	O
+در	O	O	O
+پاکستان	B-LOC	B-LOC	B-LOC
+حکمروایی	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:938
+استاد	O	O	O
+جواد	B-PER	B-PER	B-PER
+مجابی	I-PER	I-PER	I-PER
+هم	O	O	O
+در	O	O	O
+آن	O	O	O
+بزرگداشت	O	O	O
+سخن	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:111
+شرکت	B-ORG	O	O	*
+LG	I-ORG	B-ORG	B-ORG	*
+در	O	O	O
+نمایشگاه	O	O	O
+CES	O	O	O
+ماه	B-DAT	O	O	*
+آینده	I-DAT	O	O	*
+از	O	O	O
+سری	O	O	O
+جدید	O	O	O
+مانیتورهای	O	O	O
+خود	O	O	O
+پرده‌برداری	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1169
+پس	O	O	O
+از	O	O	O
+ترور	O	O	O
+رزم‌آرا	B-LOC	B-PER	B-PER	*
+،	O	O	O
+حسین	B-PER	B-PER	B-PER
+علا	I-PER	I-PER	I-PER
+در	O	O	O
+21	B-DAT	B-DAT	B-DAT
+اسفند	I-DAT	I-DAT	I-DAT
+1329	I-DAT	I-DAT	I-DAT
+به	O	O	O
+نخست‌وزیری	O	O	O
+رسید	O	O	O
+اما	O	O	O
+چون	O	O	O
+از	O	O	O
+اجرای	O	O	O
+طرح	O	O	O
+ملی	O	O	O
+شدن	O	O	O
+صنعت	O	O	O
+نفت	O	O	O
+استنکاف	O	O	O
+می‌ورزید	O	O	O
+با	O	O	O
+مخالفت	O	O	O
+مردم	O	O	O
+و	O	O	O
+مجلس	O	O	O
+روبه‌رو	O	O	O
+شد	O	O	O
+.	O	O	O
+
+# test:1275
+امید	B-PER	B-PER	B-PER
+کرامتی	I-PER	I-PER	I-PER
+برای	O	O	O
+"	O	O	O
+به	O	O	O
+همین	O	O	O
+راحتی	O	O	O
+"	O	O	O
+آهنگسازی	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:22
+نمایندهٔ	O	O	O
+وزارت	B-ORG	B-ORG	B-ORG
+اقتصاد	I-ORG	I-ORG	I-ORG
+ایتالیا	I-ORG	I-ORG	I-ORG
+نقشهٔ	O	O	O
+پروژهٔ	O	O	O
+توسعهٔ	O	O	O
+میدان	B-LOC	O	O	*
+هوایی	I-LOC	O	O	*
+بین‌المللی	I-LOC	O	O	*
+هرات	I-LOC	B-LOC	B-LOC	*
+را	O	O	O
+به	O	O	O
+حامد	B-PER	B-PER	B-PER
+کرزی	I-PER	I-PER	I-PER
+پیشکش	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1054
+ظلم‌های	O	O	O
+امروز	O	B-DAT	B-DAT	*
+نشأت‌گرفته	O	O	O
+از	O	O	O
+ظلم	O	O	O
+رواشده	O	O	O
+به	O	O	O
+حضرت	B-PER	B-PER	B-PER
+زهرا	I-PER	I-PER	I-PER
+(	I-PER	O	O	*
+س	O	O	O
+)	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:1101
+در	O	B-DAT	B-DAT	*
+سال‌های	B-DAT	I-DAT	I-DAT	*
+1387	I-DAT	I-DAT	I-DAT
+تا	I-DAT	I-DAT	I-DAT
+1389	I-DAT	I-DAT	I-DAT
+که	O	O	O
+نرخ	O	O	O
+رشد	O	O	O
+اقتصادی	O	O	O
+به	O	O	O
+طور	O	O	O
+رسمی	O	O	O
+منتشر	O	O	O
+نشد	O	O	O
+،	O	O	O
+هزینه‌های	O	O	O
+واقعی	O	O	O
+خانوارهای	O	O	O
+شهری	O	O	O
+افت	O	O	O
+کرده	O	O	O
+بود	O	O	O
+.	O	O	O
+
+# test:303
+آیا	O	O	O
+به	O	O	O
+عنوان	O	O	O
+یک	O	O	O
+شیعه	O	O	O
+تا	O	O	O
+به	O	O	O
+حال	O	O	O
+خطبهٔ	O	O	O
+غدیر	B-PER	O	O	*
+را	O	O	O
+روخوانی	O	O	O
+کرده‌اید	O	O	O
+؟	O	O	O
+
+# test:1047
+هر	O	O	O
+گاه	O	O	O
+تناسب	O	O	O
+نیروها	O	O	O
+در	O	O	O
+حوزهٔ	O	O	O
+سیاسی	O	O	O
+ایران	B-LOC	B-LOC	B-LOC
+به	O	O	O
+سود	O	O	O
+دین‌باوران	O	O	O
+دگرگون	O	O	O
+شود	O	O	O
+،	O	O	O
+با	O	O	O
+شتاب	O	O	O
+از	O	O	O
+دولت	O	O	O
+دینی	O	O	O
+هواداری	O	O	O
+خواهند	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:497
+یک	O	O	O
+سایت	O	O	O
+از	O	O	O
+لوگوی	O	O	O
+گوگل	B-ORG	B-ORG	B-ORG
+کپی‌برداری	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1182
+یعقوبی	B-PER	B-PER	B-PER
+در	O	O	O
+بیان	O	O	O
+تاریخ	O	O	O
+پیامبران	O	O	O
+،	O	O	O
+از	O	O	O
+قرآن	O	O	O
+مجید	O	O	O
+و	O	O	O
+مآخذ	O	O	O
+اسلامی	O	O	O
+و	O	O	O
+کتب	O	O	O
+عهدین	O	O	O
+از	O	O	O
+جمله	O	O	O
+اناجیل	O	O	O
+اربعه	B-LOC	O	O	*
+نقل	O	O	O
+و	O	O	O
+اقتباس	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:214
+فرانسویان	O	O	O
+برای	O	O	O
+خصوصی‌سازی	O	O	O
+پست	O	O	O
+رأی‌گیری	O	O	O
+می‌کنند	O	O	O
+.	O	O	O
+
+# test:863
+10	O	O	O
+صبح	O	O	O
+چهارشنبه	O	B-DAT	B-DAT	*
+استاندار	O	O	O
+،	O	O	O
+عباس	B-PER	B-PER	B-PER
+حسینی‌نژاد	I-PER	I-PER	I-PER
+را	O	O	O
+معارفه	O	O	O
+می‌کند	O	O	O
+.	O	O	O
+
+# test:604
+پس	O	O	O
+از	O	O	O
+زخم	O	O	O
+خوردن	O	O	O
+سهراب	B-PER	B-PER	B-PER
+یل	I-PER	O	O	*
+با	O	O	O
+خنجر	O	O	O
+رستم	O	B-PER	B-PER	*
+،	O	O	O
+کاووس	B-PER	B-PER	B-PER
+خدعه	O	O	O
+کرد	O	O	O
+و	O	O	O
+تمام	O	O	O
+نوشداروها	O	O	O
+را	O	O	O
+از	O	O	O
+سطح	O	O	O
+دواخانه‌های	O	O	O
+سیستان	B-LOC	B-LOC	B-LOC
+جمع	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:925
+شیخ	O	O	O
+شیراز	O	B-LOC	B-LOC	*
+سعدی‌نامه	O	O	O
+را	O	O	O
+این	O	O	O
+گونه	O	O	O
+آغاز	O	O	O
+نهاده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:1304
+این	O	O	O
+مقدار	O	O	O
+مواد	O	O	O
+مخدر	O	O	O
+در	O	O	O
+منطقهٔ	O	O	O
+نوکجوب	O	B-LOC	B-LOC	*
+این	O	O	O
+شهرستان	O	O	O
+بارانداز	O	O	O
+شده	O	O	O
+بود	O	O	O
+.	O	O	O
+
+# test:806
+چگونه	O	O	O
+می‌شود	O	O	O
+میل	O	O	O
+زد	O	O	O
+؟	O	O	O
+
+# test:1287
+Severo	B-PER	B-PER	B-PER
+Ochoa	I-PER	I-PER	I-PER
+جایزهٔ	O	O	O
+نوبل	O	O	O
+را	O	O	O
+در	O	O	O
+سال	B-DAT	B-DAT	B-DAT
+1959	I-DAT	I-DAT	I-DAT
+(	O	O	O
+مشترکاً	O	O	O
+با	O	O	O
+Arthur	B-PER	B-PER	B-PER
+Kornberg	I-PER	I-PER	I-PER
+)	O	O	O
+برنده	O	O	O
+شد	O	O	O
+،	O	O	O
+بعد	O	O	O
+از	O	O	O
+اینکه	O	O	O
+او	O	O	O
+یک	O	O	O
+آنزیمی	O	O	O
+را	O	O	O
+کشف	O	O	O
+کرد	O	O	O
+که	O	O	O
+RNA	O	O	O
+را	O	O	O
+در	O	O	O
+آزمایشگاه	O	O	O
+سنتز	O	O	O
+می‌کرد	O	O	O
+.	O	O	O
+
+# test:1237
+طی	B-DAT	O	O	*
+دههٔ	I-DAT	B-DAT	B-DAT	*
+1990	I-DAT	I-DAT	I-DAT
+میلادی	I-DAT	I-DAT	I-DAT
+بسیاری	O	O	O
+از	O	O	O
+کشورها	O	O	O
+به	O	O	O
+رهبری	O	O	O
+آمریکا	B-LOC	B-LOC	B-LOC
+تحریم‌های	O	O	O
+بین‌المللی	O	O	O
+را	O	O	O
+علیه	O	O	O
+رژیم	B-ORG	O	O	*
+میانمار	I-ORG	B-LOC	B-LOC	*
+که	O	O	O
+ناقض	O	O	O
+حقوق	O	O	O
+بشر	O	O	O
+بود	O	O	O
+اعمال	O	O	O
+داشتند	O	O	O
+.	O	O	O
+
+# test:752
+اهمیت	O	O	O
+انتخابات	O	O	O
+با	O	O	O
+تحولات	O	O	O
+جهانی	O	O	O
+فزونی	O	O	O
+گرفت	O	O	O
+.	O	O	O
+
+# test:1137
+این	O	O	O
+شرکت‌ها	O	O	O
+90%	O	O	O
+هزینه‌های	O	O	O
+خود	O	O	O
+را	O	O	O
+از	O	O	O
+طریق	O	O	O
+تبلیغات	O	O	O
+و	O	O	O
+10%	O	O	O
+باقی‌مانده	O	O	O
+را	O	O	O
+از	O	O	O
+طریق	O	O	O
+مرکز	B-ORG	O	O	*
+مخابرات	I-ORG	O	O	*
+خود	O	O	O
+حصول	O	O	O
+می‌کنند	O	O	O
+.	O	O	O
+
+# test:968
+اعضای	O	O	O
+گروه	O	O	O
+ایرانی	O	O	O
+موسیقی	O	O	O
+"	O	O	O
+سل	B-ORG	O	O	*
+"	O	O	O
+به	O	O	O
+سرپرستی	O	O	O
+"	O	O	O
+بهمن	B-PER	B-PER	B-PER
+مه‌آبادی	I-PER	I-PER	I-PER
+"	O	O	O
+در	O	O	O
+ارکستر	O	B-ORG	B-ORG	*
+سمفونیک	O	I-ORG	I-ORG	*
+بارسلونا	B-ORG	I-ORG	I-ORG	*
+نوازندگی	O	O	O
+خواهند	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1059
+جایگاه	O	O	O
+بین‌المللی	O	O	O
+اسرائیل	B-LOC	B-LOC	B-LOC
+نزول	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:1394
+امروز	O	B-DAT	B-DAT	*
+ما	O	O	O
+هر	O	O	O
+چقدر	O	O	O
+در	O	O	O
+عرصهٔ	O	O	O
+این	O	O	O
+انقلاب	O	O	O
+گسترش	O	O	O
+پیدا	O	O	O
+می‌کنیم	O	O	O
+،	O	O	O
+بر	O	O	O
+دشمنان	O	O	O
+ما	O	O	O
+در	O	O	O
+کرهٔ	O	O	O
+خاکی	O	O	O
+افزوده	O	O	O
+می‌شود	O	O	O
+.	O	O	O
+
+# test:792
+دانشکدهٔ	B-ORG	B-ORG	B-ORG
+هنر	I-ORG	I-ORG	I-ORG
+و	I-ORG	I-ORG	I-ORG
+معماری	I-ORG	I-ORG	I-ORG
+از	O	O	O
+ساختمان	O	O	O
+قدیم	O	O	O
+دانشکده	O	O	O
+واقع	O	O	O
+در	O	O	O
+نیاوران	B-LOC	B-LOC	B-LOC
+به	O	O	O
+محل	O	O	O
+جدید	O	O	O
+دانشکده	O	O	O
+واقع	O	O	O
+در	O	O	O
+کوچهٔ	B-LOC	B-LOC	B-LOC
+آفتاب	I-LOC	I-LOC	I-LOC
+نقل	O	O	O
+مکان	O	O	O
+داده	O	O	O
+شد	O	O	O
+.	O	O	O
+
+# test:198
+پرویز	B-PER	B-PER	B-PER
+شاپور	I-PER	I-PER	I-PER
+به	O	O	O
+یک	O	O	O
+موضوع	O	O	O
+پیله	O	O	O
+می‌کرد	O	O	O
+و	O	O	O
+می‌نوشت	O	O	O
+.	O	O	O
+
+# test:350
+در	O	O	O
+آن	O	O	O
+سال‌ها	O	O	O
+مردم	O	O	O
+بریتانیا	B-LOC	B-LOC	B-LOC
+در	O	O	O
+سطح	O	O	O
+بی‌سابقه‌ای	O	O	O
+از	O	O	O
+بانک‌ها	O	O	O
+وام	O	O	O
+می‌گرفتند	O	O	O
+و	O	O	O
+به	O	O	O
+شکل	O	O	O
+بی‌مهاری	O	O	O
+پول	O	O	O
+خرج	O	O	O
+می‌کردند	O	O	O
+.	O	O	O
+
+# test:1079
+از	O	O	O
+مشکلات	O	O	O
+رباعیات	O	O	O
+خیام	O	B-PER	B-PER	*
+اختلاف	O	O	O
+نسخه‌ها	O	O	O
+ست	O	O	O
+که	O	O	O
+محقق	O	O	O
+دانمارکی	O	O	O
+آرتور	B-PER	B-PER	B-PER
+کریستنسن	I-PER	I-PER	I-PER
+ذیل	O	O	O
+121	O	O	O
+رباعی	O	O	O
+منسوب	O	O	O
+به	O	O	O
+او	O	O	O
+و	O	O	O
+جلال‌الدین	B-PER	B-PER	B-PER
+همایی	I-PER	I-PER	I-PER
+ذیل	O	O	O
+559	O	O	O
+رباعی	O	O	O
+نسخهٔ	O	O	O
+بدل	O	O	O
+یادداشت	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:1193
+ترکیه	B-LOC	B-LOC	B-LOC
+اسناد	O	O	O
+کرکوک	B-LOC	B-LOC	B-LOC
+و	O	O	O
+موصل	B-LOC	B-LOC	B-LOC
+را	O	O	O
+نسخه‌برداری	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:514
+گالیا	O	B-PER	B-PER	*
+خواب	O	O	O
+دیده	O	O	O
+است	O	O	O
+که	O	O	O
+روزی	O	O	O
+شنا	O	O	O
+می‌کند	O	O	O
+و	O	O	O
+در	O	O	O
+آب	O	O	O
+غرق	O	O	O
+می‌شود	O	O	O
+.	O	O	O
+
+# test:167
+شبکهٔ	B-ORG	B-ORG	B-ORG
+نمایش	I-ORG	I-ORG	I-ORG
+سیما	I-ORG	I-ORG	I-ORG
+از	B-DAT	O	O	*
+شنبه	I-DAT	B-DAT	B-DAT	*
+24	I-DAT	I-DAT	I-DAT
+دی‌ماه	I-DAT	I-DAT	I-DAT
+90	I-DAT	I-DAT	I-DAT
+هر	O	O	O
+شب	O	O	O
+ساعت	O	O	O
+21	O	O	O
+فیلم‌های	O	O	O
+استاد	O	O	O
+بزرگ	O	O	O
+هنرهای	O	O	O
+رزمی	O	O	O
+بروسلی	B-PER	B-PER	B-PER
+را	O	O	O
+مرور	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:390
+پوست	O	O	O
+همهٔ	O	O	O
+جانوران	O	O	O
+را	O	O	O
+می‌توان	O	O	O
+دباغی	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:714
+یک	O	O	O
+سخنگوی	O	O	O
+فیس‌بوک	B-ORG	B-ORG	B-ORG
+گفت	O	O	O
+که	O	O	O
+این	O	O	O
+شرکت	O	O	O
+در	O	O	O
+مورد	O	O	O
+طرح	O	O	O
+جدید	O	O	O
+گوگل	B-ORG	B-ORG	B-ORG
+گمانه‌زنی	O	O	O
+نخواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:66
+معلمان	O	O	O
+انگلیسی	O	O	O
+تلفن	O	O	O
+همراه	O	O	O
+دانش‌آموزان	O	O	O
+را	O	O	O
+چک	O	O	O
+می‌کنند	O	O	O
+.	O	O	O
+
+# test:491
+هنگامی	O	O	O
+که	O	O	O
+ما	O	O	O
+رحمتی	B-PER	O	O	*
+را	O	O	O
+از	O	O	O
+خود	O	O	O
+به	O	O	O
+انسان	O	O	O
+می‌چشانیم	O	O	O
+بر	O	O	O
+اثر	O	O	O
+آن	O	O	O
+خوشحال	O	O	O
+می‌شود	O	O	O
+و	O	O	O
+همین	O	O	O
+که	O	O	O
+آثار	O	O	O
+سوء	O	O	O
+اعمالش	O	O	O
+را	O	O	O
+می‌گیرد	O	O	O
+کفران	O	O	O
+می‌کند	O	O	O
+.	O	O	O
+
+# test:95
+ان‌شاءالله	O	O	O
+وزیر	O	O	O
+علوم	B-ORG	O	O	*
+آینده‌مان	O	O	O
+هم	O	O	O
+تأسی	O	O	O
+به	O	O	O
+شما	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:211
+در	O	O	O
+حین	O	O	O
+خواندن	O	O	O
+کتاب	O	O	O
+با	O	O	O
+جایگاه	O	O	O
+روان	O	O	O
+درمانگر	O	O	O
+همذات‌پنداری	O	O	O
+می‌کردم	O	O	O
+.	O	O	O
+
+# test:820
+باشگاه	B-ORG	B-ORG	B-ORG
+پرسپولیس	I-ORG	I-ORG	I-ORG
+برای	O	O	O
+برگزاری	O	O	O
+بازی	O	O	O
+این	O	O	O
+تیم	O	O	O
+در	O	O	O
+لیگ	O	O	O
+قهرمانان	O	O	O
+آسیا	B-LOC	O	O	*
+مقابل	O	O	O
+بنیادکار	O	B-ORG	B-ORG	*
+ازبکستان	B-LOC	B-LOC	B-LOC
+اقدام	O	O	O
+به	O	O	O
+برگزاری	O	O	O
+یک	O	O	O
+نظرسنجی	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:1332
+عوامل	O	O	O
+سیاست	O	O	O
+استعماری	O	O	O
+روس	B-LOC	B-LOC	B-LOC
+و	O	O	O
+انگلیس	B-LOC	B-LOC	B-LOC
+بر	O	O	O
+این	O	O	O
+عقیده	O	O	O
+بودند	O	O	O
+که	O	O	O
+تا	O	O	O
+قائم‌مقام	O	B-PER	B-PER	*
+در	O	O	O
+مسند	O	O	O
+قدرت	O	O	O
+است	O	O	O
+،	O	O	O
+نمی‌توان	O	O	O
+در	O	O	O
+امور	O	O	O
+داخلی	O	O	O
+ایران	B-LOC	B-LOC	B-LOC
+مداخله	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1162
+الهاشمی	B-PER	B-PER	B-PER
+غیابی	I-PER	O	O	*
+محاکمه	O	O	O
+خواهد	O	O	O
+شد	O	O	O
+.	O	O	O
+
+# test:336
+باید	O	O	O
+با	O	O	O
+تمام	O	O	O
+آنهایی	O	O	O
+که	O	O	O
+تساهل	O	O	O
+می‌ورزند	O	O	O
+تا	O	O	O
+آنجا	O	O	O
+که	O	O	O
+احکام	O	O	O
+مذاهبشان	O	O	O
+تعارضی	O	O	O
+با	O	O	O
+انجام	O	O	O
+وظیفهٔ	O	O	O
+شهروندان	O	O	O
+ندارد	O	O	O
+تساهل	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:748
+دیپلمات	O	O	O
+ایرانی	O	O	O
+در	O	O	O
+مونیخ	B-LOC	B-LOC	B-LOC
+به	O	O	O
+خبرنگار	O	O	O
+یا	O	O	O
+کسی	O	O	O
+که	O	O	O
+از	O	O	O
+او	O	O	O
+سئوالی	O	O	O
+دارد	O	O	O
+فحش	O	O	O
+می‌دهد	O	O	O
+.	O	O	O
+
+# test:1443
+در	O	O	O
+مسجد	B-LOC	O	O	*
+جامع	I-LOC	O	O	*
+استقرار	O	O	O
+پیدا	O	O	O
+کرده	O	O	O
+بود	O	O	O
+و	O	O	O
+به	O	O	O
+راحتی	O	O	O
+می‌توانم	O	O	O
+بگویم	O	O	O
+سنگ	O	O	O
+صبور	O	O	O
+بچه‌ها	O	O	O
+شده	O	O	O
+بود	O	O	O
+.	O	O	O
+
+# test:978
+پس	O	O	O
+از	O	O	O
+گذشت	O	O	O
+حدود	O	O	O
+دو	O	O	O
+قرن	O	O	O
+از	O	O	O
+ظهور	O	O	O
+اسلام	O	O	O
+،	O	O	O
+این	O	O	O
+دین	O	O	O
+توانست	O	O	O
+بخش	O	O	O
+زیادی	O	O	O
+از	O	O	O
+جهان	O	B-LOC	B-LOC	*
+آن	O	O	O
+روز	O	O	O
+را	O	O	O
+با	O	O	O
+تعالیم	O	O	O
+خود	O	O	O
+نورافشانی	O	O	O
+بکند	O	O	O
+.	O	O	O
+
+# test:768
+کودکان	O	O	O
+نترس	B-ORG	O	O	*
+کمتر	O	O	O
+مهربانی	O	O	O
+می‌کنند	O	O	O
+.	O	O	O
+
+# test:1255
+آمدم	O	O	O
+تا	O	O	O
+باز	O	O	O
+مشق	O	O	O
+عشقم	O	O	O
+را	O	O	O
+ماه	O	O	O
+من	O	O	O
+قلم	O	O	O
+بزند	O	O	O
+.	O	O	O
+
+# test:1378
+بهنام	B-PER	B-PER	B-PER
+شیخی	I-PER	I-PER	I-PER
+و	O	O	O
+محمود	B-PER	B-PER	B-PER
+اجاقلو	I-PER	I-PER	I-PER
+از	O	O	O
+فعالان	O	O	O
+مدنی	O	O	O
+آذربایجانی	O	O	O
+19	B-DAT	B-DAT	B-DAT
+خرداد	I-DAT	I-DAT	I-DAT
+1388	I-DAT	I-DAT	I-DAT
+(	O	O	O
+9	O	B-DAT	B-DAT	*
+ژوئن	O	I-DAT	I-DAT	*
+2009	O	I-DAT	I-DAT	*
+)	O	O	O
+در	O	O	O
+اسلامشهر	B-LOC	B-LOC	B-LOC
+تهران	I-LOC	I-LOC	I-LOC
+دستگیر	O	O	O
+و	O	O	O
+به	O	O	O
+بند	B-LOC	O	O	*
+209	I-LOC	O	O	*
+زندان	I-LOC	B-LOC	B-LOC	*
+اوین	I-LOC	I-LOC	I-LOC
+منتقل	O	O	O
+گشته	O	O	O
+بودند	O	O	O
+.	O	O	O
+
+# test:1300
+در	O	O	O
+همان	O	O	O
+موقع	O	O	O
+که	O	O	O
+بازرگان	B-PER	O	O	*
+رو	O	O	O
+به	O	O	O
+مرگ	O	O	O
+بود	O	O	O
+پادشاه	O	O	O
+شهر	O	O	O
+گفت	O	O	O
+در	O	O	O
+شهر	O	O	O
+آواز	O	O	O
+بدهید	O	O	O
+.	O	O	O
+
+# test:47
+در	O	O	O
+مشهد	B-LOC	B-LOC	B-LOC
+140	O	O	O
+اپراتور	O	O	O
+با	O	O	O
+توجه	O	O	O
+به	O	O	O
+میزان	O	O	O
+تماس‌ها	O	O	O
+در	O	O	O
+ساعت‌های	O	O	O
+مختلف	O	O	O
+به	O	O	O
+شهروندان	O	O	O
+پاسخ‌گویی	O	O	O
+می‌کنند	O	O	O
+.	O	O	O
+
+# test:1313
+به	O	O	O
+یاد	O	O	O
+محمد	B-PER	B-PER	B-PER
+11	B-DAT	B-DAT	B-DAT
+فروردین	I-DAT	I-DAT	I-DAT
+دستانمان	O	O	O
+با	O	O	O
+دستبند	O	O	O
+سبز	O	O	O
+آذین	O	O	O
+خواهد	O	O	O
+شد	O	O	O
+.	O	O	O
+
+# test:207
+سریع‌ترین	O	O	O
+دوربین	O	O	O
+دنیا	B-LOC	O	O	*
+حرکت	O	O	O
+نور	O	O	O
+را	O	O	O
+ضبط	O	O	O
+می‌کند	O	O	O
+.	O	O	O
+
+# test:140
+روح	O	O	O
+اسلام	O	O	O
+را	O	O	O
+تجلی	O	O	O
+داد	O	O	O
+.	O	O	O
+
+# test:1338
+دایرةالمعارف	B-ORG	B-ORG	B-ORG
+آستان	B-LOC	I-ORG	I-ORG	*
+قدس	I-LOC	I-ORG	I-ORG	*
+رضوی	I-LOC	I-ORG	I-ORG	*
+مرحلهٔ	O	O	O
+مدخل‌یابی	O	O	O
+را	O	O	O
+با	O	O	O
+برگزیدن	O	O	O
+864	O	O	O
+بخش	O	O	O
+نهایی	O	O	O
+از	O	O	O
+4	O	O	O
+هزار	O	O	O
+پیشنهاد	O	O	O
+اولیه	O	O	O
+طی	O	O	O
+نموده	O	O	O
+و	O	O	O
+اکنون	O	O	O
+قسمت	O	O	O
+اعظمی	O	O	O
+از	O	O	O
+آن‌ها	O	O	O
+توسط	O	O	O
+پژوهشگران	O	O	O
+مقاله‌نویسی	O	O	O
+شده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:791
+مرشد	O	O	O
+«	O	O	O
+ولی‌الله	B-PER	B-PER	B-PER
+ترابی	I-PER	I-PER	I-PER
+»	O	O	O
+در	O	O	O
+همایش	O	O	O
+دو	O	O	O
+روزهٔ	O	O	O
+فردوسی	B-PER	B-PER	B-PER
+نقالی	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:261
+دولت	B-ORG	B-ORG	B-ORG
+روسیه	I-ORG	I-ORG	I-ORG
+230	O	O	O
+میلیون	O	O	O
+دلار	O	O	O
+برای	O	O	O
+برگزاری	O	O	O
+انتخابات	O	O	O
+پارلمانی	O	O	O
+تخصیص	O	O	O
+داد	O	O	O
+.	O	O	O
+
+# test:1316
+متن	O	O	O
+نامبرده	O	O	O
+را	O	O	O
+نویسنده	O	O	O
+و	O	O	O
+سرویراستاری	O	O	O
+مشهور	O	O	O
+به	O	O	O
+انتساب	O	O	O
+به	O	O	O
+فرقهٔ	O	O	O
+ضالهٔ	O	O	O
+بهائیت	O	O	O
+بازپروری	O	O	O
+کرده‌اند	O	O	O
+.	O	O	O
+
+# test:1240
+آراسپ	B-PER	B-PER	B-PER
+فکر	O	O	O
+می‌کرد	O	O	O
+توصیف	O	O	O
+زیبایی	O	O	O
+«	O	O	O
+پانته‌آ	B-ORG	B-PER	B-PER	*
+»	O	O	O
+که	O	O	O
+در	O	O	O
+واقع	O	O	O
+از	O	O	O
+حقیقت	O	O	O
+نیز	O	O	O
+خالی	O	O	O
+نبود	O	O	O
+،	O	O	O
+کوروش	O	B-PER	B-PER	*
+را	O	O	O
+افسون	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:684
+مصوبهٔ	O	O	O
+دیروز	B-DAT	B-DAT	B-DAT
+به	O	O	O
+آبروی	O	O	O
+مجلس	O	O	O
+لطمهٔ	O	O	O
+جدی	O	O	O
+زد	O	O	O
+.	O	O	O
+
+# test:933
+غیر	O	O	O
+از	O	O	O
+اسلام	O	O	O
+شاید	O	O	O
+مذهبی	O	O	O
+یافت	O	O	O
+نشود	O	O	O
+که	O	O	O
+تا	O	O	O
+این	O	O	O
+قدر	O	O	O
+حکومت	O	O	O
+و	O	O	O
+اقتدارش	O	O	O
+دوام	O	O	O
+کرده	O	O	O
+باشد	O	O	O
+.	O	O	O
+
+# test:437
+پنتاگون	B-PER	B-ORG	B-ORG	*
+در	O	O	O
+زمینهٔ	O	O	O
+11	B-DAT	B-DAT	B-DAT
+سپتامبر	I-DAT	I-DAT	I-DAT
+فیلم‌سازی	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:494
+به	O	O	O
+افرادی	O	O	O
+که	O	O	O
+فریب	O	O	O
+این	O	O	O
+شرکت‌ها	O	O	O
+را	O	O	O
+خورده	O	O	O
+و	O	O	O
+تمامی	O	O	O
+دارایی	O	O	O
+خود	O	O	O
+را	O	O	O
+در	O	O	O
+این	O	O	O
+شرکت‌ها	O	O	O
+سرمایه‌گذاری	O	O	O
+می‌کنند	O	O	O
+،	O	O	O
+هشدار	O	O	O
+می‌دهم	O	O	O
+که	O	O	O
+این	O	O	O
+شبکه	O	O	O
+بعد	O	O	O
+از	O	O	O
+جذب	O	O	O
+سپرده‌های	O	O	O
+مردم	O	O	O
+فعالیت	O	O	O
+خود	O	O	O
+را	O	O	O
+تعطیل	O	O	O
+و	O	O	O
+اقدام	O	O	O
+به	O	O	O
+کلاهبرداری	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1048
+وقتی	O	O	O
+سید	B-PER	B-PER	B-PER
+حسن	I-PER	I-PER	I-PER
+نصرالله	I-PER	I-PER	I-PER
+درب	O	O	O
+جعبه	O	O	O
+را	O	O	O
+در	O	O	O
+مقابل	O	O	O
+همهٔ	O	O	O
+ما	O	O	O
+گشود	O	O	O
+،	O	O	O
+دیدیم	O	O	O
+ایشان	O	O	O
+یکی	O	O	O
+از	O	O	O
+عمامه‌های	O	O	O
+امام	O	O	O
+(	O	O	O
+ره	O	O	O
+)	O	O	O
+را	O	O	O
+به	O	O	O
+سید	B-PER	B-PER	B-PER
+حسن	I-PER	I-PER	I-PER
+هدیه	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:231
+کلاله	B-PER	B-PER	B-PER
+که	O	O	O
+از	O	O	O
+رقص	O	O	O
+نور	O	O	O
+سرش	O	O	O
+گیج	O	O	O
+رفته	O	O	O
+بود	O	O	O
+پیشنهاد	O	O	O
+داد	O	O	O
+که	O	O	O
+بنشینند	O	O	O
+.	O	O	O
+
+# test:489
+در	O	O	O
+سال	B-DAT	B-DAT	B-DAT
+2005	I-DAT	I-DAT	I-DAT
+هنگامی	O	O	O
+که	O	O	O
+دولت	B-ORG	B-ORG	B-ORG
+خاتمی	B-PER	I-ORG	I-ORG	*
+بر	O	O	O
+سر	O	O	O
+کار	O	O	O
+بود	O	O	O
+،	O	O	O
+قرار	O	O	O
+بود	O	O	O
+بخشی	O	O	O
+از	O	O	O
+اهالی	O	O	O
+مناطق	O	O	O
+عرب‌نشین	O	O	O
+خوزستان	B-LOC	B-LOC	B-LOC
+را	O	O	O
+به	O	O	O
+زور	O	O	O
+از	O	O	O
+مناطق	O	O	O
+زیست	O	O	O
+خود	O	O	O
+کوچ	O	O	O
+بدهند	O	O	O
+.	O	O	O
+
+# test:941
+اگر	O	O	O
+سیاست	O	O	O
+می‌کردم	O	O	O
+،	O	O	O
+پس	O	O	O
+امروز	O	B-DAT	B-DAT	*
+شما	O	O	O
+جرأت	O	O	O
+،	O	O	O
+وقت	O	O	O
+و	O	O	O
+امکان	O	O	O
+این	O	O	O
+را	O	O	O
+نمی‌داشتید	O	O	O
+که	O	O	O
+حتی	O	O	O
+اسمم	O	O	O
+را	O	O	O
+در	O	O	O
+"	O	O	O
+اسکایپ	O	O	O
+"	O	O	O
+پیدا	O	O	O
+نمایید	O	O	O
+.	O	O	O
+
+# test:554
+بان‌کی‌مون	O	B-PER	B-PER	*
+سرمنشی	O	O	O
+سازمان	B-ORG	B-ORG	B-ORG
+ملل	I-ORG	I-ORG	I-ORG
+متحد	I-ORG	I-ORG	I-ORG
+دیروز	O	B-DAT	B-DAT	*
+انتخاباتی	O	O	O
+را	O	O	O
+که	O	O	O
+به	O	O	O
+طور	O	O	O
+عموم	O	O	O
+،	O	O	O
+با	O	O	O
+آرامی	O	O	O
+و	O	O	O
+نظم	O	O	O
+در	O	O	O
+مصر	B-LOC	B-LOC	B-LOC
+برگزار	O	O	O
+شد	O	O	O
+،	O	O	O
+ستایش	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1322
+در	O	O	O
+حمله	O	O	O
+به	O	O	O
+سفارت	B-LOC	B-ORG	B-ORG	*
+بریتانیا	I-LOC	I-ORG	I-ORG	*
+بازی	O	O	O
+خوردیم	O	O	O
+.	O	O	O
+
+# test:1219
+الهام	B-PER	B-PER	B-PER
+علی‌اف	I-PER	I-PER	I-PER
+،	O	O	O
+رئیس	O	O	O
+جمهوری	O	O	O
+آذربایجان	B-LOC	B-LOC	B-LOC
+برای	O	O	O
+شرکت	O	O	O
+در	O	O	O
+اجلاس	O	O	O
+شورای	B-ORG	B-ORG	B-ORG
+امنیت	I-ORG	I-ORG	I-ORG
+سازمان	I-ORG	I-ORG	I-ORG
+ملل	I-ORG	I-ORG	I-ORG
+متحد	I-ORG	I-ORG	I-ORG
+در	O	O	O
+ماه	B-DAT	B-DAT	B-DAT
+می	O	I-DAT	I-DAT	*
+به	O	O	O
+آمریکا	B-LOC	B-LOC	B-LOC
+سفر	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:859
+میزان	O	O	O
+سود	O	O	O
+سهام	O	O	O
+ثبت‌شده	O	O	O
+در	O	O	O
+دفاتر	O	O	O
+را	O	O	O
+با	O	O	O
+اعلامیه‌ها	O	O	O
+و	O	O	O
+مدارک	O	O	O
+ارسالی	O	O	O
+شرکت	O	O	O
+سرمایه‌پذیر	O	O	O
+مطابقت	O	O	O
+می‌دهیم	O	O	O
+.	O	O	O
+
+# test:1411
+دو	O	O	O
+پلیس	O	O	O
+حجم	O	O	O
+زیادی	O	O	O
+از	O	O	O
+گاز	O	O	O
+فلفل	B-PER	O	O	*
+را	O	O	O
+به	O	O	O
+سمت	O	O	O
+صورت	O	O	O
+وی	O	O	O
+اسپری	O	O	O
+کرده‌اند	O	O	O
+.	O	O	O
+
+# test:528
+طور	O	O	O
+ماوراء	O	O	O
+عقل	O	O	O
+چنان	O	O	O
+که	O	O	O
+عین‌القضات	B-PER	B-PER	B-PER
+هم	O	O	O
+تصریح	O	O	O
+دارد	O	O	O
+،	O	O	O
+«	O	O	O
+طور	O	O	O
+نبوت	O	O	O
+»	O	O	O
+است	O	O	O
+که	O	O	O
+بدون	O	O	O
+عبور	O	O	O
+از	O	O	O
+«	O	O	O
+طور	O	O	O
+ولایت	O	O	O
+»	O	O	O
+بدان	O	O	O
+نمی‌توان	O	O	O
+رسید	O	O	O
+؛	O	O	O
+با	O	O	O
+این	O	O	O
+همه	O	O	O
+،	O	O	O
+قبول	O	O	O
+آن	O	O	O
+بدان	O	O	O
+گونه	O	O	O
+که	O	O	O
+صوفیه	B-PER	O	O	*
+دعوی	O	O	O
+کرده‌اند	O	O	O
+،	O	O	O
+از	O	O	O
+اشکال	O	O	O
+خالی	O	O	O
+نیست	O	O	O
+.	O	O	O
+
+# test:1072
+اگر	O	O	O
+اصلاح‌طلبان	O	O	O
+قدرت	O	O	O
+را	O	O	O
+در	O	O	O
+دست	O	O	O
+گیرند	O	O	O
+،	O	O	O
+محمد	B-PER	B-PER	B-PER
+خاتمی	I-PER	I-PER	I-PER
+و	O	O	O
+شرکا	B-PER	O	O	*
+ضمن	O	O	O
+حراج	O	O	O
+نفت	O	O	O
+،	O	O	O
+وراجی	O	O	O
+خواهند	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:404
+شیخ	B-PER	O	O	*
+شهید	I-PER	O	O	*
+برای	O	O	O
+سازماندهی	O	O	O
+جنبش	O	O	O
+انقلابی	O	O	O
+خود	O	O	O
+افراد	O	O	O
+فعال	O	O	O
+،	O	O	O
+توانمند	O	O	O
+،	O	O	O
+و	O	O	O
+از	O	O	O
+نظر	O	O	O
+جسمی	O	O	O
+و	O	O	O
+روحی	O	O	O
+افراد	O	O	O
+آمادهٔ	O	O	O
+ایثار	O	O	O
+و	O	O	O
+فداکاری	O	O	O
+را	O	O	O
+گزینش	O	O	O
+می‌کرد	O	O	O
+.	O	O	O
+
+# test:245
+بانک	B-ORG	B-ORG	B-ORG
+مرکزی	I-ORG	I-ORG	I-ORG
+چند	O	O	O
+تعاونی	O	O	O
+را	O	O	O
+در	O	O	O
+قالب	O	O	O
+مؤسسهٔ	O	O	O
+مالی	O	O	O
+تجمیع	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:621
+میان	O	O	O
+حقایق	O	O	O
+و	O	O	O
+خیالات	O	O	O
+تفاوت	O	O	O
+بگذارید	O	O	O
+.	O	O	O
+
+# test:458
+نیت‌کننده	O	O	O
+معمولاً	O	O	O
+در	O	O	O
+هنگام	O	O	O
+تفأل	O	O	O
+از	O	O	O
+دیوان	O	O	O
+حافظ	O	B-PER	B-PER	*
+،	O	O	O
+او	O	O	O
+را	O	O	O
+به	O	O	O
+عزیزترین	O	O	O
+کسانش	O	O	O
+یعنی	O	O	O
+به	O	O	O
+خداوند	O	O	O
+و	O	O	O
+معشوقه‌اش	O	O	O
+(	O	O	O
+شاخ	O	O	O
+نبات	O	O	O
+)	O	O	O
+قسم	O	O	O
+می‌دهد	O	O	O
+.	O	O	O
+
+# test:1082
+انترناسیونال	O	B-ORG	B-ORG	*
+پنجم	O	I-ORG	I-ORG	*
+می‌تواند	O	O	O
+در	O	O	O
+سطح	O	O	O
+جهانی	O	O	O
+خیلی	O	O	O
+یارگیری	O	O	O
+بکند	O	O	O
+.	O	O	O
+
+# test:787
+حضرت	O	O	O
+فرمودند	O	O	O
+:	O	O	O
+«	O	O	O
+قوموا	B-PER	O	O	*
+عنی	O	O	O
+»	O	O	O
+از	O	O	O
+نزد	O	O	O
+من	O	O	O
+برخیزید	O	O	O
+و	O	O	O
+دور	O	O	O
+شوید	O	O	O
+،	O	O	O
+سزاوار	O	O	O
+نیست	O	O	O
+نزد	O	O	O
+من	O	O	O
+با	O	O	O
+هم	O	O	O
+نزاع	O	O	O
+کنید	O	O	O
+.	O	O	O
+
+# test:1294
+همیشه	O	O	O
+در	O	O	O
+کارهای	O	O	O
+قبلیمان	O	O	O
+از	O	O	O
+قهرمانان	O	O	O
+آشنا	O	O	O
+برای	O	O	O
+مخاطبان	O	O	O
+،	O	O	O
+آشنایی‌زدایی	O	O	O
+کرده‌ایم	O	O	O
+.	O	O	O
+
+# test:693
+عمر	B-PER	B-PER	B-PER
+بن	I-PER	I-PER	I-PER
+ماهان	I-PER	I-PER	I-PER
+که	O	O	O
+در	O	O	O
+دورهٔ	O	O	O
+حکومت	O	O	O
+امین	O	B-PER	B-PER	*
+عهده‌دار	O	O	O
+سمت	O	O	O
+برید	O	O	O
+مکه	B-LOC	B-LOC	B-LOC
+بود	O	O	O
+چاه	O	O	O
+زمزم	O	O	O
+را	O	O	O
+زه‌کشی	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1132
+قطعنامهٔ	O	O	O
+ملایمی	O	O	O
+علیه	O	O	O
+ایران	B-LOC	B-LOC	B-LOC
+به	O	O	O
+تصویب	O	O	O
+خواهد	O	O	O
+رسید	O	O	O
+.	O	O	O
+
+# test:993
+با	O	O	O
+تو	O	O	O
+یکی	O	O	O
+مزاح	O	O	O
+کردم	O	O	O
+.	O	O	O
+
+# test:10
+جریان	O	O	O
+موسوم	O	O	O
+به	O	O	O
+انحرافی	O	O	O
+از	O	O	O
+مدت‌ها	O	O	O
+قبل	O	O	O
+برای	O	O	O
+راه	O	O	O
+یافتن	O	O	O
+به	O	O	O
+مجلس	O	O	O
+و	O	O	O
+کسب	O	O	O
+بیشتر	O	O	O
+کرسی‌های	O	O	O
+خانهٔ	O	O	O
+ملت	O	O	O
+تلاش	O	O	O
+زیادی	O	O	O
+را	O	O	O
+آغاز	O	O	O
+کرده	O	O	O
+و	O	O	O
+هم‌اکنون	O	O	O
+نیز	O	O	O
+با	O	O	O
+تشکیل	O	O	O
+ستادهایی	O	O	O
+در	O	O	O
+تهران	B-LOC	B-LOC	B-LOC
+و	O	O	O
+شهرستان	O	O	O
+اهداف	O	O	O
+انتخاباتی	O	O	O
+خود	O	O	O
+را	O	O	O
+پی	O	O	O
+می‌گیرد	O	O	O
+.	O	O	O
+
+# test:602
+عکسی	O	O	O
+که	O	O	O
+حسین	B-PER	B-PER	B-PER
+پرتوی	I-PER	I-PER	I-PER
+،	O	O	O
+عکاس	O	O	O
+انقلاب	O	O	O
+و	O	O	O
+جنگ	O	O	O
+از	O	O	O
+بیعت	O	O	O
+امام	B-PER	O	O	*
+(	I-PER	O	O	*
+ره	O	O	O
+)	O	O	O
+با	O	O	O
+همافران	O	O	O
+گرفت	O	O	O
+بلوغ	O	O	O
+زودرس	O	O	O
+انقلاب	O	O	O
+را	O	O	O
+حاصل	O	O	O
+داشت	O	O	O
+.	O	O	O
+
+# test:457
+آقای	O	O	O
+دکتر	O	O	O
+لطف	B-PER	O	O	*
+می‌کنید	O	O	O
+گوشیتان	O	O	O
+را	O	O	O
+به	O	O	O
+من	O	O	O
+قرض	O	O	O
+بدهید	O	O	O
+؟	O	O	O
+
+# test:1115
+در	O	B-DAT	B-DAT	*
+سال	B-DAT	I-DAT	I-DAT	*
+گذشته	I-DAT	I-DAT	I-DAT
+با	O	O	O
+190	O	O	O
+کشور	O	O	O
+مبادله	O	O	O
+داشته‌ایم	O	O	O
+.	O	O	O
+
+# test:1149
+آنقدر	O	O	O
+هنگامه	O	B-PER	B-PER	*
+زیر	O	O	O
+گوشم	O	O	O
+وزوز	O	O	O
+کرده	O	O	O
+بود	O	O	O
+که	O	O	O
+حسابی	O	O	O
+عصبی	O	O	O
+بودم	O	O	O
+.	O	O	O
+
+# test:405
+با	O	O	O
+این	O	O	O
+نوع	O	O	O
+رفتارها	O	O	O
+بدبینی	O	O	O
+را	O	O	O
+گسترش	O	O	O
+خواهید	O	O	O
+داد	O	O	O
+.	O	O	O
+
+# test:906
+سرما	O	O	O
+خورده	O	O	O
+بودم	O	O	O
+و	O	O	O
+دیشب	O	B-DAT	B-DAT	*
+لرز	O	O	O
+کرده	O	O	O
+بودم	O	O	O
+.	O	O	O
+
+# test:432
+دو	O	O	O
+کاری	O	O	O
+که	O	O	O
+المعتز	O	B-PER	B-PER	*
+کرد	O	O	O
+این	O	O	O
+بود	O	O	O
+که	O	O	O
+با	O	O	O
+نوشتن	O	O	O
+کتاب	O	O	O
+البدیع	O	O	O
+به	O	O	O
+این	O	O	O
+مطالب	O	O	O
+متفرقه	O	O	O
+نظم	O	O	O
+خاصی	O	O	O
+داد	O	O	O
+و	O	O	O
+آن	O	O	O
+را	O	O	O
+به	O	O	O
+عنوان	O	O	O
+یک	O	O	O
+علم	O	O	O
+،	O	O	O
+فصل‌بندی	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:981
+بر	O	O	O
+اساس	O	O	O
+توافق	O	O	O
+انجام‌شده	O	O	O
+میان	O	O	O
+سران	O	O	O
+کشورهای	O	O	O
+منطقهٔ	O	B-LOC	B-LOC	*
+یورو	O	I-LOC	I-LOC	*
+،	O	O	O
+کشورهای	O	O	O
+منطقهٔ	O	B-LOC	B-LOC	*
+یورو	O	I-LOC	I-LOC	*
+و	O	O	O
+صندوق	B-ORG	B-ORG	B-ORG
+بین‌المللی	I-ORG	I-ORG	I-ORG
+پول	I-ORG	I-ORG	I-ORG
+109	O	O	O
+میلیارد	O	O	O
+یورو	O	O	O
+به	O	O	O
+یونان	B-LOC	B-LOC	B-LOC
+وام	O	O	O
+خواهند	O	O	O
+داد	O	O	O
+.	O	O	O
+
+# test:1389
+کمیک‌استریپ‌ها	O	O	O
+،	O	O	O
+سابقه‌ای	O	O	O
+بسیار	O	O	O
+طولانی	O	O	O
+دارند	O	O	O
+،	O	O	O
+ولی	O	O	O
+به	O	O	O
+طور	O	O	O
+رسمی	O	O	O
+از	O	O	O
+اوایل	O	B-DAT	B-DAT	*
+قرن	B-DAT	I-DAT	I-DAT	*
+بیستم	I-DAT	I-DAT	I-DAT
+،	O	O	O
+عمومیت	O	O	O
+پیدا	O	O	O
+کردند	O	O	O
+.	O	O	O
+
+# test:648
+با	O	O	O
+استفاده	O	O	O
+از	O	O	O
+لیزر	O	O	O
+می‌توان	O	O	O
+ایزوتوپ‌های	O	O	O
+بور	O	O	O
+،	O	O	O
+کلر	O	O	O
+،	O	O	O
+گوگرد	O	O	O
+،	O	O	O
+کربن	O	O	O
+و	O	O	O
+هیدروژن	O	O	O
+را	O	O	O
+هم	O	O	O
+جداسازی	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:665
+فوکوشیما	B-PER	B-LOC	B-LOC	*
+،	O	O	O
+دو	O	O	O
+برابر	O	O	O
+تخمین‌های	O	O	O
+قبلی	O	O	O
+رادیواکتیو	B-ORG	O	O	*
+تشعشع	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:153
+وزیر	O	O	O
+دفاع	B-ORG	O	O	*
+فرانسه	I-ORG	B-LOC	B-LOC	*
+از	O	O	O
+افغانستان	B-LOC	B-LOC	B-LOC
+دیدن	O	O	O
+می‌کند	O	O	O
+.	O	O	O
+
+# test:681
+روزگاری	O	O	O
+فرامی‌رسد	O	O	O
+که	O	O	O
+برای	O	O	O
+دیدن	O	O	O
+مهندس	O	O	O
+نادر	O	B-PER	B-PER	*
+لحظه‌شماری	O	O	O
+خواهید	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1040
+ترکیبت	O	O	O
+را	O	O	O
+در	O	O	O
+تمام	O	O	O
+جهان	O	B-LOC	B-LOC	*
+اشاعه	O	O	O
+کن	O	O	O
+.	O	O	O
+
+# test:241
+صادق	B-PER	B-PER	B-PER
+طباطبایی	I-PER	I-PER	I-PER
+تاریخ	O	O	O
+را	O	O	O
+تحریف	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:1451
+اینجا	O	O	O
+روح	O	O	O
+ما	O	O	O
+آرامش	O	O	O
+پیدا	O	O	O
+می‌کند	O	O	O
+.	O	O	O
+
+# test:37
+در	O	O	O
+جام	O	O	O
+جهانی	O	O	O
+2010	B-DAT	O	O	*
+آفریقای	B-LOC	B-LOC	B-LOC
+جنوبی	I-LOC	I-LOC	I-LOC
+این	O	O	O
+موجود	O	O	O
+دریایی	O	O	O
+شگفت‌انگیز	O	O	O
+پیشگویی	O	O	O
+کرد	O	O	O
+که	O	O	O
+آلمان	B-LOC	B-LOC	B-LOC
+از	O	O	O
+سد	O	O	O
+انگلیس	B-LOC	B-LOC	B-LOC
+می‌گذرد	O	O	O
+و	O	O	O
+به	O	O	O
+یک	O	O	O
+چهارم	O	O	O
+نهایی	O	O	O
+می‌رسد	O	O	O
+.	O	O	O
+
+# test:449
+براتی‌پور	B-PER	B-PER	B-PER
+اشعار	O	O	O
+عاشورایی	O	O	O
+را	O	O	O
+گردآوری	O	O	O
+می‌کند	O	O	O
+.	O	O	O
+
+# test:963
+خبر	O	O	O
+خوش	O	O	O
+هسته‌ای	O	O	O
+رئیس	O	O	O
+جمهور	O	O	O
+19	B-DAT	B-DAT	B-DAT
+دی‌ماه	I-DAT	I-DAT	I-DAT
+لو	I-DAT	O	O	*
+رفته	O	O	O
+بود	O	O	O
+.	O	O	O
+
+# test:1156
+با	O	O	O
+طبیب	B-PER	O	O	*
+مجالست	O	O	O
+کردی	O	O	O
+.	O	O	O
+
+# test:152
+او	O	O	O
+فرزند	O	O	O
+اسلام	O	O	O
+بود	O	O	O
+و	O	O	O
+در	O	O	O
+آغوش	O	O	O
+اسلام	O	O	O
+پرورش	O	O	O
+یافته	O	O	O
+بود	O	O	O
+و	O	O	O
+در	O	O	O
+برآمدن	O	O	O
+و	O	O	O
+بالیدن	O	O	O
+نهال	O	O	O
+اسلام	O	O	O
+،	O	O	O
+که	O	O	O
+به	O	O	O
+دست	O	O	O
+پیامبر	B-PER	B-PER	B-PER
+اکرم	I-PER	I-PER	I-PER
+(	I-PER	O	O	*
+ص	O	O	O
+)	O	O	O
+کاشته	O	O	O
+شده	O	O	O
+بود	O	O	O
+،	O	O	O
+رنج‌های	O	O	O
+بسیار	O	O	O
+کشیده	O	O	O
+و	O	O	O
+خون‌ها	O	O	O
+نثار	O	O	O
+کرده	O	O	O
+بود	O	O	O
+.	O	O	O
+
+# test:766
+بایستی	O	O	O
+برگه‌ها	O	O	O
+را	O	O	O
+به	O	O	O
+همدیگر	O	O	O
+منگنه	O	O	O
+بکند	O	O	O
+.	O	O	O
+
+# test:1436
+پس	O	O	O
+از	O	O	O
+فوت	O	O	O
+حاجی	B-PER	B-PER	B-PER
+سبزواری	I-PER	I-PER	I-PER
+به	O	O	O
+مشهد	B-LOC	B-LOC	B-LOC
+عودت	O	O	O
+کرد	O	O	O
+و	O	O	O
+در	O	O	O
+مدرسهٔ	B-LOC	B-ORG	B-ORG	*
+میرزا	I-LOC	I-ORG	I-ORG	*
+جعفر	O	I-ORG	I-ORG	*
+سکونت	O	O	O
+گزید	O	O	O
+.	O	O	O
+
+# test:162
+گارت	B-PER	B-PER	B-PER
+مک	I-PER	I-PER	I-PER
+نامارا	I-PER	I-PER	I-PER
+که	O	O	O
+اهل	O	O	O
+هاوایی	O	B-LOC	B-LOC	*
+است	O	O	O
+،	O	O	O
+روی	O	O	O
+موج	O	O	O
+بلندی	O	O	O
+در	O	O	O
+آب‌های	O	O	O
+ساحلی	O	O	O
+پرتغال	B-LOC	B-LOC	B-LOC
+در	O	O	O
+صد	O	O	O
+و	O	O	O
+پنجاه	O	O	O
+کیلومتری	O	O	O
+شمال	B-LOC	O	O	*
+لیسبون	I-LOC	B-LOC	B-LOC	*
+موج‌سواری	O	O	O
+کرده	O	O	O
+است	O	O	O
+که	O	O	O
+ارتفاع	O	O	O
+آن	O	O	O
+به	O	O	O
+سی	O	O	O
+متر	O	O	O
+می‌رسد	O	O	O
+.	O	O	O
+
+# test:1022
+موسوی	B-PER	B-PER	B-PER
+با	O	O	O
+دشمنان	O	O	O
+انقلاب	O	O	O
+و	O	O	O
+امام	B-PER	B-PER	B-PER
+حسین	I-PER	I-PER	I-PER
+(	I-PER	O	O	*
+ع	O	O	O
+)	O	O	O
+در	O	O	O
+عمل	O	O	O
+همراهی	O	O	O
+و	O	O	O
+همدلی	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:782
+احتمالاً	O	O	O
+تاریخ‌نویسان	O	O	O
+به	O	O	O
+زودی	O	O	O
+دوران	O	O	O
+ماقبل	O	O	O
+گوگل	B-ORG	B-ORG	B-ORG
+را	O	O	O
+عصر	O	O	O
+تاریکی	O	O	O
+نام	O	O	O
+خواهند	O	O	O
+گذاشت	O	O	O
+.	O	O	O
+
+# test:858
+از	O	O	O
+دادن	O	O	O
+پست	O	O	O
+نمایندگی	O	O	O
+آموزش	B-ORG	O	O	*
+و	I-ORG	O	O	*
+پرورش	I-ORG	O	O	*
+هم	O	O	O
+مضایقه	O	O	O
+کردی	O	O	O
+.	O	O	O
+
+# test:607
+به	O	O	O
+سراغ	O	O	O
+رادیاتور	B-ORG	O	O	*
+اتاق	O	O	O
+خود	O	O	O
+رفتم	O	O	O
+که	O	O	O
+به	O	O	O
+شدت	O	O	O
+گرگر	O	O	O
+می‌کرد	O	O	O
+و	O	O	O
+من	O	O	O
+علت	O	O	O
+را	O	O	O
+در	O	O	O
+حرکت	O	O	O
+توده‌های	O	O	O
+هوای	O	O	O
+موجود	O	O	O
+در	O	O	O
+پره‌های	O	O	O
+رادیاتور	O	O	O
+ریشه‌یابی	O	O	O
+کرده	O	O	O
+بودم	O	O	O
+.	O	O	O
+
+# test:387
+نیروهای	O	O	O
+ایرانی	O	O	O
+،	O	O	O
+به	O	O	O
+رهبری	O	O	O
+خشایارشا	B-PER	B-PER	B-PER
+در	O	O	O
+جنگ	O	O	O
+ترموپیل	B-LOC	B-LOC	B-LOC
+،	O	O	O
+سپاه	B-ORG	O	O	*
+اسپارت	I-ORG	B-LOC	B-LOC	*
+را	O	O	O
+در	O	O	O
+هم	O	O	O
+می‌کوبند	O	O	O
+.	O	O	O
+
+# test:1241
+دادکان	B-PER	B-PER	B-PER
+علیه	O	O	O
+مسئولان	O	O	O
+ورزشی	O	O	O
+افشاگری	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1376
+باید	O	O	O
+زودتر	O	O	O
+از	O	O	O
+این	O	O	O
+به	O	O	O
+دامان	O	O	O
+نظام	O	O	O
+برمی‌گشتیم	O	O	O
+.	O	O	O
+
+# test:1076
+شب	O	O	O
+را	O	O	O
+باید	O	O	O
+در	O	O	O
+مشعر	O	B-LOC	B-LOC	*
+وقوف	O	O	O
+کنید	O	O	O
+.	O	O	O
+
+# test:707
+لپ‌هایش	O	O	O
+حتی	O	O	O
+زیر	O	O	O
+رژگونه	B-PER	O	O	*
+هم	O	O	O
+گل	O	O	O
+انداختند	O	O	O
+.	O	O	O
+
+# test:798
+فرماندهٔ	O	O	O
+انتظامی	B-ORG	O	O	*
+خراسان	I-ORG	B-LOC	B-LOC	*
+رضوی	I-ORG	I-LOC	I-LOC	*
+خاطرنشان	O	O	O
+کرد	O	O	O
+:	O	O	O
+اگر	O	O	O
+از	O	O	O
+منابع	O	O	O
+طبیعی	O	O	O
+حفاظت	O	O	O
+نکنیم	O	O	O
+آیندگان	O	O	O
+ما	O	O	O
+را	O	O	O
+نفرین	O	O	O
+خواهند	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:839
+به	O	O	O
+قلم‌کاری	O	O	O
+قدیمی	O	O	O
+که	O	O	O
+برداشت	O	O	O
+هنری	O	O	O
+دورهٔ	O	O	O
+خود	O	O	O
+و	O	O	O
+ویژگی‌های	O	O	O
+کاراکتریستیک	O	O	O
+نقوش	O	O	O
+و	O	O	O
+سوژه‌های	O	O	O
+آنها	O	O	O
+را	O	O	O
+منعکس	O	O	O
+می‌کنند	O	O	O
+امروزه	O	B-DAT	B-DAT	*
+اهمیت	O	O	O
+خاصی	O	O	O
+مبذول	O	O	O
+داشته	O	O	O
+می‌شود	O	O	O
+.	O	O	O
+
+# test:256
+مسئولان	O	O	O
+ذوب‌آهن	B-ORG	B-ORG	B-ORG
+حمایت	O	O	O
+مالی	O	O	O
+نکنند	O	O	O
+بسکتبال	O	O	O
+تحلیل	O	O	O
+خواهد	O	O	O
+رفت	O	O	O
+.	O	O	O
+
+# test:670
+وای	O	O	O
+بر	O	O	O
+آن	O	O	O
+که	O	O	O
+به	O	O	O
+مؤمنی	B-PER	O	O	*
+تطاول	O	O	O
+کند	O	O	O
+و	O	O	O
+حق	O	O	O
+او	O	O	O
+را	O	O	O
+بکاهد	O	O	O
+.	O	O	O
+
+# test:23
+حکومت‌ها	O	O	O
+مسیحی	O	O	O
+شدند	O	O	O
+و	O	O	O
+پادشاهان	O	O	O
+با	O	O	O
+نام	O	O	O
+مسیح	O	B-PER	B-PER	*
+تاج‌گذاری	O	O	O
+می‌کردند	O	O	O
+.	O	O	O
+
+# test:400
+گمرک	B-ORG	O	O	*
+قایق‌ها	O	O	O
+را	O	O	O
+گرو	O	O	O
+گرفت	O	O	O
+!	O	O	O
+
+# test:689
+درخت	O	O	O
+تنومند	O	O	O
+امسال	B-DAT	B-DAT	B-DAT
+پربارتر	O	O	O
+از	O	O	O
+همیشه	O	O	O
+بود	O	O	O
+و	O	O	O
+سیب‌های	O	O	O
+خوش‌رنگ	O	O	O
+بر	O	O	O
+روی	O	O	O
+آن	O	O	O
+خودنمایی	O	O	O
+می‌کردند	O	O	O
+و	O	O	O
+دل	O	O	O
+می‌بردند	O	O	O
+.	O	O	O
+
+# test:1290
+چه	O	O	O
+بسا	O	O	O
+از	O	O	O
+مردمی	O	O	O
+بودند	O	O	O
+که	O	O	O
+می‌پنداشتند	O	O	O
+دین	O	O	O
+اسلام	O	O	O
+همراه	O	O	O
+با	O	O	O
+وفات	O	O	O
+رسول‌الله	B-PER	B-PER	B-PER
+صلی‌الله	I-PER	O	O	*
+علیه	I-PER	O	O	*
+و	O	O	O
+سلم	O	O	O
+زوال	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+اما	O	O	O
+خداوند	O	O	O
+ابوبکر	B-PER	B-PER	B-PER
+را	O	O	O
+برای	O	O	O
+جاوید	O	O	O
+ماندن	O	O	O
+این	O	O	O
+دین	O	O	O
+آماده	O	O	O
+نموده	O	O	O
+بود	O	O	O
+ابوبکر	B-PER	B-PER	B-PER
+که	O	O	O
+امتی	O	O	O
+در	O	O	O
+وجود	O	O	O
+یک	O	O	O
+شخص	O	O	O
+بود	O	O	O
+.	O	O	O
+
+# test:30
+آنها	O	O	O
+همچنین	O	O	O
+هیکل	B-PER	O	O	*
+سلیمان	I-PER	B-PER	B-PER	*
+را	O	O	O
+در	O	O	O
+بیت‌المقدس	B-LOC	B-LOC	B-LOC
+بازسازی	O	O	O
+خواهند	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:643
+هانیهٔ	O	B-PER	B-PER	*
+8	O	O	O
+ساله	O	O	O
+جراحی	O	O	O
+شد	O	O	O
+.	O	O	O
+
+# test:467
+40	O	O	O
+دقیقه	O	O	O
+بارندگی	O	O	O
+خیابان‌های	O	O	O
+تهران	B-LOC	B-LOC	B-LOC
+را	O	O	O
+قفل	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:213
+کیوان	B-PER	B-PER	B-PER
+علی‌محمدی	I-PER	I-PER	I-PER
+و	O	O	O
+امید	B-PER	B-PER	B-PER
+بنکدار	I-PER	I-PER	I-PER
+پیش‌تر	O	O	O
+فیلم	O	O	O
+سینمایی	O	O	O
+"	O	O	O
+شبانه	O	O	O
+"	O	O	O
+را	O	O	O
+کارگردانی	O	O	O
+کرده	O	O	O
+بودند	O	O	O
+.	O	O	O
+
+# test:279
+حزب	O	O	O
+مخالف	O	O	O
+الجزایر	B-LOC	B-LOC	B-LOC
+به	O	O	O
+رغم	O	O	O
+ممنوعیت	O	O	O
+،	O	O	O
+روز	B-DAT	B-DAT	B-DAT
+شنبه	I-DAT	I-DAT	I-DAT
+تظاهرات	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:362
+گمان	O	O	O
+می‌رود	O	O	O
+که	O	O	O
+امشب	O	B-DAT	B-DAT	*
+دوباره	O	O	O
+توفان	O	O	O
+خواهد	O	O	O
+شد	O	O	O
+.	O	O	O
+
+# test:1355
+من	O	O	O
+پس	O	O	O
+از	O	O	O
+ایشان	O	O	O
+بدعت	O	O	O
+گذاشتم	O	O	O
+.	O	O	O
+
+# test:535
+با	O	O	O
+وجودی	O	O	O
+که	O	O	O
+رادارهای	O	O	O
+کشتی	O	O	O
+،	O	O	O
+جنگندهٔ	O	O	O
+عراقی	O	O	O
+را	O	O	O
+رهگیری	O	O	O
+می‌کردند	O	O	O
+اما	O	O	O
+ناوچهٔ	B-ORG	O	O	*
+استارک	I-ORG	B-LOC	B-LOC	*
+در	O	O	O
+اعلام	O	O	O
+خطر	O	O	O
+ناشی	O	O	O
+از	O	O	O
+نزدیک	O	O	O
+شدن	O	O	O
+جنگندهٔ	O	O	O
+عراقی	O	O	O
+تعلل	O	O	O
+نمود	O	O	O
+.	O	O	O
+
+# test:442
+اینها	O	O	O
+مکانیزم‌های	O	O	O
+دفاعی	O	O	O
+نویسنده	O	O	O
+است	O	O	O
+در	O	O	O
+برابر	O	O	O
+حمله‌های	O	O	O
+ترسانندهٔ	O	O	O
+منتقدان	O	O	O
+خرده‌گیری	O	O	O
+که	O	O	O
+نویسنده	O	O	O
+پیشاپیش	O	O	O
+و	O	O	O
+حتی	O	O	O
+هنگام	O	O	O
+نگارش	O	O	O
+در	O	O	O
+برابرشان	O	O	O
+گارد	O	O	O
+می‌گیرد	O	O	O
+.	O	O	O
+
+# test:1283
+بعد	O	O	O
+اسم	O	O	O
+زاهد	B-PER	O	O	*
+و	O	O	O
+عابد	B-PER	O	O	*
+به	O	O	O
+میان	O	O	O
+آمد	O	O	O
+و	O	O	O
+به	O	O	O
+عده‌ای	O	O	O
+اطلاق	O	O	O
+گشت	O	O	O
+که	O	O	O
+از	O	O	O
+دنیا	O	O	O
+کناره	O	O	O
+جسته	O	O	O
+و	O	O	O
+خود	O	O	O
+را	O	O	O
+وقف	O	O	O
+عبادت	O	O	O
+و	O	O	O
+ریاضت	O	O	O
+نموده	O	O	O
+بودند	O	O	O
+.	O	O	O
+
+# test:959
+از	O	O	O
+پریروز	O	B-DAT	B-DAT	*
+شرکت	O	O	O
+فرانسوی	O	O	O
+وارد	O	O	O
+مسیر	O	O	O
+ما	O	O	O
+شده	O	O	O
+بود	O	O	O
+و	O	O	O
+مسیر	O	O	O
+ساحل	O	O	O
+چپ	O	O	O
+را	O	O	O
+بازسازی	O	O	O
+و	O	O	O
+شن‌ریزی	O	O	O
+می‌کرد	O	O	O
+.	O	O	O
+
+# test:178
+گاهی	O	O	O
+اوقات	O	O	O
+طوطی	B-PER	O	O	*
+از	O	O	O
+او	O	O	O
+وحشت	O	O	O
+می‌کرد	O	O	O
+.	O	O	O
+
+# test:819
+چنانچه	O	O	O
+مجلس	O	O	O
+قوانینی	O	O	O
+در	O	O	O
+حوزهٔ	O	O	O
+شرع	O	O	O
+وضع	O	O	O
+کند	O	O	O
+به	O	O	O
+صورت	O	O	O
+طبیعی	O	O	O
+در	O	O	O
+شورای	B-ORG	B-ORG	B-ORG
+نگهبان	I-ORG	I-ORG	I-ORG
+مطرح	O	O	O
+می‌شود	O	O	O
+و	O	O	O
+فقها	O	O	O
+بر	O	O	O
+اساس	O	O	O
+اصول	O	O	O
+قانون	O	O	O
+اساسی	O	O	O
+نظر	O	O	O
+خواهند	O	O	O
+داد	O	O	O
+.	O	O	O
+
+# test:1410
+امروز	B-DAT	B-DAT	B-DAT
+وقتی	O	O	O
+مدتی	O	O	O
+در	O	O	O
+خیابان	B-LOC	B-LOC	B-LOC
+ولیعصر	I-LOC	I-LOC	I-LOC
+یا	O	O	O
+در	O	O	O
+پارک	B-LOC	B-LOC	B-LOC
+ملت	I-LOC	I-LOC	I-LOC
+یا	O	O	O
+میدان	B-LOC	B-LOC	B-LOC
+ونک	I-LOC	I-LOC	I-LOC
+یا	O	O	O
+خیابان	B-LOC	B-LOC	B-LOC
+مدائن	I-LOC	I-LOC	I-LOC
+نازی‌آباد	I-LOC	B-LOC	B-LOC	*
+قدم	O	O	O
+می‌زنی	O	O	O
+ناگهان	O	O	O
+نگاهت	O	O	O
+به	O	O	O
+صورت	O	O	O
+مردان	O	O	O
+و	O	O	O
+پسران	O	O	O
+جوانی	O	O	O
+گره	O	O	O
+می‌خورد	O	O	O
+که	O	O	O
+کاملاً	O	O	O
+بند	O	O	O
+انداخته‌اند	O	O	O
+و	O	O	O
+ابروهایشان	O	O	O
+را	O	O	O
+دقیقاً	O	O	O
+طبق	O	O	O
+مدل	O	O	O
+روز	O	O	O
+ابروی	O	O	O
+زنان	O	O	O
+برداشته‌اند	O	O	O
+و	O	O	O
+حتی	O	O	O
+تعدادیشان	O	O	O
+خط	O	O	O
+چشم	O	O	O
+و	O	O	O
+رژ	O	O	O
+لب	O	O	O
+و	O	O	O
+.	O	O	O
+.	O	O	O
+.	O	O	O
+بر	O	O	O
+صورت	O	O	O
+دارند	O	O	O
+.	O	O	O
+
+# test:1055
+وی	O	O	O
+در	O	O	O
+عراق	B-LOC	B-LOC	B-LOC
+بود	O	O	O
+و	O	O	O
+در	O	O	O
+جنگ	O	O	O
+با	O	O	O
+ابوالسرایا	B-PER	B-PER	B-PER
+که	O	O	O
+به	O	O	O
+همراهی	O	O	O
+محمد	B-PER	B-PER	B-PER
+بن	I-PER	I-PER	I-PER
+ابراهیم	I-PER	I-PER	I-PER
+طباطبا	I-PER	I-PER	I-PER
+قیام	O	O	O
+و	O	O	O
+نهضت	O	O	O
+کرده	O	O	O
+بود	O	O	O
+فرماندهی	O	O	O
+لشگر	B-ORG	O	O	*
+را	O	O	O
+به	O	O	O
+عهده	O	O	O
+داشت	O	O	O
+.	O	O	O
+
+# test:224
+رافق	B-PER	B-PER	B-PER
+تقی	I-PER	I-PER	I-PER
+،	O	O	O
+نویسنده	O	O	O
+و	O	O	O
+پزشک	O	O	O
+آذربایجانی	O	O	O
+را	O	O	O
+چند	O	B-DAT	B-DAT	*
+روز	O	I-DAT	I-DAT	*
+پیش	O	I-DAT	I-DAT	*
+با	O	O	O
+چاقو	O	O	O
+در	O	O	O
+باکو	B-LOC	B-LOC	B-LOC
+سلاخی	O	O	O
+کردند	O	O	O
+.	O	O	O
+
+# test:1051
+آلمانی‌ها	O	O	O
+خیال	O	O	O
+می‌کردند	O	O	O
+که	O	O	O
+قوای	O	O	O
+مهاجم	O	O	O
+از	O	O	O
+منطقهٔ	B-LOC	O	O	*
+کاله	I-LOC	B-LOC	B-LOC	*
+هجوم	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:446
+در	O	O	O
+دههٔ	B-DAT	O	O	*
+فجر	I-DAT	O	O	*
+90	I-DAT	O	O	*
+شرکت	B-ORG	B-ORG	B-ORG
+گاز	I-ORG	I-ORG	I-ORG
+استان	I-ORG	I-ORG	I-ORG
+فارس	I-ORG	I-ORG	I-ORG
+به	O	O	O
+سه	O	O	O
+شهر	O	O	O
+و	O	O	O
+42	O	O	O
+روستا	O	O	O
+در	O	O	O
+قالب	O	O	O
+12	O	O	O
+پروژه	O	O	O
+،	O	O	O
+گازرسانی	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1437
+قیمت	O	O	O
+نفت	O	O	O
+در	O	O	O
+سال	B-DAT	B-DAT	B-DAT
+گذشته	I-DAT	I-DAT	I-DAT
+به	O	O	O
+بیش	O	O	O
+از	O	O	O
+100	O	O	O
+دلار	O	O	O
+نیز	O	O	O
+رسید	O	O	O
+و	O	O	O
+اقتصاد	O	O	O
+جهانی	O	O	O
+را	O	O	O
+دست‌خوش	O	O	O
+تلاطم	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1061
+به	O	O	O
+گفتهٔ	O	O	O
+سرمنشی	O	O	O
+ناتو	B-ORG	B-ORG	B-ORG
+روسیه	I-ORG	B-LOC	B-LOC	*
+باز	O	O	O
+کردن	O	O	O
+یک	O	O	O
+راه	O	O	O
+دیگر	O	O	O
+ترانزیتی	O	O	O
+را	O	O	O
+برای	O	O	O
+ناتو	B-ORG	B-ORG	B-ORG
+وعده	O	O	O
+کرده	O	O	O
+است	O	O	O
+.	O	O	O
+
+# test:1097
+پزشکان	O	O	O
+این	O	O	O
+سازمان	O	O	O
+در	O	O	O
+اردوگاه‌های	B-LOC	O	O	*
+آوارگان	I-LOC	O	O	*
+داداب	I-LOC	B-LOC	B-LOC	*
+و	O	O	O
+چندین	O	O	O
+اردوگاه	O	O	O
+دیگر	O	O	O
+،	O	O	O
+طی	O	O	O
+پنج	O	O	O
+روز	O	O	O
+هزاران	O	O	O
+کودک	O	O	O
+شش	O	O	O
+ماهه	O	O	O
+تا	O	O	O
+پنج	O	O	O
+ساله	O	O	O
+را	O	O	O
+مایه‌کوبی	O	O	O
+خواهند	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:962
+آبا	O	O	O
+و	O	O	O
+اجداد	O	O	O
+اینها	O	O	O
+که	O	O	O
+در	O	O	O
+فلسطین	B-LOC	B-LOC	B-LOC
+و	O	O	O
+غزه	B-LOC	B-LOC	B-LOC
+و	O	O	O
+امثال	O	O	O
+ذلک	B-PER	O	O	*
+بودند	O	O	O
+،	O	O	O
+وقتی	O	O	O
+اسلام	O	O	O
+آمد	O	O	O
+با	O	O	O
+آغوش	O	O	O
+باز	O	O	O
+اسلام	O	O	O
+را	O	O	O
+قبول	O	O	O
+کردند	O	O	O
+ولی	O	O	O
+یک	O	O	O
+عده	O	O	O
+لجاجت	O	O	O
+کردند	O	O	O
+.	O	O	O
+
+# test:1070
+حسن	B-PER	B-PER	B-PER
+جان	I-PER	O	O	*
+!	O	O	O
+حسین	B-PER	B-PER	B-PER
+جان	I-PER	O	O	*
+!	O	O	O
+زینبم!	O	O	O
+عزیزم	B-PER	O	O	*
+ام‌کلثوم	O	B-PER	B-PER	*
+بیایید	O	O	O
+با	O	O	O
+مادر	O	O	O
+وداع	O	O	O
+کنید	O	O	O
+.	O	O	O
+
+# test:1085
+بنی‌امیه	O	B-ORG	B-ORG	*
+حسن	B-PER	B-PER	B-PER
+بن	I-PER	I-PER	I-PER
+علی	I-PER	I-PER	I-PER
+را	O	O	O
+با	O	O	O
+دشنه	O	O	O
+مجروح	O	O	O
+کردند	O	O	O
+و	O	O	O
+قصد	O	O	O
+آنها	O	O	O
+کشتن	O	O	O
+ایشان	O	O	O
+بود	O	O	O
+،	O	O	O
+لشکر	O	O	O
+او	O	O	O
+را	O	O	O
+متفرق	O	O	O
+کردند	O	O	O
+و	O	O	O
+او	O	O	O
+ناگزیر	O	O	O
+با	O	O	O
+آنها	O	O	O
+مسالمت	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1449
+در	O	O	O
+برابر	O	O	O
+مسائل	O	O	O
+مختلف	O	O	O
+و	O	O	O
+پیش‌آمدهای	O	O	O
+گوناگون	O	O	O
+،	O	O	O
+قدرت	O	O	O
+ایستادگی	O	O	O
+نخواهد	O	O	O
+داشت	O	O	O
+،	O	O	O
+و	O	O	O
+دچار	O	O	O
+سستی	O	O	O
+و	O	O	O
+لغزش	O	O	O
+خواهد	O	O	O
+شد	O	O	O
+و	O	O	O
+از	O	O	O
+راه	O	O	O
+راست	O	O	O
+،	O	O	O
+انحراف	O	O	O
+پیدا	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1111
+حامیان	O	O	O
+میرحسین	B-PER	B-PER	B-PER
+موسوی	I-PER	I-PER	I-PER
+در	O	O	O
+بیرجند	B-LOC	B-LOC	B-LOC
+با	O	O	O
+هورا	O	O	O
+و	O	O	O
+کف	O	O	O
+زدن	O	O	O
+نظم	O	O	O
+مناظرهٔ	O	O	O
+سیاسی	O	O	O
+را	O	O	O
+به	O	O	O
+هم	O	O	O
+زدند	O	O	O
+.	O	O	O
+
+# test:769
+امام	B-PER	B-PER	B-PER
+خمینی	I-PER	I-PER	I-PER
+(	I-PER	O	O	*
+ره	O	O	O
+)	O	O	O
+عاشق	O	O	O
+جوانان	O	O	O
+بود	O	O	O
+و	O	O	O
+همیشه	O	O	O
+سفارش	O	O	O
+می‌کرد	O	O	O
+به	O	O	O
+جوانان	O	O	O
+میدان	O	O	O
+بدهید	O	O	O
+.	O	O	O
+
+# test:1339
+برای	O	O	O
+اولین	O	O	O
+بار	O	O	O
+در	O	O	O
+کشور	O	O	O
+پسماندهای	O	O	O
+الکترونیکی	O	O	O
+با	O	O	O
+همت	O	O	O
+سازمان	B-ORG	B-ORG	B-ORG
+بازیافت	I-ORG	I-ORG	I-ORG
+و	O	I-ORG	I-ORG	*
+تبدیل	O	I-ORG	I-ORG	*
+مواد	O	I-ORG	I-ORG	*
+زائد	O	I-ORG	I-ORG	*
+شهرداری	B-ORG	I-ORG	I-ORG	*
+اصفهان	I-ORG	I-ORG	I-ORG
+بازیافت	O	O	O
+می‌شود	O	O	O
+.	O	O	O
+
+# test:209
+ذخایر	O	O	O
+گازی	O	O	O
+کشورهایی	O	O	O
+مانند	O	O	O
+آمریکا	B-LOC	B-LOC	B-LOC
+و	O	O	O
+کانادا	B-LOC	B-LOC	B-LOC
+تنها	O	O	O
+تا	O	O	O
+12	B-DAT	O	O	*
+سال	I-DAT	O	O	*
+آینده	I-DAT	O	O	*
+کفاف	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1448
+این	O	O	O
+آهنگ	O	O	O
+یکی	O	O	O
+از	O	O	O
+آهنگ‌های	O	O	O
+آلبوم	O	O	O
+زیبای	O	O	O
+پرچم	O	O	O
+سفید	O	O	O
+می‌باشد	O	O	O
+که	O	O	O
+در	O	O	O
+سال	B-DAT	B-DAT	B-DAT
+1391	I-DAT	I-DAT	I-DAT
+انتشار	O	O	O
+پیدا	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1232
+البشری	B-PER	B-PER	B-PER
+در	O	O	O
+اظهارات	O	O	O
+خود	O	O	O
+به	O	O	O
+این	O	O	O
+نکته	O	O	O
+استناد	O	O	O
+جسته	O	O	O
+بود	O	O	O
+که	O	O	O
+قانونی	O	O	O
+که	O	O	O
+از	O	O	O
+20	B-DAT	B-DAT	B-DAT
+مارس	I-DAT	I-DAT	I-DAT
+در	O	O	O
+کشور	O	O	O
+به	O	O	O
+اجرا	O	O	O
+گذاشته	O	O	O
+شد	O	O	O
+،	O	O	O
+تأکید	O	O	O
+می‌کند	O	O	O
+که	O	O	O
+نباید	O	O	O
+حالت	O	O	O
+فوق‌العاده	O	O	O
+بیش	O	O	O
+از	O	O	O
+6	O	O	O
+ماه	O	O	O
+در	O	O	O
+کشور	O	O	O
+ادامه	O	O	O
+یابد	O	O	O
+.	O	O	O
+
+# test:509
+امام	B-PER	B-PER	B-PER
+حسین	I-PER	I-PER	I-PER
+(	I-PER	O	O	*
+ع	O	O	O
+)	O	O	O
+300	O	O	O
+سال	O	O	O
+بر	O	O	O
+روی	O	O	O
+زمین	B-LOC	O	O	*
+خلافت	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:422
+امیرکبیر	O	B-PER	B-PER	*
+فوتبال	O	O	O
+ایران	B-LOC	B-LOC	B-LOC
+آدینه	O	O	O
+روی	O	O	O
+لبهٔ	O	O	O
+پرتگاه	O	O	O
+بندبازی	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:754
+احمدی‌نژاد	B-PER	B-PER	B-PER
+به	O	O	O
+حکم	O	O	O
+رهبری	O	O	O
+گردن	O	O	O
+نهاد	O	O	O
+.	O	O	O
+
+# test:1027
+فابیو	B-PER	B-PER	B-PER
+کاپلو	I-PER	I-PER	I-PER
+گفته	O	O	O
+که	O	O	O
+به	O	O	O
+خاطر	O	O	O
+این	O	O	O
+مصدومیت	O	O	O
+با	O	O	O
+روی	B-PER	B-PER	B-PER
+هاجسون	I-PER	I-PER	I-PER
+تماس	O	O	O
+خواهد	O	O	O
+گرفت	O	O	O
+و	O	O	O
+با	O	O	O
+او	O	O	O
+همدردی	O	O	O
+خواهد	O	O	O
+کرد	O	O	O
+.	O	O	O
+
+# test:1369
+در	O	O	O
+چند	O	O	O
+مورد	O	O	O
+مستحب	O	O	O
+است	O	O	O
+انسان	O	O	O
+در	O	O	O
+ماه	O	B-DAT	B-DAT	*
+رمضان	O	I-DAT	I-DAT	*
+اگرچه	O	O	O
+روزه	O	O	O
+نیست	O	O	O
+امساک	O	O	O
+کند	O	O	O
+.	O	O	O
+
+# test:584
+این	O	O	O
+چرخه	O	O	O
+لباس‌هایی	O	O	O
+که	O	O	O
+قبلاً	O	O	O
+خشک	O	O	O
+شده‌اند	O	O	O
+را	O	O	O
+هوادهی	O	O	O
+می‌کند	O	O	O
+و	O	O	O
+بوهای	O	O	O
+نامطلوب	O	O	O
+آنها	O	O	O
+را	O	O	O
+می‌زداید	O	O	O
+.	O	O	O
+

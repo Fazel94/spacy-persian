@@ -44,6 +44,15 @@ def spans_of(entities):
     return {(e["start"], e["end"], e["label"]) for e in entities}
 
 
+def to_iob(tokens, entities):
+    tags = ["O"] * len(tokens)
+    for e in entities:
+        tags[e["start"]] = f"B-{e['label']}"
+        for i in range(e["start"] + 1, e["end"]):
+            tags[i] = f"I-{e['label']}"
+    return tags
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--ref", default="annotation/data/test-all.jsonl")
@@ -75,9 +84,24 @@ def main():
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     blocks, blind, key = [], [], []
+    silver_blocks, llm_blocks, review_blocks = [], [], []
+    n_marked = 0
     for sid, stratum, pool_size in picked:
         tokens = ref[sid]["tokens"]
-        blocks.append(f"# {sid}\n" + "\n".join(f"{t}\tO" for t in tokens))
+        s_tags = to_iob(tokens, ref[sid]["silver"])
+        l_tags = to_iob(tokens, llm[sid]["entities"])
+        head = f"# {sid}"
+        blocks.append(head + "\n" + "\n".join(f"{t}\tO" for t in tokens))
+        silver_blocks.append(head + "\n" + "\n".join(f"{t}\t{g}" for t, g in zip(tokens, s_tags)))
+        llm_blocks.append(head + "\n" + "\n".join(f"{t}\t{g}" for t, g in zip(tokens, l_tags)))
+        # Review sheet: both annotators side by side, a verdict column seeded with the LLM
+        # tag, and a marker on every token where they differ so the eye goes straight there.
+        rows = []
+        for t, s, l in zip(tokens, s_tags, l_tags):
+            mark = "" if s == l else "\t*"
+            n_marked += s != l
+            rows.append(f"{t}\t{s}\t{l}\t{l}{mark}")
+        review_blocks.append(head + "\n" + "\n".join(rows))
         blind.append({"id": sid, "tokens": tokens, "text": ref[sid]["text"], "entities": []})
         key.append({
             "id": sid,
@@ -92,12 +116,22 @@ def main():
         with (out / fname).open("w", encoding="utf8") as fh:
             for row in rows:
                 fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+    for fname, bs in ((f"{args.name}.iob", blocks),
+                      (f"{args.name}.silver.iob", silver_blocks),
+                      (f"{args.name}.llm.iob", llm_blocks),
+                      (f"{args.name}.review.tsv", review_blocks)):
+        (out / fname).write_text("\n\n".join(bs) + "\n\n", encoding="utf8")
 
     tokens = sum(len(ref[sid]["tokens"]) for sid, _, _ in picked)
-    print(f"{len(picked)} sentences, {tokens} tokens -> {out}/{args.name}.iob")
+    print(f"{len(picked)} sentences, {tokens} tokens")
     for name, n in STRATA:
         print(f"  {name}: {n} sampled of {len(pools[name])} in the split "
               f"(weight {len(pools[name]) / n:.2f})")
+    print(f"  {out}/{args.name}.iob         blind worksheet, all tags O")
+    print(f"  {out}/{args.name}.silver.iob  pre-filled with the silver layer, for review")
+    print(f"  {out}/{args.name}.llm.iob     pre-filled with the LLM annotation, for review")
+    print(f"  {out}/{args.name}.review.tsv  token, silver, llm, verdict; {n_marked} tokens "
+          f"marked * where the two differ")
 
 
 if __name__ == "__main__":

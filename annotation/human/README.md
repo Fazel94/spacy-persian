@@ -10,12 +10,37 @@ are invisible to a pairwise comparison. A human pass fixes both problems at once
 
 | file | what it is |
 |---|---|
-| `gold-200.iob` | **the worksheet.** Two columns, `token<TAB>tag`, every tag pre-filled `O`, a `# <id>` header before each sentence, blank line between sentences. Edit column 2. |
-| `gold-200.jsonl` | the same 200 sentences as JSON, ids and tokens only. For tooling, not for annotating. |
-| `gold-200.key.jsonl` | silver spans, LLM spans, stratum. **Do not open until the worksheet is finished.** |
+| `gold-200.iob` | **the blind worksheet.** Two columns, `token<TAB>tag`, every tag pre-filled `O`, a `# <id>` header before each sentence, blank line between sentences. Edit column 2. |
+| `gold-200.review.tsv` | **the review sheet.** Four columns: `token`, silver tag, LLM tag, verdict — the verdict column seeded with the LLM tag. Every token where the two annotators differ is marked `*` at the end of the line. 208 such tokens across the 200 sentences. Edit column 4. |
+| `gold-200.silver.iob` | the same sentences pre-filled with the silver layer alone, 251 spans. For reading or correcting PerDT's labels directly. |
+| `gold-200.llm.iob` | the same sentences pre-filled with the LLM annotation alone, 243 spans. |
+| `gold-200.jsonl` | the sentences as JSON, ids and tokens only. For tooling, not for annotating. |
+| `gold-200.key.jsonl` | silver spans, LLM spans, tokens, stratum. **Do not open before finishing `gold-200.iob`,** if you are doing the blind pass. |
 
-Regenerate the sample with `python scripts/annotation/sample_gold.py` (seeded, byte-identical
-re-runs). Score it with `python scripts/annotation/score_gold.py`.
+Regenerate all of them with `python scripts/annotation/sample_gold.py` (seeded, byte-identical
+re-runs). Score with `python scripts/annotation/score_gold.py`, adding `--column 4` for a
+corrected review sheet.
+
+## Blind pass or review pass — they do not measure the same thing
+
+**Reviewing is faster and worth less.** Correcting a pre-filled sheet anchors you: you will
+accept labels you would never have produced yourself, and you will find fewer of the
+annotator's errors than exist. The effect is strongest exactly where it hurts — the spans
+both annotators already agree on, which the review sheet shows as unmarked and invites you
+to skim.
+
+So:
+
+- **`gold-200.iob`, blind, is the measurement of record.** It is the only version whose
+  numbers can be quoted as precision and recall for silver and for the LLM. 2-4 hours.
+- **`gold-200.review.tsv` is triage.** Use it to adjudicate the 208 disputed tokens quickly,
+  to sanity-check the guideline, or to produce a corrected corpus. Perhaps 45 minutes.
+  Numbers from it are biased toward whichever labels were pre-filled and must be reported
+  as "reviewed", never as gold.
+
+If you only have time for one, do the review pass and say so in the write-up. If you have
+time for both, do the blind pass first — once you have seen the pre-filled labels you cannot
+unsee them, and that sentence is no longer usable as blind gold.
 
 ## How to annotate
 
