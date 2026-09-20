@@ -61,7 +61,7 @@ def render_prompt(prompt_path, guidelines_path):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--input", required=True)
-    ap.add_argument("--prompt", default="annotation/prompts/ner-v2.1.md")
+    ap.add_argument("--prompt", default="annotation/prompts/ner-v2.2.md")
     ap.add_argument("--guidelines", default="annotation/GUIDELINES.md")
     # 20 measured on pool-500 against batch 10, same prompt: 25/25 batches returned every
     # id with no retry, micro F vs silver 0.7778 against 0.7789, and the two runs agree at

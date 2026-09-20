@@ -1,0 +1,3 @@
+{"id": "test:14", "text": "فاطمه", "label": "PER", "reason": "no-align"}
+{"id": "test:1070", "text": "زینب", "label": "PER", "reason": "no-align"}
+{"id": "test:1106", "text": "ایران", "label": "LOC", "reason": "overlap"}

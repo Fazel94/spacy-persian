@@ -1,0 +1,3 @@
+{"id": "train:12086", "text": "ابومازن", "label": "PER", "reason": "no-align"}
+{"id": "train:12846", "text": "حضرت یوسف", "label": "PER", "reason": "no-align"}
+{"id": "train:13574", "text": "پژاک", "label": "ORG", "reason": "no-align"}

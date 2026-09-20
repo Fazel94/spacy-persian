@@ -1,0 +1,5 @@
+{"id": "train:5", "text": "ارسطو", "label": "PER", "reason": "no-align"}
+{"id": "train:22", "text": "شوروی", "label": "LOC", "reason": "no-align"}
+{"id": "train:36", "text": "وزارت امور خارجه", "label": "ORG", "reason": "no-align"}
+{"id": "train:268", "text": "از سال‌های 1937 تا 1945", "label": "DAT", "reason": "no-align"}
+{"id": "train:425", "text": "اسپانیاست", "label": "LOC", "reason": "no-align"}

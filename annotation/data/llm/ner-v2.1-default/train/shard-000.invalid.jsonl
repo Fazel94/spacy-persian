@@ -1,7 +1,0 @@
-{"id": "train:5", "text": "ارسطو", "label": "PER", "reason": "no-align"}
-{"id": "train:22", "text": "شوروی", "label": "LOC", "reason": "no-align"}
-{"id": "train:425", "text": "اسپانیاست", "label": "LOC", "reason": "no-align"}
-{"id": "train:555", "text": "آواتار", "label": "O", "reason": "bad-label"}
-{"id": "train:574", "text": "مکه", "label": "LOC", "reason": "no-align"}
-{"id": "train:632", "text": "طلوع", "label": "O", "reason": "bad-label"}
-{"id": "train:662", "text": "روح", "label": "O", "reason": "bad-label"}

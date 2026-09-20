@@ -1,0 +1,4 @@
+{"id": "train:14460", "text": "منا", "label": "LOC", "reason": "no-align"}
+{"id": "train:14551", "text": "وزارت امور خارجه آمریکا", "label": "ORG", "reason": "no-align"}
+{"id": "train:15574", "text": "الکسا", "label": "ORG", "reason": "no-align"}
+{"id": "train:15891", "text": "محمد", "label": "PER", "reason": "no-align"}

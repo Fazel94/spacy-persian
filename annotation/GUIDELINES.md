@@ -1,4 +1,4 @@
-# Persian NER annotation guidelines, v2.1
+# Persian NER annotation guidelines, v2.2
 
 Labels: `PER`, `LOC`, `ORG`, `DAT`. Everything else is `O`. Spans are contiguous token
 sequences on the PerDT `--merge-subtokens` tokenization; an entity text must be reproducible
@@ -113,9 +113,10 @@ is stated and the minority is called out as an error to correct. Counts are trai
 35. A personal name used as an epithet is still `PER`: `[امیرکبیر] فوتبال ایران`. The name
     is the entity; the metaphor does not change that. (The silver layer usually leaves
     these unlabelled; this is a deliberate deviation.)
-36. `دنیا` follows rule 15 exactly as `جهان` does: `LOC` when it denotes the world as a
-    place (`سریع‌ترین دوربین دنیا`, `در سراسر دنیا`), `O` in the sense "worldly life"
-    (`از دنیا کناره جست`).
+36. `دنیا` is `O`, and does NOT follow rule 15 the way `جهان` does. The two words diverge
+    sharply in the silver layer: `جهان` is `LOC` 202 times against 87 `O`, while `دنیا` is
+    `O` 240 times against 20 `LOC`. So `در سراسر دنیا` and `قفس دنیا` label nothing, while
+    `در جهان` is `LOC`.
 37. Century expressions are `DAT`, including the head noun and any calendar suffix:
     `[قرن سوم هجری]`, `[قرن بیستم]`, `[اوایل قرن نوزدهم]`.
 38. Brands, products, software and vehicle models are `O`: `بنز`, `فتوشاپ`, `ویندوز`,
@@ -123,6 +124,10 @@ is stated and the minority is called out as an error to correct. Counts are trai
     (`[شرکت مایکروسافت]`), not when it names the product.
 39. Deities, angels and mythological beings are `O`, extending rule 11: `خدا`, `الله`,
     `یزدان`, `شیطان`, `ابلیس`, `جبرئیل`. Prophets and imams named as people stay `PER`.
+40. Religious denominations, theological and philosophical schools, and political
+    movements are `O`, extending rule 5: `شیعه` (41 `O`), `سنی` (28), `معتزله` (5),
+    `اشاعره`, `صوفیه`, `مارکسیسم` (4). A named organisation belonging to one is still
+    `ORG` (`[حزب توده]`).
 
 ## Changelog
 
@@ -150,3 +155,12 @@ disagreement:
   the full split.
 - Rules 38 (brands and products) and 39 (deities and mythological beings) added; they
   cover 5 more of those 19 errors (`بنز`, `فتوشاپ`, `جاماسپ`, `شیطان`, `یزدان`).
+
+v2.2, after relabelling the first 2,000 train sentences (largely literary and memoir prose,
+a genre the test split barely contains):
+
+- Rule 36 is reversed. v2.1 claimed `دنیا` behaves like `جهان`; the silver layer says the
+  opposite, `دنیا` `O` 240 against 20 `LOC` while `جهان` is `LOC` 202 against 87 `O`.
+- Rule 40 added: denominations, theological schools and political movements are `O`
+  (`شیعه` 41 `O`, `سنی` 28, `معتزله` 5, `مارکسیسم` 4). `معتزله` tagged `ORG` was an error
+  with no rule to prevent it.

@@ -1,0 +1,6 @@
+{"id": "train:20031", "text": "گوگل", "label": "ORG", "reason": "no-align"}
+{"id": "train:20149", "text": "از جولای تا دسامبر سال جاری", "label": "DAT", "reason": "no-align"}
+{"id": "train:20309", "text": "مازندرانی", "label": "O", "reason": "bad-label"}
+{"id": "train:20988", "text": "مکه", "label": "LOC", "reason": "no-align"}
+{"id": "train:20993", "text": "ارسطو", "label": "PER", "reason": "no-align"}
+{"id": "train:21303", "text": "سورهٔ النحل", "label": "O", "reason": "bad-label"}

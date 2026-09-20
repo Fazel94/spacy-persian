@@ -1,4 +1,0 @@
-{"id": "test:14", "text": "فاطمه", "label": "PER", "reason": "no-align"}
-{"id": "test:477", "text": "تهرانی‌ها", "label": "O", "reason": "bad-label"}
-{"id": "test:1070", "text": "زینبم", "label": "PER", "reason": "no-align"}
-{"id": "test:1106", "text": "ایران", "label": "LOC", "reason": "overlap"}

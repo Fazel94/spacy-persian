@@ -1,0 +1,4 @@
+{"id": "train:18482", "text": "اسرائیل", "label": "LOC", "reason": "no-align"}
+{"id": "train:18910", "text": "شب دهم", "label": "O", "reason": "bad-label"}
+{"id": "train:18966", "text": "سورهٔ شوری", "label": "O", "reason": "bad-label"}
+{"id": "train:19255", "text": "وزارت امور خارجهٔ روسیه", "label": "ORG", "reason": "no-align"}

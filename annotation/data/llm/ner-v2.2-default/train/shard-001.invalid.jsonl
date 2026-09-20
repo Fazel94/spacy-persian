@@ -1,0 +1,4 @@
+{"id": "train:2983", "text": "حسینی", "label": "PER", "reason": "no-align"}
+{"id": "train:3017", "text": "رضاخان", "label": "PER", "reason": "no-align"}
+{"id": "train:3136", "text": "نواب صفوی", "label": "PER", "reason": "no-align"}
+{"id": "train:3561", "text": "روز پنج‌شنبه", "label": "DAT", "reason": "no-align"}
