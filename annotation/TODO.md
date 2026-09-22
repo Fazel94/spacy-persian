@@ -40,11 +40,10 @@ test spans. That adjudication is LLM-judged, so it is an estimate, not a measure
       names `annotation/data/`, `corpus/perdt-ner-iob/`, `corpus/perdt-ner-iob-llm/` and the
       published dataset; the dataset repo carries `LICENSE` (attribution notice + full legal
       code, source `hub/LICENSE`) and the card states it.
-- [ ] **Courtesy notice to the PerDT authors — drafted, not sent.** Text in
-      `hub/perdt-authors-notice.md`, addressed to the contacts in the treebank README
-      (rasooli@seas.upenn.edu, pegh.safari@gmail.com). It states the licence reading, the
-      `not-to-release/` interpretation, and offers to pull `silver` on request. Send it;
-      record the date and any reply here.
+- [x] **Courtesy notice to the PerDT authors — sent 2026-09-22** to the contacts in the
+      treebank README (rasooli@seas.upenn.edu, pegh.safari@gmail.com), stating the licence
+      reading and the `not-to-release/` interpretation, with an offer to pull `silver` on
+      request. No reply yet; record it here when it comes.
 - [x] **Provenance — as good as it gets for v2.2.** `manifest.json` in the dataset repo
       records the build commit, the PerDT asset URLs + MD5s, `prompt_hash`, the model
       *alias*, unannotated ids, and a sha256 per file. The resolved model id for the v2.2 run
