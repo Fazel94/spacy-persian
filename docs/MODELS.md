@@ -534,3 +534,81 @@ VM, giving a clean 25x GPU speedup for the transformer.
 `cu129` wheels at torch 2.8, which is what `pip install torch` resolves to. `.venv-trf-gpu` pins
 `torch==2.7.1+cu126`, separate from `.venv` because torch's pinned `nvidia-*` wheels downgrade
 the CUDA libraries cupy uses there from 12.9 to 12.6. Batch 32 fits in 2 GB.
+
+## 10. The LLM-relabelled NER corpus, measured against the silver layer
+
+`annotation/` relabels PerDT's silver NER layer with an LLM against a guideline inferred
+from that same layer (`annotation/GUIDELINES.md`, v2.2). The result is a second, independent
+annotation over the *same* sentences and the *same* `--merge-subtokens` tokenization,
+exported to `corpus/perdt-ner-iob-llm/`. Built with `spacy project run ner-llm`.
+
+It carries **four** labels (`PER`, `LOC`, `ORG`, `DAT`); the silver layer carries seven
+(plus `MON`, `TIM`, `PCT`). A raw `ENTS_F` comparison across the two is therefore not a
+number: a seven-label model scored on four-label data is charged a false positive for every
+`MON`/`TIM`/`PCT` span it correctly finds. Everything below is scored by
+`scripts/eval_ner_restricted.py`, which drops out-of-scope entities from **both** the
+prediction and the reference before micro-averaging, so the figures are like-for-like over
+the four shared types. They are not comparable to the seven-label `ENTS_F` in §6 and §7.
+
+The second caveat is larger: neither test split is human gold. Every cell is agreement
+between two annotators, not accuracy. `annotation/human/gold-200.iob` exists to settle that
+and is still unfilled.
+
+### The 2x2
+
+Same architecture (`configs/fa_ner_sm.cfg`), same sentences, same hyperparameters; only the
+labels differ. Micro F over `PER`/`LOC`/`ORG`/`DAT`:
+
+| Trained on \ Scored on | silver test | LLM test |
+| --- | --- | --- |
+| **silver** (`fa_ent_news_sm`) | **71.98** | 67.27 |
+| **LLM** (`training/perdt-ner-llm`) | 67.59 | **79.94** |
+
+The diagonal is what each model is entitled to claim. The LLM-trained model reaches 79.94 on
+its own conventions against the silver-trained model's 71.98 on its own — **+7.96 F for the
+same architecture on the same sentences**. That is the hypothesis in `annotation/TODO.md`
+confirmed: the relabelled data is more internally consistent, so an identical model fits it
+better. It is evidence about consistency, not about correctness; a perfectly self-consistent
+but wrong convention would score the same way.
+
+The off-diagonal is the cost of the convention change, and it is near-symmetric: 67.27 and
+67.59, a 0.32 F spread. Each annotation looks about equally foreign from the other's side,
+which is what two genuinely different conventions over identical text should look like — and
+not what a straightforwardly better or worse annotation would look like.
+
+### Per label
+
+Each model on its own test split, so each column is that model's best case:
+
+| Label | Gold (silver / LLM) | silver model P | silver model R | silver model F | LLM model P | LLM model R | LLM model F | Delta F |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `PER` | 297 / 281 | 73.73 | 58.59 | 65.29 | 86.64 | 66.90 | 75.50 | +10.21 |
+| `LOC` | 273 / 271 | 88.16 | 73.63 | 80.24 | 91.50 | 83.39 | 87.26 | +7.02 |
+| `ORG` | 144 / 133 | 69.50 | 68.06 | 68.77 | 82.41 | 66.92 | 73.86 | +5.09 |
+| `DAT` | 69 / 84 | 75.00 | 73.91 | 74.45 | 74.74 | 84.52 | 79.33 | +4.88 |
+| ALL | 783 / 769 | 77.86 | 66.92 | 71.98 | 86.06 | 74.64 | 79.94 | +7.96 |
+
+`PER` gains most (+10.21), consistent with the guideline's bare-`امام`/`حضرت` rules being the
+ones the silver layer is most erratic about. `LOC` is strong in both.
+
+**`ORG` recall did not improve, and that is the finding worth acting on.** `ORG` F rises
++5.09, but the whole gain is precision (69.50 to 82.41); recall moves the wrong way, 68.06 to
+66.92. The model now tags `ORG` more correctly when it tags at all and misses slightly more.
+`annotation/TODO.md` predicted exactly this and named the cause: the head-noun-plus-specifier
+construction (`کمیسیون آموزش`, `برق منطقه‌ای`) is a known rule-20 *compliance* gap in the
+annotation, ORG being the weakest label in the data at train recall .628. The model is
+reproducing a hole in its training labels, so the fix is a recall-oriented annotation pass,
+not more training.
+
+`DAT` inverts: recall jumps +10.61 to 84.52 while precision holds, and the LLM split carries
+15 more `DAT` spans than silver (84 vs 69). The guideline's relative-date rules pick up dates
+silver leaves as `O`, which is also where the unresolved `DAT`-versus-`TIM` boundary in the v3
+agenda sits.
+
+### Nothing ships from this yet
+
+`ner-llm` has no packaging step by design. A model trained on LLM labels and evaluated
+against LLM labels can look excellent while being worse in the field — which is precisely
+what the flattering diagonal above cannot rule out. The 200 human-annotated sentences are the
+only instrument that can, and they remain the blocker on publishing any wheel from this
+corpus.

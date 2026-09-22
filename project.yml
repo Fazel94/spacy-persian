@@ -104,6 +104,14 @@ workflows:
     - finalize-ent
     - evaluate-ent
     - package-ent
+  # The same NER architecture trained on the LLM-relabelled 4-label corpus, plus the 2x2
+  # comparison against the silver-trained model. No packaging step: nothing ships from
+  # this until the human-gold sample in annotation/human/ is filled in.
+  ner-llm:
+    - export-ner-llm
+    - convert-ner-llm
+    - train-ner-llm
+    - evaluate-ent-llm
   # The lg tier: same corpus and architecture as sm/md, with a bigger floret table (200k
   # rows, full Persian Wikipedia, 5 epochs) than md's (50k rows, first 400k fawiki articles).
   lg:
@@ -348,6 +356,83 @@ commands:
       - "training/fa_ent_news_sm"
     outputs:
       - "packages/${vars.lang}_${vars.ent_package_name}-${vars.package_version}"
+
+  # ------------------------------------------------- LLM-relabelled NER corpus (4 labels)
+  #
+  # A second, independent NER dataset over the same PerDT sentences and the same
+  # --merge-subtokens tokenization, relabelled by an LLM against annotation/GUIDELINES.md.
+  # It carries FOUR labels (PER, LOC, ORG, DAT); the silver layer carries seven. The
+  # commands below sit alongside the silver ones rather than replacing them so both
+  # datasets stay trainable and comparable from one checkout. configs/fa_ner_sm.cfg needs
+  # no change: the label set is read from the data.
+
+  - name: "export-ner-llm"
+    help: >
+      Assemble the committed LLM annotations (annotation/data/llm/) into IOB2 files with the
+      same sentence order and tokens as corpus/perdt-ner-iob. The script asserts both against
+      the silver corpus, so a partial or shifted annotation set fails here rather than
+      training on misaligned labels. Needs transfer-ner to have run first.
+    script:
+      - "python scripts/annotation/export_iob.py --llm-dir annotation/data/llm/ner-v2.2-default --reference corpus/perdt-ner-iob --out-dir corpus/perdt-ner-iob-llm"
+    deps:
+      - "annotation/data/llm/ner-v2.2-default"
+      - "corpus/perdt-ner-iob/train.txt"
+      - "corpus/perdt-ner-iob/dev.txt"
+      - "corpus/perdt-ner-iob/test.txt"
+      - "scripts/annotation/export_iob.py"
+    outputs:
+      - "corpus/perdt-ner-iob-llm/train.txt"
+      - "corpus/perdt-ner-iob-llm/dev.txt"
+      - "corpus/perdt-ner-iob-llm/test.txt"
+
+  - name: "convert-ner-llm"
+    help: "LLM-relabelled IOB2 -> DocBin (4 labels)"
+    script:
+      - "python -m spacy convert corpus/perdt-ner-iob-llm/train.txt corpus/perdt-ner-llm --converter ner --n-sents ${vars.n_sents} --lang ${vars.lang}"
+      - "python -m spacy convert corpus/perdt-ner-iob-llm/dev.txt corpus/perdt-ner-llm --converter ner --n-sents ${vars.n_sents} --lang ${vars.lang}"
+      - "python -m spacy convert corpus/perdt-ner-iob-llm/test.txt corpus/perdt-ner-llm --converter ner --n-sents ${vars.n_sents} --lang ${vars.lang}"
+    deps:
+      - "corpus/perdt-ner-iob-llm/train.txt"
+      - "corpus/perdt-ner-iob-llm/dev.txt"
+      - "corpus/perdt-ner-iob-llm/test.txt"
+    outputs:
+      - "corpus/perdt-ner-llm/train.spacy"
+      - "corpus/perdt-ner-llm/dev.spacy"
+      - "corpus/perdt-ner-llm/test.spacy"
+
+  - name: "train-ner-llm"
+    help: "Train the NER component on the LLM-relabelled corpus (same config as train-ner)"
+    script:
+      - "python -m spacy train configs/fa_ner_sm.cfg --output training/perdt-ner-llm --paths.train corpus/perdt-ner-llm/train.spacy --paths.dev corpus/perdt-ner-llm/dev.spacy --gpu-id ${vars.gpu}"
+    deps:
+      - "corpus/perdt-ner-llm/train.spacy"
+      - "corpus/perdt-ner-llm/dev.spacy"
+      - "configs/fa_ner_sm.cfg"
+    outputs:
+      - "training/perdt-ner-llm/model-best"
+
+  - name: "evaluate-ent-llm"
+    help: >
+      Fill the 2x2: the silver-trained and the LLM-trained NER, each scored on the silver
+      and the LLM test split. Scored through scripts/eval_ner_restricted.py, which drops
+      out-of-scope entities from both sides first — a raw ents_f across a 7-label and a
+      4-label annotation is not a like-for-like number.
+    script:
+      - "python scripts/eval_ner_restricted.py training/fa_ent_news_sm corpus/perdt-ner/test.spacy --output metrics/ent-sm-on-silver-test.json --gpu-id ${vars.gpu}"
+      - "python scripts/eval_ner_restricted.py training/fa_ent_news_sm corpus/perdt-ner-llm/test.spacy --output metrics/ent-sm-on-llm-test.json --gpu-id ${vars.gpu}"
+      - "python scripts/eval_ner_restricted.py training/perdt-ner-llm/model-best corpus/perdt-ner/test.spacy --output metrics/ent-llm-on-silver-test.json --gpu-id ${vars.gpu}"
+      - "python scripts/eval_ner_restricted.py training/perdt-ner-llm/model-best corpus/perdt-ner-llm/test.spacy --output metrics/ent-llm-on-llm-test.json --gpu-id ${vars.gpu}"
+    deps:
+      - "training/fa_ent_news_sm"
+      - "training/perdt-ner-llm/model-best"
+      - "corpus/perdt-ner/test.spacy"
+      - "corpus/perdt-ner-llm/test.spacy"
+      - "scripts/eval_ner_restricted.py"
+    outputs:
+      - "metrics/ent-sm-on-silver-test.json"
+      - "metrics/ent-sm-on-llm-test.json"
+      - "metrics/ent-llm-on-silver-test.json"
+      - "metrics/ent-llm-on-llm-test.json"
 
   # ---------------------------------------------------------------- lg tier (ner only)
 
