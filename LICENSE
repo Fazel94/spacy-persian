@@ -2,9 +2,11 @@ This repository contains two kinds of material under two different licences.
 
 1. SOURCE CODE (scripts/, configs/, project.yml, docs/) — MIT, below.
 
-2. TRAINED PIPELINES (fa_dep_news_sm, fa_core_news_sm, fa_ent_news_sm, and any
-   artifact under training/ or packages/) — Creative Commons Attribution-ShareAlike
-   4.0 International (CC BY-SA 4.0).
+2. TRAINED PIPELINES AND ANNOTATION DATA (fa_dep_news_sm, fa_core_news_sm,
+   fa_ent_news_sm, any artifact under training/ or packages/; the entity annotations
+   under annotation/data/, corpus/perdt-ner-iob/ and corpus/perdt-ner-iob-llm/; and
+   the published dataset Phazel/fa-perdt-ner built from them) — Creative Commons
+   Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).
 
    These are Adapted Material derived from UD_Persian-PerDT (PerUDT v1.0), which is
    licensed CC BY-SA 4.0, so the ShareAlike condition requires the same licence.
@@ -22,7 +24,9 @@ This repository contains two kinds of material under two different licences.
    Modifications made to the licensed material: CoNLL-U converted to spaCy DocBin
    with multiword tokens merged (`spacy convert --merge-subtokens`); entity spans
    realigned onto that tokenization by difflib, with spans that could not be aligned
-   exactly dropped rather than guessed. See docs/MODELS.md.
+   exactly dropped rather than guessed; the same sentences relabelled with four entity
+   types (PER, LOC, ORG, DAT) by a language model against annotation/GUIDELINES.md,
+   a guideline inferred from the treebank's own entity layer. See docs/MODELS.md.
 
    The licensed material is provided as-is, without warranties of any kind, and the
    licensor disclaims liability for damages arising from its use, to the extent

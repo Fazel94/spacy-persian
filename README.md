@@ -147,6 +147,12 @@ states it was produced by the BERT-based Beheshti-NER tagger with manual correct
 recall, so the `ENTS_F` numbers below partly reflect agreement with that tagger, not with
 human annotation.
 
+Both that realigned layer and a four-label LLM relabelling of the same sentences
+(`annotation/`, guideline v2.2) are published as
+[`Phazel/fa-perdt-ner`](https://huggingface.co/datasets/Phazel/fa-perdt-ner), CC BY-SA 4.0,
+keyed by PerDT `sent_id`; `spacy project run hub-dataset` rebuilds it. The relabelling is
+measured against the silver layer in `docs/MODELS.md` §10 and ships no model yet.
+
 `ner` runs standalone with its own embedded tok2vec (`fa_ent_news_sm`, `fa_ent_news_md`), or
 bundled into `fa_core_news_sm`/`fa_core_news_md` alongside the syntax pipeline. In `trf` it is
 trained jointly against the shared transformer instead, so there is no standalone trf variant.

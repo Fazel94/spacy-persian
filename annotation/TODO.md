@@ -36,19 +36,20 @@ test spans. That adjudication is LLM-judged, so it is an estimate, not a measure
 
 ## Blockers, before anything is published
 
-- [ ] **Licence — decided, not yet applied.** The source is CC BY-SA 4.0 (PerDT /
-      UD_Persian-PerDT, NER layer under `not-to-release/Dadegan with NER tag/`), so
-      share-alike carries: these annotations are Adapted Material and ship as
-      **CC BY-SA 4.0** with attribution to PerDT. Apply it in three places — extend
-      `../LICENSE` clause 2 to name `annotation/data/` and `corpus/perdt-ner-iob-llm/`, put
-      a LICENSE and attribution notice in the standalone dataset repo, and state it in the
-      datasheet. `../docs/MODELS.md` still advises confirming with the PerDT authors before
-      publishing anything derived from the NER layer; that courtesy notice is separate from
-      the licence question and should go out with the release.
-- [ ] **Provenance.** Every output row records `"model": "default"` — an alias, not a
-      resolved model id — with no timestamp, temperature or script revision. Re-runs of the
-      same prompt agree at F 0.95-0.98, so the committed files are the record of origin and
-      cannot be reproduced bit-exact. Add a sidecar manifest per output tree.
+- [x] **Licence — applied.** CC BY-SA 4.0, inherited from PerDT. `../LICENSE` clause 2 now
+      names `annotation/data/`, `corpus/perdt-ner-iob/`, `corpus/perdt-ner-iob-llm/` and the
+      published dataset; the dataset repo carries `LICENSE` (attribution notice + full legal
+      code, source `hub/LICENSE`) and the card states it.
+- [ ] **Courtesy notice to the PerDT authors.** Separate from the licence question:
+      `../docs/MODELS.md` §3 advises confirming their reading of `not-to-release/` before
+      redistributing the NER layer. The dataset is now public; send the note
+      (rasooli@seas.upenn.edu, pegh.safari@gmail.com, per the treebank README) with the
+      dataset URL and the attribution block.
+- [x] **Provenance — as good as it gets for v2.2.** `manifest.json` in the dataset repo
+      records the build commit, the PerDT asset URLs + MD5s, `prompt_hash`, the model
+      *alias*, unannotated ids, and a sha256 per file. The resolved model id for the v2.2 run
+      is not recoverable; the card says so. For v3, write model id, temperature and date
+      into every output row from `annotate.js`.
 - [ ] **No human gold — the sample is drawn and waiting.** `human/gold-200.iob` is a blind
       worksheet over 200 test sentences (3,667 tokens), stratified 30 both-empty / 50
       agreeing / 120 disagreeing, with `human/README.md` for the protocol and
@@ -185,22 +186,26 @@ moves these numbers.
 
 ## Publish the dataset as its own repo
 
-Licence is settled: **CC BY-SA 4.0**, inherited from PerDT (see the licence blocker above).
-The models repo keeps its own licence; the dataset stands alone.
+Published 2026-09-22: <https://huggingface.co/datasets/Phazel/fa-perdt-ner>, two configs
+(`silver`, 7 labels, default; `llm`, 4 labels), keyed by PerDT `sent_id`. Built by
+`spacy project run hub-dataset` (`../scripts/annotation/build_hub_dataset.py`) from the
+card template in `hub/README.md`; every number on the card is computed from the shipped
+files, and the build asserts both corpora against the CoNLL-U sentence order. Upload
+recipe is in the command's help text. Verified after upload: both configs `load_dataset`
+from the Hub with the declared splits.
 
-- [ ] **Decide the home.** HF Hub `datasets/Phazel/<name>` is the natural one — the account
-      already hosts the model wheels, and `spacy-huggingface-hub` notes in `.omp/AGENTS.md`
-      apply (strip the proxy for uploads; token in `rbw get "api/huggingface_token"`).
-      Mirror to Gitea for provenance.
-- [ ] **Decide what ships.** Recommended: the three IOB files, the JSONL with spans and
-      `prompt_hash`, `GUIDELINES.md`, `prompts/ner-v2.2.md`, the five pipeline scripts, and
-      the agreement JSONs. The response cache stays out; it is 1,600 opaque blobs.
-- [ ] **Write a datasheet** — provenance (PerDT sentences, `--merge-subtokens`
-      tokenization), label set and why MON/TIM/PCT were dropped, how the guideline was
-      derived, the model and prompt that produced the labels, measured agreement with the
-      silver layer, and the honest limitation that no human gold exists.
-- [ ] **Name the four-label set explicitly** in the README. Consumers will otherwise assume
-      PerDT's seven and silently get zero recall on MON/TIM/PCT.
+- [x] Home: `datasets/Phazel/fa-perdt-ner`. Not mirrored to Gitea: the source of every
+      file is in this repo and `manifest.json` names the commit.
+- [x] What ships: IOB2 + JSONL (spans, `prompt_hash`, `error`) per split for both configs,
+      `dropped-entities.jsonl`, `agreement.json`, `GUIDELINES.md`, the v2.2 prompt, the
+      eight pipeline scripts, LICENSE, manifest. Response cache stays out.
+- [x] Datasheet: provenance, tokenization, label sets and why MON/TIM/PCT were dropped,
+      guideline derivation, model/prompt provenance and its gap, agreement table, the 2x2,
+      no-human-gold limitation, citations for PerDT (LREC 2022 + NAACL 2013) and
+      Beheshti-NER.
+- [x] Four-label set named in the first table and in a bold warning before any comparison.
+- [ ] When v3 lands: bump `--llm-dir`/`--guideline-version`, rebuild, re-upload; the card
+      will re-render with the new counts and `prompt_hash`.
 
 ## Evaluate the existing models on the new labels
 

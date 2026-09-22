@@ -434,6 +434,31 @@ commands:
       - "metrics/ent-llm-on-silver-test.json"
       - "metrics/ent-llm-on-llm-test.json"
 
+  - name: "hub-dataset"
+    help: >
+      Assemble the Phazel/fa-perdt-ner dataset repo (silver + llm configs, card, licence,
+      manifest, annotation kit) under packages_hf/. Both corpora are checked against the
+      CoNLL-U sentence order and every number on the card is computed from the files.
+      Upload with: HF_TOKEN=... python -c "from huggingface_hub import HfApi;
+      HfApi().upload_folder(folder_path='packages_hf/fa-perdt-ner',
+      repo_id='Phazel/fa-perdt-ner', repo_type='dataset')" from .venv-publish, proxy
+      stripped (see .omp/AGENTS.md).
+    script:
+      - "python scripts/annotation/build_hub_dataset.py --out packages_hf/fa-perdt-ner"
+    deps:
+      - "assets/ud/${vars.treebank}-ud-train.conllu"
+      - "assets/ud/${vars.treebank}-ud-dev.conllu"
+      - "assets/ud/${vars.treebank}-ud-test.conllu"
+      - "corpus/perdt-ner-iob"
+      - "corpus/perdt-ner-iob-llm"
+      - "annotation/data/llm/ner-v2.2-default"
+      - "annotation/GUIDELINES.md"
+      - "annotation/prompts/ner-v2.2.md"
+      - "annotation/hub"
+      - "scripts/annotation/build_hub_dataset.py"
+    outputs:
+      - "packages_hf/fa-perdt-ner/manifest.json"
+
   # ---------------------------------------------------------------- lg tier (ner only)
 
   - name: "vectors-lg"
