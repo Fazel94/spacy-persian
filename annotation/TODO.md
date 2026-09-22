@@ -179,9 +179,9 @@ moves these numbers.
       workflow, with `annotation/data/llm/ner-v2.2-default/` (a directory dep — spaCy hashes
       it, it does not glob), the three silver IOB files and the script as deps. Verified: its
       output is byte-identical to the hand-run export.
-- [ ] **Push to Gitea** once the above runs clean:
-      `NO_PROXY="*" no_proxy="*" http_proxy="" https_proxy="" git push gitea main`
-      (credential helper and `pass`/`rbw` fallback documented in `.omp/AGENTS.md`).
+- [x] **Push to Gitea.** Done at `eaa04fe`, GitHub too. `pass` failed that day with
+      `decryption failed: No secret key` even though commit signing worked, so the push used
+      the `rbw` fallback from `.omp/AGENTS.md` via a one-off `git -c credential...helper`.
 
 ## Publish the dataset as its own repo
 
