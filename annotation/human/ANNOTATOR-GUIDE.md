@@ -69,7 +69,8 @@ they merge into one. This matters for coordination:
   line, never reorder blocks, never delete the `# test:NNN` header lines or the blank lines
   between blocks.
 - Use a real TAB between columns. If your editor converts tabs to spaces, turn that off
-  before you start. In VS Code this is `"editor.insertSpaces": false` for the file type.
+  before you start. It is usually called "insert spaces" or "expand tabs" in the editor's
+  settings, and searching the settings for the word "tab" finds it.
 - Save as UTF-8 without a byte-order mark, which is the default nearly everywhere.
 - Turn off any autocorrect, spell-fix or bidirectional-text "helper" your editor offers.
   These silently rewrite Persian text and corrupt the token column.
@@ -82,25 +83,28 @@ Only these nine strings are valid: `O`, `B-PER`, `I-PER`, `B-LOC`, `I-LOC`, `B-O
 `I-ORG`, `B-DAT`, `I-DAT`. Anything else fails the checker. Watch for lowercase (`b-per`),
 a missing hyphen (`BPER`), and a trailing space after the tag.
 
-### Mistakes the checker catches, and ones it cannot
+### Checking the file
 
-Run this whenever you like, as often as you like. It prints no scores, so it cannot
-influence your judgement:
+You do not need to check anything yourself, and no programming is involved anywhere in this
+task. Your file is checked automatically when you send it back, and anything broken is
+reported to you so it can be fixed.
+
+If you do work at a terminal and want the check yourself, it prints no scores at all, so it
+cannot influence your judgement:
 
 ```bash
 python scripts/annotation/score_gold.py --gold annotation/human/gold-200.iob --check
 ```
 
-It catches unparseable tags, missing sentences, and spans running off the end. It cannot
-catch an `I-` tag that should have been `B-`, because both parse. Check coordinations by
-eye.
+Either way, one class of mistake escapes the checker: an `I-` tag that should have been
+`B-`, because both are perfectly valid. Check coordinations by eye.
 
 ### The four-column review sheet
 
 If you were given `gold-200.review.tsv` instead, the columns are token, the existing corpus
 label, the machine label, and your verdict — with a `*` in a fifth column on every token
 where the two disagree. Edit the fourth column only; leave the `*` markers alone. Score it
-by adding `--column 4` to the command above.
+by adding `--column 4` to the command above, if the check is being run at all.
 
 ## Part two — the labels in detail
 
