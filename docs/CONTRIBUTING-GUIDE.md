@@ -215,7 +215,7 @@ Contents of <https://github.com/explosion/spaCy/tree/master/spacy/lang/fa>:
 | `__init__.py` | 1.3 KB | `PersianDefaults`: tokenizer exceptions, `TOKENIZER_SUFFIXES`, `LEX_ATTRS`, `SYNTAX_ITERATORS`, `STOP_WORDS`, `writing_system = {"direction": "rtl", "has_case": False, "has_letters": True}`; registers a `lemmatizer` factory defaulting to `mode="rule"` |
 | `tokenizer_exceptions.py` | 64.9 KB | Generated compound-verb and enclitic exception table |
 | `generate_verbs_exc.py` | 14.8 KB | Dev script that generates the above |
-| `stop_words.py` | 3.8 KB | ~500 stop words; the comment says "Stop words from HAZM package" |
+| `stop_words.py` | 3.8 KB | 389 stop words; the comment says "Stop words from HAZM package" |
 | `lex_attrs.py` | 1.4 KB | `LIKE_NUM` only (Persian numerals plus `ام` and `ین` suffixes) |
 | `punctuation.py` | 508 B | `TOKENIZER_SUFFIXES` only, no prefixes and no infixes |
 | `syntax_iterators.py` | 1.6 KB | `noun_chunks()`, which needs a trained parser |

@@ -21,7 +21,7 @@ requirement. That ordering sets the roadmap below.
 
 Source: <https://spacy.io/models/en>.
 
-That last point does **not** transfer to Persian. The `sm` -> `md` step measured on this
+That last point does not transfer to Persian. The `sm` -> `md` step measured on this
 project buys +1.19 LAS and +2.85 NER F (§6), where English gets ~0.00 LAS. Two reasons: PerDT
 is roughly a tenth the size of OntoNotes, so hash embeddings have far less signal to learn a
 lexicon from, and floret's subword hashing gives 0% OOV on a language whose ZWNJ variation
@@ -47,7 +47,7 @@ pipelines such as `de_core_news_sm` as `news`.
 | `fa_dep_news_lg` | same as `fa_dep_news_sm` | floret, 200k rows / 300d, full-wiki 5 epochs | built, shipping |
 | `fa_core_news_lg` | same as `fa_core_news_sm` | floret, 200k rows / 300d, full-wiki 5 epochs | built, shipping |
 | `fa_ent_news_lg` | ner (own internal tok2vec) | floret, 200k rows / 300d, full-wiki 5 epochs | built, optional |
-| `fa_core_news_trf` | transformer instead of tok2vec | `HooshvareLab/bert-base-parsbert-uncased`, fine-tuned | built on a rented Colab T4 (not on this hardware: 2 GB VRAM cannot fine-tune a 125M-param encoder), shipping with a redistribution caveat because that encoder's card states no licence; §3.4 and §8 |
+| `fa_core_news_trf` | transformer instead of tok2vec | `HooshvareLab/bert-base-parsbert-uncased`, fine-tuned | built on a rented Colab T4 (not on this hardware: 2 GB VRAM cannot fine-tune a 162M-param encoder), shipping with a redistribution caveat because that encoder's card states no licence; §3.4 and §8 |
 
 ### Why `core` is honest here
 
@@ -225,7 +225,7 @@ stop-word list already vendored into `spacy/lang/fa`.
 
 Not md or lg: they need floret vectors trained from scratch on Wikipedia and OSCAR, costing
 CPU-days, and the English reference numbers show no tag or dep accuracy gain. Not trf: 2 GB of
-VRAM cannot fine-tune a 125M-param encoder, and renting a GPU should wait until the CPU
+VRAM cannot fine-tune a 162M-param encoder, and renting a GPU should wait until the CPU
 pipeline proves the data plumbing. `sm` is also the tier the others are validated against,
 since md, lg and trf reuse the same corpus conversion, config skeleton and evaluation harness.
 
@@ -565,16 +565,16 @@ labels differ. Micro F over `PER`/`LOC`/`ORG`/`DAT`:
 | **LLM** (`training/perdt-ner-llm`) | 67.59 | **79.94** |
 
 The diagonal is what each model is entitled to claim. The LLM-trained model reaches 79.94 on
-its own conventions against the silver-trained model's 71.98 on its own — **+7.96 F for the
-same architecture on the same sentences**. That is the hypothesis in `annotation/TODO.md`
+its own conventions against the silver-trained model's 71.98 on its own: +7.96 F for the
+same architecture on the same sentences. That is the hypothesis in `annotation/TODO.md`
 confirmed: the relabelled data is more internally consistent, so an identical model fits it
 better. It is evidence about consistency, not about correctness; a perfectly self-consistent
 but wrong convention would score the same way.
 
 The off-diagonal is the cost of the convention change, and it is near-symmetric: 67.27 and
 67.59, a 0.32 F spread. Each annotation looks about equally foreign from the other's side,
-which is what two genuinely different conventions over identical text should look like — and
-not what a straightforwardly better or worse annotation would look like.
+which is what two genuinely different conventions over identical text should look like, not
+what a straightforwardly better or worse annotation would look like.
 
 ### Per label
 
@@ -591,7 +591,7 @@ Each model on its own test split, so each column is that model's best case:
 `PER` gains most (+10.21), consistent with the guideline's bare-`امام`/`حضرت` rules being the
 ones the silver layer is most erratic about. `LOC` is strong in both.
 
-**`ORG` recall did not improve, and that is the finding worth acting on.** `ORG` F rises
+`ORG` recall did not improve, and that is the finding worth acting on. `ORG` F rises
 +5.09, but the whole gain is precision (69.50 to 82.41); recall moves the wrong way, 68.06 to
 66.92. The model now tags `ORG` more correctly when it tags at all and misses slightly more.
 `annotation/TODO.md` predicted exactly this and named the cause: the head-noun-plus-specifier
@@ -605,10 +605,11 @@ not more training.
 silver leaves as `O`, which is also where the unresolved `DAT`-versus-`TIM` boundary in the v3
 agenda sits.
 
-### Nothing ships from this yet
+### No model ships from this yet
 
-`ner-llm` has no packaging step by design. A model trained on LLM labels and evaluated
-against LLM labels can look excellent while being worse in the field — which is precisely
-what the flattering diagonal above cannot rule out. The 200 human-annotated sentences are the
-only instrument that can, and they remain the blocker on publishing any wheel from this
-corpus.
+`ner-llm` has no packaging step by design. The labels themselves are published next to the
+silver layer in the [`Phazel/fa-perdt-ner`](https://huggingface.co/datasets/Phazel/fa-perdt-ner)
+dataset; no model trained on them is. A model trained on LLM labels and evaluated against LLM
+labels can look excellent while being worse in the field, which is what the flattering
+diagonal above cannot rule out. The 200 human-annotated sentences are the only instrument that
+can, and they remain the blocker on publishing any wheel from this corpus.

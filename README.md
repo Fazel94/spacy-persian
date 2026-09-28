@@ -16,9 +16,9 @@ pip install https://huggingface.co/Phazel/fa_core_news_sm/resolve/main/fa_core_n
 >>> doc.ents
 (محمدرضا شجریان, مشهد)
 
->>> doc = nlp("شرکت ایران خودرو تولید را ۲۰ درصد افزایش می‌دهد.")
+>>> doc = nlp("وزارت نفت روز شنبه قیمت بنزین را ۱۰ درصد افزایش داد.")
 >>> [(e.text, e.label_) for e in doc.ents]
-[('ایران خودرو', 'ORG'), ('۲۰ درصد', 'PCT')]
+[('وزارت نفت', 'ORG'), ('روز شنبه', 'DAT'), ('۱۰ درصد', 'PCT')]
 ```
 
 ## Results
@@ -28,10 +28,10 @@ Compared against Hazm (<https://github.com/roshan-research/hazm>) and `en_core_w
 
 | Metric | **`spacy-persian`**<br>`fa_core_news_trf` | **Hazm**<br>(Persian toolkit) | `en_core_web_sm`<br>(English reference) |
 |--------|:---:|:---:|:---:|
-| POS accuracy | **97.63%** UPOS | 98.8% own tagset¹ | 97.29% PTB XPOS² |
-| Lemma accuracy | **97.31%** | 89.9%¹ | not reported² |
-| Dependency UAS / LAS | **93.87% / 90.79%** | 92.30% / 89.15%¹ | 91.77% / 89.92%² |
-| NER F-score | **82.89%** | not reported¹ | 84.33%² |
+| POS accuracy | 97.63% UPOS | 98.8% own tagset¹ | 97.29% PTB XPOS² |
+| Lemma accuracy | 97.31% | 89.9%¹ | not reported² |
+| Dependency UAS / LAS | 93.87% / 90.79% | 92.30% / 89.15%¹ | 91.77% / 89.92%² |
+| NER F-score | 82.89% | not reported¹ | 84.33%² |
 
 > **¹** Hazm's own README, <https://github.com/roshan-research/hazm#evaluation>: `POSTagger`
 > 98.8% on Hazm's EZ-augmented tagset, which is not UPOS; `Lemmatizer` 89.9%;
@@ -42,8 +42,7 @@ Compared against Hazm (<https://github.com/roshan-research/hazm>) and `en_core_w
 > `tag_acc` 0.9729, `dep_uas` 0.9177, `dep_las` 0.8992, `ents_f` 0.8433. That pipeline
 > reports no `pos_acc` and no `lemma_acc`, because OntoNotes has no UPOS or lemma layer.
 >
-> **Note on comparability:** these benchmarks come from different evaluation sets, treebanks,
-> and test splits.
+> The three columns were scored on different test data.
 
 ### Packages
 
@@ -60,7 +59,8 @@ Compared against Hazm (<https://github.com/roshan-research/hazm>) and `en_core_w
 | [`fa_ent_news_lg`](https://huggingface.co/Phazel/fa_ent_news_lg) | `ner` alone (own embedded tok2vec), plus full-wiki floret vectors | CC BY-SA 4.0 | ENTS_F 75.94 | 227.3 MB |
 | [`fa_core_news_trf`](https://huggingface.co/Phazel/fa_core_news_trf) | transformer, tagger, morphologizer, trainable_lemmatizer, parser, ner | encoder states no licence, §8 | ENTS_F 82.89, LAS 90.79 | 608.2 MB |
 
-These scores are from `spacy benchmark accuracy`, stored in `metrics/`.
+These scores are from `spacy benchmark accuracy` and ship in each package's `meta.json` under
+`performance`.
 
 Raw `fa.floret` and `fa.vec` exports of the `lg` tier's 200k-row table are in
 [`fa-floret-wiki-vectors`](https://huggingface.co/Phazel/fa-floret-wiki-vectors).
@@ -100,9 +100,9 @@ encoder states no licence, so the published wheel carries a redistribution warni
 Entity scores are `fa_core_news_*` on the PerDT NER test split; per-label breakdown and
 caveats are in [Named entity recognition](#named-entity-recognition).
 
-Trained on a 4-core i5-7200U with no GPU: `sm` took 1h27m for syntax plus 17 min for NER,
-`md` 1h54m plus 25 min (the two `md` runs overlapped, so wall clock overstates each), `lg`
-about 2h08m plus 13 min. `trf` took 1h58m on a rented Colab T4.
+`sm`, `md` and `lg` were trained on a 4-core i5-7200U, CPU only: `sm` took 1h27m for syntax
+plus 17 min for NER, `md` 1h54m plus 25 min (the two `md` runs overlapped, so wall clock
+overstates each), `lg` about 2h08m plus 13 min. `trf` took 1h58m on a rented Colab T4.
 
 ### Vector packages
 
@@ -122,7 +122,7 @@ pip install https://huggingface.co/Phazel/fa-floret-wiki-vectors/resolve/main/fa
 
 Median of repeated `nlp.pipe` passes over the 146-document PerDT test split (23,825 tokens),
 timing the pipe only, warmup discarded. Reproduce with
-`python scripts/benchmark_throughput.py <model> --gpu-id <n>`; raw records are in
+`python scripts/benchmark_throughput.py <model> --gpu-id <n>`, which writes the raw records to
 `metrics/throughput-*.json`.
 
 | Tier | CPU, i5-7200U | GPU, GeForce 940MX | CPU, Xeon @ 2.00GHz | GPU, Tesla T4 |
@@ -153,9 +153,10 @@ Both that realigned layer and a four-label LLM relabelling of the same sentences
 keyed by PerDT `sent_id`; `spacy project run hub-dataset` rebuilds it. The relabelling is
 measured against the silver layer in `docs/MODELS.md` §10 and ships no model yet.
 
-`ner` runs standalone with its own embedded tok2vec (`fa_ent_news_sm`, `fa_ent_news_md`), or
-bundled into `fa_core_news_sm`/`fa_core_news_md` alongside the syntax pipeline. In `trf` it is
-trained jointly against the shared transformer instead, so there is no standalone trf variant.
+`ner` runs standalone with its own embedded tok2vec (`fa_ent_news_sm`, `fa_ent_news_md`,
+`fa_ent_news_lg`), or bundled into `fa_core_news_sm`, `fa_core_news_md` and `fa_core_news_lg`
+alongside the syntax pipeline. In `trf` it is trained jointly against the shared transformer
+instead, so there is no standalone trf variant.
 
 | Label | `sm` F | `md` F | `lg` F | `trf` F | Train examples |
 | --- | --- | --- | --- | --- | --- |
@@ -209,7 +210,8 @@ pip install https://huggingface.co/Phazel/fa_core_news_trf/resolve/main/fa_core_
 
 ## Build
 
-Everything is reproducible from checksummed assets. Python 3.12:
+The corpora download as checksummed assets; the `md` and `lg` tiers also need a floret wheel,
+described below. Python 3.12:
 
 ```bash
 python -m venv .venv

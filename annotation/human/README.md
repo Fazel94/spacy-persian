@@ -1,4 +1,4 @@
-# Human gold sample — 200 sentences
+# Human gold sample: 200 sentences
 
 This is the only thing that can settle whether the LLM annotations are actually better than
 PerDT's silver layer. Every figure quoted so far (LLM ~0.94 precision, silver ~0.84, a 16%
@@ -16,7 +16,7 @@ view: which file is which, and what each one measures.
 | file | what it is |
 |---|---|
 | `gold-200.iob` | **the blind worksheet.** Two columns, `token<TAB>tag`, every tag pre-filled `O`, a `# <id>` header before each sentence, blank line between sentences. Edit column 2. |
-| `gold-200.review.tsv` | **the review sheet.** Four columns: `token`, silver tag, LLM tag, verdict — the verdict column seeded with the LLM tag. Every token where the two annotators differ is marked `*` at the end of the line. 208 such tokens across the 200 sentences. Edit column 4. |
+| `gold-200.review.tsv` | **the review sheet.** Four columns: `token`, silver tag, LLM tag, and a verdict column seeded with the LLM tag. Every token where the two annotators differ is marked `*` at the end of the line. 208 such tokens across the 200 sentences. Edit column 4. |
 | `gold-200.silver.iob` | the same sentences pre-filled with the silver layer alone, 251 spans. For reading or correcting PerDT's labels directly. |
 | `gold-200.llm.iob` | the same sentences pre-filled with the LLM annotation alone, 243 spans. |
 | `gold-200.jsonl` | the sentences as JSON, ids and tokens only. For tooling, not for annotating. |
@@ -26,13 +26,12 @@ Regenerate all of them with `python scripts/annotation/sample_gold.py` (seeded, 
 re-runs). Score with `python scripts/annotation/score_gold.py`, adding `--column 4` for a
 corrected review sheet.
 
-## Blind pass or review pass — they do not measure the same thing
+## Blind pass or review pass: they do not measure the same thing
 
 **Reviewing is faster and worth less.** Correcting a pre-filled sheet anchors you: you will
 accept labels you would never have produced yourself, and you will find fewer of the
-annotator's errors than exist. The effect is strongest exactly where it hurts — the spans
-both annotators already agree on, which the review sheet shows as unmarked and invites you
-to skim.
+annotator's errors than exist. The effect is strongest on the spans both annotators already
+agree on, which the review sheet shows as unmarked and invites you to skim.
 
 So:
 
@@ -44,14 +43,14 @@ So:
   as "reviewed", never as gold.
 
 If you only have time for one, do the review pass and say so in the write-up. If you have
-time for both, do the blind pass first — once you have seen the pre-filled labels you cannot
+time for both, do the blind pass first: once you have seen the pre-filled labels you cannot
 unsee them, and that sentence is no longer usable as blind gold.
 
 ## How to annotate
 
 1. Read `../GUIDELINES.md` first, all of it. It is the definition of correct here; where
    your intuition and the guideline disagree, the guideline wins, and if that feels wrong
-   often enough, say so — that is a finding about the guideline, not a mistake by you.
+   often enough, say so; that is a finding about the guideline, not a mistake by you.
 2. Work through `gold-200.iob` top to bottom, changing `O` to `B-<LABEL>` on the first token
    of an entity and `I-<LABEL>` on each following token. Labels are `PER`, `LOC`, `ORG`,
    `DAT` and nothing else.
@@ -86,8 +85,8 @@ python scripts/annotation/score_gold.py --judge /path/to/adjudicated.json   # gr
 ```
 
 The scorer prints each annotator twice, and **only the reweighted block means anything**.
-The sample is deliberately unbalanced — 120 of the 229 disagreeing sentences but only 30 of
-the 916 where both annotators found nothing — so raw sample counts describe the sample, not
+The sample is deliberately unbalanced (120 of the 229 disagreeing sentences, but only 30 of
+the 916 where both annotators found nothing), so raw sample counts describe the sample, not
 the corpus. Each sentence carries weight `stratum_size / stratum_sampled`.
 
 | stratum | in the test split | sampled | weight |
@@ -99,14 +98,14 @@ the corpus. Each sentence carries weight `stratum_size / stratum_sampled`.
 The reweighting is verified, not assumed. Feeding the scorer a worksheet fabricated to equal
 the LLM output returns exactly 1.000 for the LLM, and for silver it returns a reweighted
 micro F of **0.769** against the true silver-vs-LLM figure of **0.754** on the full 1,455
-sentence split — 1.5 points, while the raw sample counts say 0.615, off by fourteen. Per
+sentence split, off by 1.5 points; the raw sample counts say 0.615, off by fourteen. Per
 label the estimator lands at PER .779/.734, LOC .835/.827, ORG .670/.679, DAT .701/.706
 (estimated/true).
 
 ## What the answer decides
 
-- **Which annotator is better, and by how much**, with real recall for both — the claim the
-  whole dataset rests on.
+- **Which annotator is better, and by how much**, with real recall for both. The whole
+  dataset rests on this claim.
 - **Whether the LLM judge can be trusted.** `--judge` grades its verdicts against the human.
   If judge accuracy is poor, every adjudicated number in `../TODO.md` and the commit history
   has to be restated.

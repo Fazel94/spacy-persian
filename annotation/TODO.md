@@ -1,4 +1,4 @@
-# Open work on the NER annotation kit — v3 agenda
+# Open work on the NER annotation kit: v3 agenda
 
 Written 2026-09-20. Current state: guideline **v2.2**, prompt `prompts/ner-v2.2.md`
 (`prompt_hash 3c5f435761a2`), outputs in `data/llm/ner-v2.2-default/`.
@@ -11,13 +11,12 @@ rules are falsifiable against the corpus rather than argued. The pipeline is fiv
 `../scripts/annotation/`: select → build_requests → annotate.js → validate_responses →
 compare_to_silver. `work/` holds raw responses and the response cache and is gitignored.
 
-Coverage so far: **22,300 of 26,196 train sentences** (shards 000-010 complete, shard-011
-first 300) and all **1,455 test sentences**; `pool-500` and `select-100` are test subsets
-kept from guideline development.
+Coverage: all **26,196 train**, **1,456 dev** and **1,455 test** sentences; `pool-500` and
+`select-100` are test subsets kept from guideline development.
 
-Measured against silver: micro F **0.742** on train 000-010, **0.754** on test-all.
+Measured against silver: micro F **0.742** on train, **0.748** on dev, **0.754** on test-all.
 Adjudicating every test-split disagreement span by span put the annotations at **0.934-0.946
-precision** against silver's **0.839** — silver is wrong or mis-bounded on 126 of its 783
+precision** against silver's **0.839**; silver is wrong or mis-bounded on 126 of its 783
 test spans. That adjudication is LLM-judged, so it is an estimate, not a measurement.
 
 ### Three process rules learned the hard way
@@ -28,7 +27,7 @@ test spans. That adjudication is LLM-judged, so it is an estimate, not a measure
    of the 19 real errors on the full test split. v2.1 claimed `دنیا` behaves like `جهان`;
    silver says the opposite (`دنیا` `O` 240:20, `جهان` `LOC` 202:87). Both were caught only
    by measuring after shipping.
-2. **A guideline edit invalidates every cache entry**, by design — `prompt_hash` is hashed
+2. **A guideline edit invalidates every cache entry**, by design: `prompt_hash` is hashed
    into every `cache_key`. Batch v3 changes into one edit; do not trickle them.
 3. **Rate limits are about concurrency, not volume.** A 24-way run got the account limited
    for ~3 h. Batch 50 at concurrency 2 runs clean and sends the 11 KB guideline once per 50
@@ -36,25 +35,25 @@ test spans. That adjudication is LLM-judged, so it is an estimate, not a measure
 
 ## Blockers, before anything is published
 
-- [x] **Licence — applied.** CC BY-SA 4.0, inherited from PerDT. `../LICENSE` clause 2 now
+- [x] **Licence: applied.** CC BY-SA 4.0, inherited from PerDT. `../LICENSE` clause 2 now
       names `annotation/data/`, `corpus/perdt-ner-iob/`, `corpus/perdt-ner-iob-llm/` and the
       published dataset; the dataset repo carries `LICENSE` (attribution notice + full legal
       code, source `hub/LICENSE`) and the card states it.
-- [x] **Courtesy notice to the PerDT authors — sent 2026-09-22** to the contacts in the
+- [x] **Courtesy notice to the PerDT authors: sent 2026-09-22** to the contacts in the
       treebank README (rasooli@seas.upenn.edu, pegh.safari@gmail.com), stating the licence
       reading and the `not-to-release/` interpretation, with an offer to pull `silver` on
       request. No reply yet; record it here when it comes.
-- [x] **Provenance — as good as it gets for v2.2.** `manifest.json` in the dataset repo
+- [x] **Provenance: as good as it gets for v2.2.** `manifest.json` in the dataset repo
       records the build commit, the PerDT asset URLs + MD5s, `prompt_hash`, the model
       *alias*, unannotated ids, and a sha256 per file. The resolved model id for the v2.2 run
       is not recoverable; the card says so. For v3, write model id, temperature and date
       into every output row from `annotate.js`.
-- [ ] **No human gold — the sample is drawn and waiting.** `human/gold-200.iob` is a blind
+- [ ] **No human gold; the sample is drawn and waiting.** `human/gold-200.iob` is a blind
       worksheet over 200 test sentences (3,667 tokens), stratified 30 both-empty / 50
       agreeing / 120 disagreeing, with `human/README.md` for the protocol and
       `../scripts/annotation/score_gold.py` to score it. Filling it in measures real recall
       for both annotators, grades the LLM judge every precision estimate here depends on,
-      and — with a second annotator — yields the missing IAA number. 2-4 hours of work.
+      and, with a second annotator, yields the missing IAA number. 2-4 hours of work.
 
 ## v3 guideline changes
 
@@ -76,7 +75,7 @@ Batch all of these into one edit, then re-run everything.
       merges it. The rule is right, but the guideline should say explicitly that a shared
       head noun (`تیم‌های`) is not part of either span.
 
-## Known compliance failures — no rule change needed
+## Known compliance failures (no rule change needed)
 
 The rule exists and is simply not followed often enough. If v3's prompt work does not move
 these, the fix is a second recall-oriented pass, not more prompt text.
@@ -91,7 +90,7 @@ these, the fix is a second recall-oriented pass, not more prompt text.
 ## Pipeline work
 
 - [ ] **Clitic-attached names are dropped silently.** `فاطمه` against the token `فاطمه‌ام`,
-      `زینبم` — `validate_responses.py` records these as `no-align` and discards them. A
+      `زینبم`: `validate_responses.py` records these as `no-align` and discards them. A
       `partial-token` reason plus prefix matching would recover them. Currently ~0.5 % of
       entities.
 - [ ] **One sentence is unannotated.** `train:16860` (H5N1 virus strains) trips a content
@@ -124,7 +123,7 @@ the LAN by default so a local annotator just opens a link.
       token index by cumulative token length plus one per space. Any other rendering breaks
       the round trip.
 - [ ] **Settle right-to-left display in the pilot, before converting all 200.** Potato
-      allows raw HTML in the text field, so `<div dir="rtl">…</div>` is the obvious fix —
+      allows raw HTML in the text field, so `<div dir="rtl">…</div>` is the obvious fix,
       but if the exported span offsets are then measured against the string *including* the
       markup, every offset shifts and the mapping above is wrong. Check what the export
       actually contains. If offsets do shift, style the container through a custom layout or
@@ -139,7 +138,7 @@ the LAN by default so a local annotator just opens a link.
 - [ ] **Use two projects, not one.** A blind project over `gold-200.jsonl` with no
       suggestions produces the measurement of record; a separate review project may
       pre-load the existing labels. Potato has LLM label suggestions and an adjudication
-      workflow, which fit the review pass exactly — and would quietly destroy the blind one.
+      workflow, which fit the review pass exactly but would quietly destroy the blind one.
 - [ ] **Take the agreement metrics from Potato rather than reimplementing them.** It
       computes Krippendorff's alpha and tracks per-annotator accuracy against gold
       standards, which is strictly more than `score_gold.py --second` does. Keep
@@ -156,7 +155,7 @@ right-to-left in the browser, and the exported worksheet passes `--check`.
 ## Remaining annotation
 
 All three splits are relabelled under v2.2: **26,196 train** (13,644 entities, 1
-unannotated — `train:16860`, content refusal), **1,456 dev** (731), **1,455 test** (769).
+unannotated: `train:16860`, content refusal), **1,456 dev** (731), **1,455 test** (769).
 Micro F against silver: train 0.742, dev 0.748, test 0.754. Exported to
 `corpus/perdt-ner-iob-llm/{train,dev,test}.txt` by `../scripts/annotation/export_iob.py`.
 
@@ -165,18 +164,18 @@ Micro F against silver: train 0.742, dev 0.748, test 0.754. Exported to
 
 ## Ship it upstream
 
-Do this only once the annotation is final — every guideline change re-runs the corpus and
+Do this only once the annotation is final: every guideline change re-runs the corpus and
 moves these numbers.
 
 - [x] **Wire the new corpus into `project.yml`.** Done: `convert-ner-llm`, `train-ner-llm`
       and `evaluate-ent-llm` were added alongside the existing commands, plus an `ner-llm`
-      workflow. `configs/fa_ner_sm.cfg` needed no change, as predicted — the label set is
+      workflow. `configs/fa_ner_sm.cfg` needed no change, as predicted: the label set is
       read from the data and the trained model carries exactly `DAT, LOC, ORG, PER`.
       `evaluate-ent-llm` fills the whole 2x2 through the new
       `../scripts/eval_ner_restricted.py`, which drops out-of-scope entities from both the
       prediction and the reference so the four-label micro average is like-for-like.
 - [x] **Add `export_iob.py` as a project command.** Done: `export-ner-llm` heads the `ner-llm`
-      workflow, with `annotation/data/llm/ner-v2.2-default/` (a directory dep — spaCy hashes
+      workflow, with `annotation/data/llm/ner-v2.2-default/` (a directory dep; spaCy hashes
       it, it does not glob), the three silver IOB files and the script as deps. Verified: its
       output is byte-identical to the hand-run export.
 - [x] **Push to Gitea.** Done at `eaa04fe`, GitHub too. `pass` failed that day with
@@ -209,7 +208,7 @@ from the Hub with the declared splits.
 ## Evaluate the existing models on the new labels
 
 **Read this before comparing anything.** The published NER models are trained on **7
-labels**; this dataset has **4**. A raw `ents_f` comparison is meaningless — the old model
+labels**; this dataset has **4**. A raw `ents_f` comparison is meaningless: the old model
 is scored on entities the new data deliberately does not contain. Compare per-type F on the
 four shared labels only, and report `ents_f` restricted to those types, never the headline
 number. Second caveat: neither test set is human gold, so every figure below is agreement
@@ -231,13 +230,13 @@ Baselines on the **silver** test split, from `../metrics/`:
       (65.29 to 57.25). md/lg/trf are not scored yet; the sm cell is what the retraining
       comparison needs.
 - [x] **Fill the 2x2.** In `../docs/MODELS.md` §10. Diagonal 71.98 (silver model, silver
-      test) vs 79.94 (LLM model, LLM test); off-diagonal 67.27 and 67.59 — near-symmetric,
+      test) vs 79.94 (LLM model, LLM test); off-diagonal 67.27 and 67.59, near-symmetric at
       0.32 F apart, i.e. each annotation looks about equally foreign from the other side.
 
 ## Retrain sm on the new data and compare
 
 - [x] **Train.** Ran as given, CPU. Early stop at step 6,000 of 20,000 (best at 4,400, dev
-      ENTS_F 77.43), 19m18s wall — slower than the ~12 min in the timing note, same order.
+      ENTS_F 77.43), 19m18s wall: slower than the ~12 min in the timing note, same order.
       Output in `../training/perdt-ner-llm/model-best`.
 - [ ] **Evaluate on both test splits** and finalize with
       `scripts/finalize_pipeline.py --variant ent --ner-metrics …` as `evaluate-ent` does,
@@ -248,7 +247,7 @@ Baselines on the **silver** test split, from `../metrics/`:
       holds**: 79.94 on the LLM test split against the old model's 71.98 on the silver one,
       +7.96 F for the same architecture on the same sentences. Per-label deltas, each model
       on its own split: `PER` +10.21, `LOC` +7.02, `ORG` +5.09, `DAT` +4.88. This measures
-      consistency, not correctness — a self-consistent but wrong convention scores the same.
+      consistency, not correctness: a self-consistent but wrong convention scores the same.
 - [x] **Watch recall on ORG.** **It did not improve, as feared.** `ORG` F rises 68.77 to
       73.86, but entirely on precision (69.50 to 82.41); recall falls 68.06 to 66.92. By the
       criterion set here, that makes the head-noun-plus-specifier compliance gap (rule 20)

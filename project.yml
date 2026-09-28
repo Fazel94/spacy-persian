@@ -1,13 +1,13 @@
-title: "fa_core_news_sm / fa_dep_news_sm"
+title: "Persian (fa) pipelines for spaCy: sm, md, lg and trf"
 description: >
-  CPU-sized Persian (fa) pipelines for spaCy 3.8, built entirely from UD_Persian-PerDT
+  Persian (fa) pipelines for spaCy 3.8, built entirely from UD_Persian-PerDT
   (PerUDT v1.0, CC BY-SA 4.0): tagger (XPOS), morphologizer (UPOS + FEATS), trainable
   lemmatizer, dependency parser and NER.
 
-  Two shipping packages, same corpus, differing only in whether NER is included:
-  `fa_dep_news_sm` (no NER) and `fa_core_news_sm` (with NER). The NER comes from the
-  treebank's own `not-to-release/Dadegan with NER tag/` layer, so both packages share one
-  corpus, one genre, one tokenization and one licence.
+  The `sm`, `md` and `lg` tiers each ship as `fa_dep_news_*` (no NER), `fa_core_news_*`
+  (with NER) and `fa_ent_news_*` (NER alone); `trf` ships as `fa_core_news_trf` only. The
+  NER comes from the treebank's own `not-to-release/Dadegan with NER tag/` layer, so the
+  syntax and NER training data share one corpus, one genre, one tokenization and one licence.
 
   PerDT's NER labels are silver, produced by Beheshti-NER with manual corrections, and are
   transferred onto this pipeline's tokenization by difflib at a 99.86% rate. Per-label
@@ -16,8 +16,8 @@ description: >
   See docs/MODELS.md for the source and licence analysis and docs/CONTRIBUTING-GUIDE.md for
   how this gets published.
 
-  Build both with: `spacy project run all`
-  Standalone NER-only package: `spacy project run ent`
+  Build `fa_dep_news_sm` and `fa_core_news_sm` with `spacy project run all`, `fa_ent_news_sm`
+  with `spacy project run ent`, and the other tiers with `spacy project run md`, `lg` or `trf`.
 
 vars:
   lang: "fa"
