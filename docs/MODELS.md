@@ -535,6 +535,37 @@ VM, giving a clean 25x GPU speedup for the transformer.
 `torch==2.7.1+cu126`, separate from `.venv` because torch's pinned `nvidia-*` wheels downgrade
 the CUDA libraries cupy uses there from 12.9 to 12.6. Batch 32 fits in 2 GB.
 
+### Against other toolkits
+
+`scripts/benchmark_toolkit.py export` writes the 146 test documents as raw text with their
+PerDT gold word counts. `run <tool>` times that toolkit's full pipeline over them in its own env
+under `.venv-bench/` and divides by the gold count, so tokenizer differences do not move the
+denominator. Warmup discarded, as above. Every row except Hazm ran on 2026-09-28 within a few
+minutes, load average between 2 and 3, with `OMP_NUM_THREADS=1`.
+
+| Toolkit | Models | Docs | Runs | Words/s |
+| --- | --- | ---: | ---: | ---: |
+| `fa_dep_news_sm` | | 146 | 5 | 13,073 |
+| `fa_core_news_sm` | | 146 | 5 | 8,831 |
+| UDPipe 1.4.0.1 | `persian-seraji-ud-2.5-191206` | 146 | 3 | 1,929 |
+| DadmaTools 2.3.6 | `tok,lem,pos,dep` on XLM-RoBERTa base | 16 | 1 | 96.2 |
+| Stanza 1.14.0 | `perdt`, charlm for POS and parser | 16 | 1 | 81.6 |
+| Hazm 0.12.1 | `hazm-postagger`, `hazm-dependency-parser` (MaltParser) | 146 | 1 | 24.8 |
+
+The thread pin matters to the torch-based toolkits only. For spaCy it is noise: 9,337 words/s
+for `fa_core_news_sm` at the default thread count against 9,403 pinned, back to back. Stanza,
+under a background load average near 10, managed 34.6 words/s at its default thread count and
+58.2 pinned, because its torch threads compete with that load for 4 hardware threads.
+
+Hazm was timed on 2026-08-11 with an earlier harness: the same 146 documents in one
+`parse_sents` call, 933 s. Its parser is MaltParser, run as a Java subprocess.
+
+The UDPipe 1 models used here are the UD 2.5 release (2019), and PerDT entered UD in 2.7, so
+the UDPipe row uses Seraji. No row here measures accuracy.
+
+The tier table above comes from another day with different background load: `fa_core_news_sm`
+reads 5,484 there and 8,831 here. Compare within a table, not across.
+
 ## 10. The LLM-relabelled NER corpus, measured against the silver layer
 
 `annotation/` relabels PerDT's silver NER layer with an LLM against a guideline inferred

@@ -20,6 +20,9 @@ annotation/work/
 # for the 940MX. Kept out of .venv so a CUDA-lib downgrade cannot reach the training env.
 .venv-trf/
 .venv-trf-gpu/
+# One env per rival toolkit for scripts/benchmark_toolkit.py, plus their model files: their
+# pins (Stanza's torch, UDPipe's binding) must not reach .venv.
+.venv-bench/
 __pycache__/
 *.pyc
 # Personal scratch list at the repo root, not part of the project. Anchored: a bare

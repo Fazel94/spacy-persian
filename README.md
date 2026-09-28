@@ -137,6 +137,29 @@ a 25x GPU speedup. The CPU tiers sit within 15% of each other, so the bottleneck
 and lemmatizer, not the tok2vec lookup. Laptop spread is about 10% with thermal state. Running
 `trf` on the 940MX needs a `cu126` torch build, see `docs/MODELS.md` §9.
 
+### Against other Persian toolkits
+
+The same 146 documents as raw text, full pipeline, same laptop CPU. Reproduce with
+`scripts/benchmark_toolkit.py`.
+
+| Toolkit | Components | Words/s |
+| --- | --- | ---: |
+| `fa_dep_news_sm` | tokenizer, tagger, morphologizer, lemmatizer, parser | 13,073 |
+| `fa_core_news_sm` | the same, plus NER | 8,831 |
+| UDPipe 1.4, `persian-seraji-ud-2.5` model | tokenizer, tagger, lemmatizer, parser | 1,929 |
+| DadmaTools 2.3.6 | tokenizer, lemmatizer, POS tagger, parser, on XLM-RoBERTa | 96 |
+| Stanza 1.14, `perdt` models | tokenizer, MWT, POS tagger, lemmatizer, parser | 82 |
+| Hazm 0.12.1 | normalizer, tokenizers, POS tagger, lemmatizer, MaltParser | 25 |
+
+`fa_dep_news_sm` is 7x faster than UDPipe, 136x faster than DadmaTools and 160x faster than
+Stanza. `md` and `lg` stay within 15% of `sm` in the table above, so they lead too; `trf`, at
+187 words/s, does not. DadmaTools and Stanza ran on the first 16 documents (2,396 words), the
+others on all 146. Every row except Hazm was measured on 2026-09-28 with one thread per
+process; Hazm was timed on 2026-08-11 in one 933-second pass. The table above comes from another
+day with different background load, which is why `fa_core_news_sm` reads 5,484 there and 8,831
+here: compare within a table, not across. Speed only: the UDPipe 1 models (UD 2.5) predate
+PerDT, so its row uses Seraji.
+
 ## Named entity recognition
 
 Seven labels: `LOC`, `PER`, `ORG`, `DAT`, `MON`, `TIM`, `PCT`. They come from PerDT's own
